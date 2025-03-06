@@ -34,126 +34,125 @@ function sendMessage($chatID, $respuesta, $message_id = null) {
 $update = file_get_contents("php://input");
 $update = json_decode($update, true);
 
+// Verificar si el mensaje es válido
 if (isset($update['message'])) {
     $chatId = $update['message']['chat']['id'];
     $messageText = $update['message']['text'];
-    $username = $update['message']['chat']['username'] ?? 'Desconocido';
+    $username = isset($update['message']['chat']['username']) ? $update['message']['chat']['username'] : "SinUsername";
 
-    // ID del admin
+    // ID del administrador principal
     $adminId = 1292171163;
 
     // Comando /start
     if ($messageText === '/start') {
         $response = "¡Bienvenido! Soy tu bot. Aquí están los comandos disponibles:\n";
-        $response .= "/id - Ver tu tipo de usuario.\n";
-        $response .= "/genkey [cantidad][m/h/d] - Generar una nueva clave (solo admin).\n";
-        $response .= "/keys - Ver las claves activas (solo admin).\n";
+        $response .= "/genkey [cantidad][m/h/d] - Generar una clave premium (solo admin).\n";
+        $response .= "/keys - Ver claves activas (solo admin).\n";
         $response .= "/deletekey [key] - Eliminar una clave (solo admin).\n";
-        $response .= "/addpremium [id] - Agregar un usuario premium (solo admin).\n";
+        $response .= "/addpremium [id] - Agregar usuario premium (solo admin).\n";
         $response .= "/mypremium - Ver tu estado premium.\n";
-        $response .= "/claim [key] - Reclamar una clave activa.\n";
-        $response .= "/listpremiums - Ver todos los usuarios premium (solo admin).\n";
+        $response .= "/claim [key] - Reclamar una clave premium.\n";
+        $response .= "/listpremiums - Ver usuarios premium (solo admin).\n";
+        $response .= "/id - Ver tu rol (admin, premium o usuario normal).\n";
         sendMessage($chatId, $response);
-    }
-
-    // Comando /id (ver tipo de usuario)
-    if ($messageText === '/id') {
-        if ($chatId == $adminId) {
-            sendMessage($chatId, "✅ Eres el <b>Administrador</b>.");
-        } else {
-            $query = "SELECT chat_id FROM premium_users WHERE chat_id = $1";
-            $result = pg_query_params($conn, $query, array($chatId));
-
-            if ($result && pg_num_rows($result) > 0) {
-                sendMessage($chatId, "✅ Eres un <b>Usuario Premium</b>.");
-            } else {
-                sendMessage($chatId, "❌ Eres un <b>Usuario Normal</b>.");
-            }
-        }
     }
 
     // Comando /genkey (solo admin)
     if (strpos($messageText, '/genkey') === 0 && $chatId == $adminId) {
-        $timeRegex = '/(\d+)([mdh])/';
-        preg_match($timeRegex, $messageText, $matches);
-
+        preg_match('/(\d+)([mdh])/', $messageText, $matches);
         if (count($matches) < 3) {
-            sendMessage($chatId, "❌ Error: Debes especificar el tiempo (m=min, h=hora, d=día). Ej: /genkey 5m");
+            sendMessage($chatId, "❌ Error: Usa el formato /genkey [cantidad][m/h/d]. Ej: /genkey 5m");
             return;
         }
 
         $duration = $matches[1];
         $unit = $matches[2];
-        $expirationDate = date("Y-m-d H:i:s", strtotime("+{$duration} {$unit}"));
+        $expirationDate = match ($unit) {
+            'm' => date("Y-m-d H:i:s", strtotime("+{$duration} minutes")),
+            'h' => date("Y-m-d H:i:s", strtotime("+{$duration} hours")),
+            'd' => date("Y-m-d H:i:s", strtotime("+{$duration} days")),
+        };
 
-        $key = bin2hex(random_bytes(16));
-
+        $key = bin2hex(random_bytes(8));
         $query = "INSERT INTO keys (chat_id, key, expiration, claimed) VALUES ($1, $2, $3, FALSE)";
         $result = pg_query_params($conn, $query, array($chatId, $key, $expirationDate));
 
         if ($result) {
-            sendMessage($chatId, "✅ Clave generada: $key. Expira en {$duration} {$unit}.");
+            sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira en {$duration}{$unit}.");
         } else {
             sendMessage($chatId, "❌ Error al generar la clave.");
         }
     }
 
-    // Comando /claim (reclamar clave)
+    // Comando /claim
     if (strpos($messageText, '/claim') === 0) {
         $parts = explode(' ', $messageText);
         if (count($parts) < 2) {
-            sendMessage($chatId, "❌ Error: Debes proporcionar una clave.");
+            sendMessage($chatId, "❌ Error: Usa /claim [clave]");
             return;
         }
 
         $keyToClaim = $parts[1];
 
-        $query = "SELECT key FROM keys WHERE key = $1 AND claimed = FALSE AND expiration > NOW() LIMIT 1";
+        $query = "SELECT key, claimed, expiration FROM keys WHERE key = $1 LIMIT 1";
         $result = pg_query_params($conn, $query, array($keyToClaim));
 
+        if (!$result || pg_num_rows($result) === 0) {
+            sendMessage($chatId, "❌ Clave no encontrada.");
+            return;
+        }
+
+        $row = pg_fetch_assoc($result);
+        if ($row['claimed'] === 't') {
+            sendMessage($chatId, "❌ La clave ya fue reclamada.");
+            return;
+        }
+
+        if (strtotime($row['expiration']) < time()) {
+            sendMessage($chatId, "❌ La clave ha expirado.");
+            return;
+        }
+
+        pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE key = $1", array($keyToClaim));
+        pg_query_params($conn, "INSERT INTO premium_users (chat_id, username) VALUES ($1, $2) ON CONFLICT (chat_id) DO NOTHING", array($chatId, $username));
+
+        sendMessage($chatId, "✅ Has reclamado la clave y ahora eres premium.");
+    }
+
+    // Comando /id para mostrar el rol del usuario
+    if ($messageText === '/id') {
+        if ($chatId == $adminId) {
+            sendMessage($chatId, "👑 Eres el administrador.");
+            return;
+        }
+
+        $result = pg_query_params($conn, "SELECT chat_id FROM premium_users WHERE chat_id = $1", array($chatId));
         if ($result && pg_num_rows($result) > 0) {
-            $updateQuery = "UPDATE keys SET claimed = TRUE WHERE key = $1";
-            pg_query_params($conn, $updateQuery, array($keyToClaim));
-
-            $insertPremiumQuery = "INSERT INTO premium_users (chat_id, username) VALUES ($1, $2) ON CONFLICT (chat_id) DO NOTHING";
-            pg_query_params($conn, $insertPremiumQuery, array($chatId, $username));
-
-            sendMessage($chatId, "✅ Has reclamado la clave: $keyToClaim y ahora eres un usuario premium.");
+            sendMessage($chatId, "🌟 Eres un usuario premium.");
         } else {
-            sendMessage($chatId, "❌ Clave inválida o ya reclamada.");
+            sendMessage($chatId, "🆓 Eres un usuario normal.");
         }
     }
 
     // Comando /mypremium
     if ($messageText === '/mypremium') {
-        if ($chatId == $adminId) {
-            sendMessage($chatId, "✅ Eres el administrador.");
-        } else {
-            $query = "SELECT chat_id FROM premium_users WHERE chat_id = $1";
-            $result = pg_query_params($conn, $query, array($chatId));
+        $result = pg_query_params($conn, "SELECT chat_id FROM premium_users WHERE chat_id = $1", array($chatId));
 
-            if ($result && pg_num_rows($result) > 0) {
-                sendMessage($chatId, "✅ Eres un usuario premium.");
-            } else {
-                sendMessage($chatId, "❌ No eres un usuario premium.");
-            }
+        if ($result && pg_num_rows($result) > 0) {
+            sendMessage($chatId, "✅ Eres premium.");
+        } else {
+            sendMessage($chatId, "❌ No eres premium.");
         }
     }
 
     // Comando /listpremiums (solo admin)
     if ($messageText === '/listpremiums' && $chatId == $adminId) {
-        $query = "SELECT chat_id, username FROM premium_users";
-        $result = pg_query($conn, $query);
-
-        if ($result) {
-            $premiumList = "✅ Usuarios premium:\n";
-            while ($row = pg_fetch_assoc($result)) {
-                $premiumList .= "ID: {$row['chat_id']}, Usuario: {$row['username']}\n";
-            }
-            sendMessage($chatId, $premiumList ?: "❌ No hay usuarios premium.");
-        } else {
-            sendMessage($chatId, "❌ Error al obtener la lista.");
+        $result = pg_query($conn, "SELECT chat_id, username FROM premium_users");
+        $premiumList = "✅ Usuarios premium:\n";
+        while ($row = pg_fetch_assoc($result)) {
+            $premiumList .= "ID: {$row['chat_id']} - Usuario: {$row['username']}\n";
         }
+        sendMessage($chatId, $premiumList);
     }
 }
 ?>
