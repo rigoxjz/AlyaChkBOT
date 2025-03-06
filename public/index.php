@@ -74,7 +74,33 @@ if (isset($update['message'])) {
         $response .= "/clean - Limpiar expirados (admin).\n";
         sendMessage($chatId, $response);
     }
+/////new code///
+    
+        // Comando /mypremium
+    if ($messageText === '/mypremium') {
+        $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
 
+        if ($result && pg_num_rows($result) > 0) {
+            $row = pg_fetch_assoc($result);
+            sendMessage($chatId, "🌟 Eres premium hasta: {$row['expiration']}.");
+        } else {
+            sendMessage($chatId, "❌ No eres premium.");
+        }
+    }
+
+        // Comando /deleteallkeys (solo admin)
+    if ($messageText === '/deleteallkeys' && $chatId == $adminId) {
+        deleteAllKeys($conn);
+        sendMessage($chatId, "🗑 Todas las claves han sido eliminadas y la numeración ha sido reiniciada.");
+    }
+
+    // Comando /clean (solo admin)
+    if ($messageText === '/clean' && $chatId == $adminId) {
+        cleanExpiredData($conn);
+        sendMessage($chatId, "🗑 Se han eliminado claves y usuarios expirados.");
+    }
+
+    //////
     if ($messageText === '/keys' && $chatId == $adminId) {
         $result = pg_query($conn, "SELECT \"key\", expiration, claimed FROM keys");
         if (pg_num_rows($result) === 0) {
