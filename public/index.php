@@ -15,6 +15,7 @@ $data = file_get_contents("php://input");
 $json = json_decode($data, true);
 $update = $json["message"];
 $message = $update["text"];
+$chatId = $update["chat"]["id"];
 
 
 
