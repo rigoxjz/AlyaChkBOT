@@ -4,6 +4,20 @@ $token = getenv('TELEGRAM_BOT_TOKEN');
 if (empty($token)) {
     die("❌ Error: No se encontró el token del bot.");
 }
+
+header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+header("Pragma: no-cache");
+
+//------TOKEN DEL BOT MIKASA ACKERMAN--------//
+$website = "https://api.telegram.org/bot".$token;
+$data = file_get_contents("php://input");
+$json = json_decode($data, true);
+$update = $json["message"];
+$message = $update["text"];
+
+
+
 include 'chk/bot.php';
 // Obtener credenciales de PostgreSQL
 $host = getenv('DB_HOST');
@@ -22,7 +36,7 @@ if (!$conn) {
 
 
 
-if ($messageText === '/cmd') {
+if ($message === '/cmd') {
     handleCmdCommand($chatId, $token);
 }
 
