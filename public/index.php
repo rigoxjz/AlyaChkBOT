@@ -93,14 +93,12 @@ if (isset($update['message'])) {
         sendMessage($chatId, $response);
     }
 
-// Comando /keys (admin)
+
+// Comando /keys (admin) 
 if ($messageText === '/keys' && $chatId == $adminId) {
     $now = getCurrentTimeMexico(); // Obtener la hora actual
 
-    // Eliminar claves expiradas antes de mostrar la lista
-    pg_query_params($conn, "DELETE FROM keys WHERE expiration < $1", array($now));
-
-    // Consultar claves activas
+    // Consultar todas las claves, incluyendo las expiradas
     $result = pg_query($conn, "SELECT \"key\", expiration, claimed FROM keys");
 
     if (pg_num_rows($result) === 0) {
@@ -108,12 +106,28 @@ if ($messageText === '/keys' && $chatId == $adminId) {
     } else {
         $keysList = "🔑 Claves activas:\n";
         while ($row = pg_fetch_assoc($result)) {
-            $estado = $row['claimed'] === 't' ? "✅ Usada" : "❌ Disponible";
+            $expirationDate = new DateTime($row['expiration'], new DateTimeZone('America/Mexico_City'));
+            $nowDate = new DateTime($now);
+
+            // Determinar el estado de la clave
+            if ($expirationDate < $nowDate) {
+                $estado = "⚫ Expirado";
+            } elseif ($row['claimed'] === 't') {
+                $estado = "🔴 Reclamado";
+            } else {
+                $estado = "🟢 Disponible";
+            }
+
+            // Agregar a la lista
             $keysList .= "Clave: <code>{$row['key']}</code>\nExpira: {$row['expiration']}\nEstado: {$estado}\n\n";
         }
         sendMessage($chatId, $keysList);
     }
+
+    // Eliminar claves expiradas después de mostrarlas
+    pg_query_params($conn, "DELETE FROM keys WHERE expiration < $1", array($now));
 }
+
 
 
 
