@@ -45,15 +45,8 @@ function sendMessage($chatID, $respuesta, $message_id = null) {
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $result = curl_exec($ch);
+    curl_exec($ch);
     curl_close($ch);
-}
-
-// Función para limpiar claves y usuarios expirados
-function cleanExpiredData($conn) {
-    $now = getCurrentTimeMexico();
-    pg_query_params($conn, "DELETE FROM keys WHERE claimed = FALSE AND expiration < $1", array($now));
-    pg_query_params($conn, "DELETE FROM premium_users WHERE expiration < $1", array($now));
 }
 
 // Obtener el contenido del mensaje recibido desde Telegram
@@ -74,9 +67,62 @@ if (isset($update['message'])) {
         $response .= "/clean - Limpiar expirados (admin).\n";
         sendMessage($chatId, $response);
     }
-/////new code///
-    
-        // Comando /mypremium
+
+    // Comando /genkey corregido (solo admin)
+    if (strpos($messageText, '/genkey') === 0 && $chatId == $adminId) {
+        if (!preg_match('/(\d+)([mdh])/', $messageText, $matches)) {
+            sendMessage($chatId, "❌ Uso incorrecto. Ejemplo: /genkey 5m");
+            return;
+        }
+
+        $duration = (int)$matches[1];
+        $unit = $matches[2];
+        $now = new DateTime(getCurrentTimeMexico());
+
+        switch ($unit) {
+            case 'm': $now->modify("+{$duration} minutes"); break;
+            case 'h': $now->modify("+{$duration} hours"); break;
+            case 'd': $now->modify("+{$duration} days"); break;
+        }
+
+        $expirationDate = $now->format('Y-m-d H:i:s');
+        $key = bin2hex(random_bytes(8));
+        pg_query_params($conn, "INSERT INTO keys (chat_id, \"key\", expiration, claimed) VALUES ($1, $2, $3, FALSE)", array($chatId, $key, $expirationDate));
+
+        sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate (Hora México).");
+    }
+
+    // Comando /claim corregido
+    if (strpos($messageText, '/claim') === 0) {
+        $parts = explode(' ', $messageText);
+        if (count($parts) < 2) {
+            sendMessage($chatId, "❌ Debes proporcionar una clave. Uso: /claim [key]");
+            return;
+        }
+
+        $key = $parts[1];
+        $now = getCurrentTimeMexico();
+        $result = pg_query_params($conn, "SELECT id, expiration, claimed FROM keys WHERE \"key\" = $1", array($key));
+
+        if ($result && pg_num_rows($result) > 0) {
+            $row = pg_fetch_assoc($result);
+            if ($row['claimed'] === 't') {
+                sendMessage($chatId, "❌ Esta clave ya ha sido reclamada.");
+            } elseif (strtotime($row['expiration']) < strtotime($now)) {
+                sendMessage($chatId, "❌ Esta clave ha expirado.");
+            } else {
+                pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE id = $1", array($row['id']));
+                $expirationDate = date('Y-m-d H:i:s', strtotime('+30 days', strtotime($now)));
+                pg_query_params($conn, "INSERT INTO premium_users (chat_id, expiration) VALUES ($1, $2) ON CONFLICT (chat_id) DO UPDATE SET expiration = GREATEST(premium_users.expiration, EXCLUDED.expiration)", array($chatId, $expirationDate));
+
+                sendMessage($chatId, "✅ Clave reclamada. Premium hasta: $expirationDate.");
+            }
+        } else {
+            sendMessage($chatId, "❌ Clave no válida.");
+        }
+    }
+
+    // Comando /mypremium corregido
     if ($messageText === '/mypremium') {
         $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
 
@@ -88,19 +134,7 @@ if (isset($update['message'])) {
         }
     }
 
-        // Comando /deleteallkeys (solo admin)
-    if ($messageText === '/deleteallkeys' && $chatId == $adminId) {
-        deleteAllKeys($conn);
-        sendMessage($chatId, "🗑 Todas las claves han sido eliminadas y la numeración ha sido reiniciada.");
-    }
-
-    // Comando /clean (solo admin)
-    if ($messageText === '/clean' && $chatId == $adminId) {
-        cleanExpiredData($conn);
-        sendMessage($chatId, "🗑 Se han eliminado claves y usuarios expirados.");
-    }
-
-    //////
+    // Comando /keys (solo admin)
     if ($messageText === '/keys' && $chatId == $adminId) {
         $result = pg_query($conn, "SELECT \"key\", expiration, claimed FROM keys");
         if (pg_num_rows($result) === 0) {
@@ -112,60 +146,6 @@ if (isset($update['message'])) {
                 $keysList .= "Clave: <code>{$row['key']}</code>\nExpira: {$row['expiration']}\nEstado: {$estado}\n\n";
             }
             sendMessage($chatId, $keysList);
-        }
-    }
-
-    if (strpos($messageText, '/genkey') === 0 && $chatId == $adminId) {
-        if (!preg_match('/(\d+)([mdh])/', $messageText, $matches)) {
-            sendMessage($chatId, "❌ Uso incorrecto. Ejemplo: /genkey 5m");
-            return;
-        }
-        
-        $duration = (int)$matches[1];
-        $unit = $matches[2];
-        $now = new DateTime(getCurrentTimeMexico());
-        
-        switch ($unit) {
-            case 'm': $now->modify("+{$duration} minutes"); break;
-            case 'h': $now->modify("+{$duration} hours"); break;
-            case 'd': $now->modify("+{$duration} days"); break;
-        }
-
-        $expirationDate = $now->format('Y-m-d H:i:s');
-        $key = bin2hex(random_bytes(8));
-        $query = "INSERT INTO keys (chat_id, \"key\", expiration, claimed) VALUES ($1, $2, $3, FALSE)";
-        $result = pg_query_params($conn, $query, array($chatId, $key, $expirationDate));
-        
-        if ($result) {
-            sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira en {$expirationDate} (Hora México).");
-        } else {
-            sendMessage($chatId, "❌ Error al generar la clave.");
-        }
-    }
-
-    if (strpos($messageText, '/claim') === 0) {
-        $parts = explode(' ', $messageText);
-        if (count($parts) < 2) {
-            sendMessage($chatId, "❌ Debes proporcionar una clave. Uso: /claim [key]");
-            return;
-        }
-        
-        $key = $parts[1];
-        $now = getCurrentTimeMexico();
-        $result = pg_query_params($conn, "SELECT id, expiration, claimed FROM keys WHERE \"key\" = $1", array($key));
-        
-        if ($result && pg_num_rows($result) > 0) {
-            $row = pg_fetch_assoc($result);
-            if ($row['claimed'] === 't' || strtotime($row['expiration']) < strtotime($now)) {
-                sendMessage($chatId, "❌ Clave no válida o expirada.");
-            } else {
-                pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE id = $1", array($row['id']));
-                $expirationDate = date('Y-m-d H:i:s', strtotime('+30 days'));
-                pg_query_params($conn, "INSERT INTO premium_users (chat_id, expiration) VALUES ($1, $2) ON CONFLICT (chat_id) DO UPDATE SET expiration = GREATEST(premium_users.expiration, $2)", array($chatId, $expirationDate));
-                sendMessage($chatId, "✅ Clave reclamada. Premium hasta: $expirationDate.");
-            }
-        } else {
-            sendMessage($chatId, "❌ Clave no válida.");
         }
     }
 }
