@@ -20,6 +20,21 @@ if (!$conn) {
     die("❌ Error al conectar a la base de datos: " . pg_last_error());
 }
 
+
+function handleCmdCommand($chatId, $token) {
+    $response = "─ Checker Commands ─\n\n"
+        . "➣ Checker ✔\n"
+        . "⁕ Uso: /chk cc|mm|yy|cvv\n"
+        . "➣ Check Info ✔\n"
+        . "⁕ Uso: /info\n"
+        . "➣ Check BIN Info ✔\n"
+        . "⁕ Uso: /bin xxxxxx\n"
+        . "➣ Contacto ➤ @D4rkGh0st3\n";
+
+    sendMessage($chatId, $response, $token);
+}
+
+
 // Función para obtener la hora actual en México
 function getCurrentTimeMexico() {
     $now = new DateTime('now', new DateTimeZone('America/Mexico_City'));
