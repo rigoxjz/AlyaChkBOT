@@ -4,7 +4,7 @@ $token = getenv('TELEGRAM_BOT_TOKEN');
 if (empty($token)) {
     die("❌ Error: No se encontró el token del bot.");
 }
-include 'cmd.php';
+include 'chk.php';
 // Obtener credenciales de PostgreSQL
 $host = getenv('DB_HOST');
 $port = getenv('DB_PORT');
