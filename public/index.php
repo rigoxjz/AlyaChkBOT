@@ -95,13 +95,13 @@ if (isset($update['message'])) {
 
 // Comando /keys (admin)
 if ($messageText === '/keys' && $chatId == $adminId) {
-    $now = getCurrentTimeMexico(); // Obtener la fecha y hora actual en México
+    $now = getCurrentTimeMexico(); // Obtener la hora actual
 
-    // Marcar como expiradas las claves cuyo tiempo ya pasó
-    pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE expiration < $1", array($now));
+    // Eliminar claves expiradas antes de mostrar la lista
+    pg_query_params($conn, "DELETE FROM keys WHERE expiration < $1", array($now));
 
-    // Consultar solo las claves que siguen disponibles
-    $result = pg_query($conn, "SELECT \"key\", expiration, claimed FROM keys WHERE expiration >= NOW()");
+    // Consultar claves activas
+    $result = pg_query($conn, "SELECT \"key\", expiration, claimed FROM keys");
 
     if (pg_num_rows($result) === 0) {
         sendMessage($chatId, "🔑 No hay claves activas.");
@@ -117,23 +117,23 @@ if ($messageText === '/keys' && $chatId == $adminId) {
 
 
 
+
+
 // Comando /mypremium
 if ($messageText === '/mypremium') {
-    $now = getCurrentTimeMexico(); // Obtener la hora actual en México
-
-    // Verificar si el usuario es premium
     $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
 
     if ($result && pg_num_rows($result) > 0) {
         $row = pg_fetch_assoc($result);
-        $expirationDate = DateTime::createFromFormat('Y-m-d H:i:s', $row['expiration'], new DateTimeZone('America/Mexico_City'));
+        $expirationDate = new DateTime($row['expiration'], new DateTimeZone('America/Mexico_City'));
+        $now = new DateTime(getCurrentTimeMexico());
 
-        if ($expirationDate && $expirationDate > new DateTime($now)) {
+        if ($expirationDate > $now) {
             sendMessage($chatId, "🌟 Eres premium hasta: " . $expirationDate->format('Y-m-d H:i:s'));
         } else {
-            // Si ya expiró, eliminamos al usuario de premium
+            // Si la fecha ya pasó, eliminamos al usuario de premium
             pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($chatId));
-            sendMessage($chatId, "❌ No eres premium.");
+            sendMessage($chatId, "❌ Tu suscripción premium ha expirado.");
         }
     } else {
         sendMessage($chatId, "❌ No eres premium.");
@@ -168,6 +168,7 @@ if ($messageText === '/mypremium') {
     }
 
 // Comando /claim [key]
+// Comando /claim [key]
 if (strpos($messageText, '/claim') === 0) {
     $parts = explode(" ", $messageText);
     if (count($parts) < 2) {
@@ -191,8 +192,15 @@ if (strpos($messageText, '/claim') === 0) {
     // Marcar la clave como reclamada
     pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE \"key\" = $1", array($key));
 
-    // Agregar al usuario a la tabla de usuarios premium
-    pg_query_params($conn, "INSERT INTO premium_users (chat_id, expiration) VALUES ($1, $2) ON CONFLICT (chat_id) DO UPDATE SET expiration = $2", array($chatId, $expirationDate));
+    // Obtener el username del usuario
+    $username = $update['message']['from']['username'] ?? 'Desconocido';
+
+    // Agregar al usuario a la tabla de usuarios premium con fecha de expiración
+    pg_query_params($conn, "INSERT INTO premium_users (chat_id, username, expiration) 
+                            VALUES ($1, $2, $3) 
+                            ON CONFLICT (chat_id) 
+                            DO UPDATE SET expiration = $3", 
+                    array($chatId, $username, $expirationDate));
 
     sendMessage($chatId, "✅ ¡Felicidades! Ahora eres usuario premium hasta el $expirationDate.");
 }
