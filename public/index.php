@@ -136,24 +136,29 @@ if ($messageText === '/keys' && $chatId == $adminId) {
 
 // Comando /mypremium
 if ($messageText === '/mypremium') {
+    $adminId = 1292171163; // ID del creador del bot
     $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
-
-    if ($result && pg_num_rows($result) > 0) {
+    
+    $now = new DateTime(getCurrentTimeMexico());
+    $tipoUsuario = "👤 Usuario Free"; // Por defecto es usuario normal
+    
+    if ($chatId == $adminId) {
+        $tipoUsuario = "👑 Creador del bot";
+    } elseif ($result && pg_num_rows($result) > 0) {
         $row = pg_fetch_assoc($result);
         $expirationDate = new DateTime($row['expiration'], new DateTimeZone('America/Mexico_City'));
-        $now = new DateTime(getCurrentTimeMexico());
 
         if ($expirationDate > $now) {
-            sendMessage($chatId, "🌟 Eres premium hasta: " . $expirationDate->format('Y-m-d H:i:s'));
+            $tipoUsuario = "🌟 Usuario Premium\nExpira el: " . $expirationDate->format('Y-m-d H:i:s');
         } else {
             // Si la fecha ya pasó, eliminamos al usuario de premium
             pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($chatId));
-            sendMessage($chatId, "❌ Tu suscripción premium ha expirado.");
         }
-    } else {
-        sendMessage($chatId, "❌ No eres premium.");
     }
+
+    sendMessage($chatId, "🔹 Tu estado actual:\n$tipoUsuario");
 }
+
 
 
 
