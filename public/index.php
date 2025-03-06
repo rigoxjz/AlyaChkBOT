@@ -4,7 +4,7 @@ $token = getenv('TELEGRAM_BOT_TOKEN');
 if (empty($token)) {
     die("❌ Error: No se encontró el token del bot.");
 }
-
+include 'cmd.php';
 // Obtener credenciales de PostgreSQL
 $host = getenv('DB_HOST');
 $port = getenv('DB_PORT');
@@ -21,18 +21,11 @@ if (!$conn) {
 }
 
 
-function handleCmdCommand($chatId, $token) {
-    $response = "─ Checker Commands ─\n\n"
-        . "➣ Checker ✔\n"
-        . "⁕ Uso: /chk cc|mm|yy|cvv\n"
-        . "➣ Check Info ✔\n"
-        . "⁕ Uso: /info\n"
-        . "➣ Check BIN Info ✔\n"
-        . "⁕ Uso: /bin xxxxxx\n"
-        . "➣ Contacto ➤ @D4rkGh0st3\n";
 
-    sendMessage($chatId, $response, $token);
+if ($messageText === '/cmd') {
+    handleCmdCommand($chatId, $token);
 }
+
 
 
 // Función para obtener la hora actual en México
