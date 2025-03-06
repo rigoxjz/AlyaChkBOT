@@ -66,9 +66,10 @@ function cleanExpiredData($conn) {
 }
 
 
-// Eliminar todas las claves
+// Eliminar todas las claves y reiniciar el ID
 function deleteAllKeys($conn) {
-    pg_query($conn, "DELETE FROM keys");
+    pg_query($conn, "DELETE FROM keys"); // Eliminar todas las filas
+    pg_query($conn, "ALTER SEQUENCE keys_id_seq RESTART WITH 1"); // Reiniciar el ID a 1
 }
 
 // Obtener mensaje de Telegram
