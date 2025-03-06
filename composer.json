@@ -1,0 +1,9 @@
+{
+    "name": "mi-usuario/php-bot",
+    "description": "Un bot PHP con PostgreSQL",
+    "require": {
+        "php": "^8.0",
+        "ext-pdo": "*",
+        "ext-pgsql": "*"
+    }
+}
