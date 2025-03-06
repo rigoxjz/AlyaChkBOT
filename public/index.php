@@ -47,6 +47,11 @@ function cleanExpiredData($conn) {
     pg_query_params($conn, "DELETE FROM premium_users WHERE expiration < $1", array($now));
 }
 
+// Función para eliminar todas las claves de la base de datos
+function deleteAllKeys($conn) {
+    pg_query($conn, "DELETE FROM keys");
+}
+
 // Obtener el contenido del mensaje recibido desde Telegram
 $update = file_get_contents("php://input");
 $update = json_decode($update, true);
@@ -66,9 +71,11 @@ if (isset($update['message'])) {
         $response .= "/genkey [cantidad][m/h/d] - Generar una clave premium (solo admin).\n";
         $response .= "/keys - Ver claves activas (solo admin).\n";
         $response .= "/deletekey [key] - Eliminar una clave (solo admin).\n";
+        $response .= "/deleteallkeys - Eliminar todas las claves (solo admin).\n";
         $response .= "/mypremium - Ver tu estado premium.\n";
         $response .= "/claim [key] - Reclamar una clave premium.\n";
         $response .= "/clean - Eliminar claves y usuarios expirados (solo admin).\n";
+        $response .= "/id - Ver tu rol (admin, premium o usuario normal).\n";
         sendMessage($chatId, $response);
     }
 
@@ -124,32 +131,25 @@ if (isset($update['message'])) {
             return;
         }
 
-        // Establecer la expiración desde el momento en que se canjea
-        $expirationTime = getCurrentTimeMexico();
-        pg_query_params($conn, "UPDATE keys SET claimed = TRUE, expiration = $1 WHERE key = $2", array($expirationTime, $keyToClaim));
+        pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE key = $1", array($keyToClaim));
 
-        pg_query_params($conn, "INSERT INTO premium_users (chat_id, username, expiration) VALUES ($1, $2, $3) ON CONFLICT (chat_id) DO UPDATE SET expiration = $3", 
-            array($chatId, $username, $row['expiration']));
+        pg_query_params($conn, "INSERT INTO premium_users (chat_id, username) VALUES ($1, $2) ON CONFLICT (chat_id) DO NOTHING", array($chatId, $username));
 
-        sendMessage($chatId, "✅ Has reclamado la clave y ahora eres premium hasta {$row['expiration']} (hora de México).");
+        sendMessage($chatId, "✅ Has reclamado la clave y ahora eres premium.");
     }
 
-    // Comando /mypremium
-    if ($messageText === '/mypremium') {
-        cleanExpiredData($conn);
+    // Comando /id para mostrar el rol del usuario
+    if ($messageText === '/id') {
+        if ($chatId == $adminId) {
+            sendMessage($chatId, "👑 Eres el administrador.");
+            return;
+        }
 
-        $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
-
+        $result = pg_query_params($conn, "SELECT chat_id FROM premium_users WHERE chat_id = $1", array($chatId));
         if ($result && pg_num_rows($result) > 0) {
-            $row = pg_fetch_assoc($result);
-            if (strtotime($row['expiration']) > time()) {
-                sendMessage($chatId, "✅ Eres premium hasta el {$row['expiration']} (hora de México).");
-            } else {
-                sendMessage($chatId, "❌ Tu membresía ha expirado.");
-                pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($chatId));
-            }
+            sendMessage($chatId, "🌟 Eres un usuario premium.");
         } else {
-            sendMessage($chatId, "❌ No eres premium.");
+            sendMessage($chatId, "🆓 Eres un usuario normal.");
         }
     }
 
@@ -157,6 +157,12 @@ if (isset($update['message'])) {
     if ($messageText === '/clean' && $chatId == $adminId) {
         cleanExpiredData($conn);
         sendMessage($chatId, "🗑 Se han eliminado claves y usuarios expirados.");
+    }
+
+    // Comando /deleteallkeys (solo admin)
+    if ($messageText === '/deleteallkeys' && $chatId == $adminId) {
+        deleteAllKeys($conn);
+        sendMessage($chatId, "🗑 Todas las claves han sido eliminadas.");
     }
 }
 ?>
