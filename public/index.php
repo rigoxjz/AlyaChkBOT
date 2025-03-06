@@ -109,25 +109,26 @@ if (isset($update['message'])) {
     }
 
     // Comando /mypremium
-    if ($messageText === '/mypremium') {
+if ($messageText === '/mypremium') {
     $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
 
     if ($result && pg_num_rows($result) > 0) {
         $row = pg_fetch_assoc($result);
-        $expirationDate = $row['expiration'];
+        $expirationDate = new DateTime($row['expiration'], new DateTimeZone('America/Mexico_City'));
+        $now = new DateTime(getCurrentTimeMexico());
 
-        // Verificar si la membresía ya expiró
-        if (strtotime($expirationDate) < strtotime(getCurrentTimeMexico())) {
-            // Si ya venció, eliminar al usuario
+        if ($expirationDate > $now) {
+            sendMessage($chatId, "🌟 Eres premium hasta: " . $expirationDate->format('Y-m-d H:i:s'));
+        } else {
+            // Si la fecha ya pasó, eliminamos al usuario de premium
             pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($chatId));
             sendMessage($chatId, "❌ No eres premium.");
-        } else {
-            sendMessage($chatId, "🌟 Eres premium hasta: {$expirationDate}.");
         }
     } else {
         sendMessage($chatId, "❌ No eres premium.");
     }
 }
+
 
 
     // Comando /genkey (admin)
