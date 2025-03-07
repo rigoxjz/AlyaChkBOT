@@ -216,7 +216,7 @@ if (in_array($messageText, $comandosReconocidos)) {
     // Comando /start
 //    if ($messageText === '/vip') {
   //  if (strpos($message, '/vip') && $private_id == $adminId) {
-    if (preg_match('/^([\/|!|\.])vip$/', $message) && $private_id == $adminId) {
+    if (preg_match('/^([\/|!|\.])vip$/', $message) && $chatId == $adminId) {
     // Código aquí
 
         $response = "🎉 <b>¡Bienvenido!</b> 🎉\n\n";
@@ -235,7 +235,7 @@ if (in_array($messageText, $comandosReconocidos)) {
         $response .= "🧹 <b>Limpiar Expirados (Admin)</b>\n";
         $response .= "   ➜ /clean\n";
         $response .= "━━━━━━━━━━━━━━━━━━━━\n";
-        sendMessage($chatId, $response, $message_id, "HTML");
+        sendMessage($chatId, $response, "HTML");
 
         //sendMessage($chatId, $response);
     }
