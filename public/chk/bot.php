@@ -1,6 +1,6 @@
 <?php
 
-function handleCommands($chat_id, $message, $message_id, $admin, $update) {
+function handleCommands($chat_id, $message) {
 
    // Cmds Commands
 if((strpos($message, "!cmds") === 0)||(strpos($message, "/cmds") === 0)||(strpos($message, ".cmds") === 0)) {
