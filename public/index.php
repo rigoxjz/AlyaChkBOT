@@ -111,8 +111,14 @@ $adminId = 1292171163;
 // Consulta para verificar si el usuario es Premium o Admin
 $query = "SELECT premium, admin FROM users WHERE id = $private_id";
 $result = pg_query($conn, $query);
-$row = pg_fetch_assoc($result);
 
+if (!$result) {
+    error_log("Error en la consulta SQL: " . pg_last_error($conn)); // Guarda el error en logs
+    sendMessage($private_id, "⚠️ Error al obtener información del usuario.");
+    exit();
+}
+
+$row = pg_fetch_assoc($result);
 $isPremium = isset($row['premium']) && $row['premium'] == 't'; // 't' es TRUE en PostgreSQL
 $isAdmin = isset($row['admin']) && $row['admin'] == 't';
 
@@ -126,6 +132,7 @@ if ($private_id == $adminId) {
 } else {
     $userType = "🆓 Free";
 }
+
 
     $creator_id = '123456789';  // ID del creador, reemplaza esto por el valor correcto
 
