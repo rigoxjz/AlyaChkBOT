@@ -99,10 +99,21 @@ function deleteAllKeys($conn) {
 // Obtener mensaje de Telegram
 $update = json_decode(file_get_contents("php://input"), true);
 
+
+
 if (isset($update['message'])) {
     cleanExpiredData($conn); // Limpia los datos expirados antes de procesar cualquier comando
 
+    
+$group_id = update['message']['chat']['id'];
+$private_id = $update['message']['from']['id'];
+$private_title = $update['message']['from']['first_name'];
+$group_title = $update['message']['chat']['title'];
+$chat_type = $update['message']['chat']['type'];
 
+$chatId = $update['message']['chat']['id'];
+$messageText = trim($update['message']['text']);
+$adminId = 1292171163;
 
     //    $chatId = $update['message']['chat']['id'];
 //    $messageText = trim($update['message']['text']);
