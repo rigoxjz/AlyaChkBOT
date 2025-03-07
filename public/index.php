@@ -149,7 +149,7 @@ if ($TypeUser == "Free" && preg_match('/^(!|\/|\.)start$/', $message)) {
     
 
 // Si es el comando /start, todos pueden usarlo
-$ComandosAutorizados = ['/start', '/id', '/claim'];
+$ComandosAutorizados = ['/start', '/id', '/vip', '/claim'];
 $command = explode(' ', $message)[0];
 
 if (in_array($command, $ComandosAutorizados)) {
@@ -197,7 +197,7 @@ if (in_array($command, $ComandosAutorizados)) {
 
 
 
-$comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
+$comandosReconocidos = ['/start', '/vip', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
 
 // Comprobar si el mensaje es un comando reconocido
 if (in_array($messageText, $comandosReconocidos)) {
