@@ -18,6 +18,10 @@ $message = $update["text"];
 $chatId = $update["chat"]["id"];
 
 
+    $chatId = $update['message']['chat']['id'];
+    $messageText = trim($update['message']['text']);
+    $adminId = 1292171163;
+
 include 'chk/functions.php';
 include 'chk/bot.php';
 // Obtener credenciales de PostgreSQL
@@ -35,28 +39,22 @@ if (!$conn) {
     die("❌ Error al conectar a la base de datos: " . pg_last_error());
 }
 
-  $comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
+ 
+$comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
 
-    // Si el mensaje coincide con un comando, ejecutamos su acción
-    if (in_array(explode(' ', $message)[0], $comandosReconocidos)) {
-           if ($messageText === '/start') {
-        $response = "¡Bienvenido! Comandos disponibles:\n";
-        $response .= "/genkey [cantidad][m/h/d] - Generar clave (admin).\n";
-        $response .= "/keys - Ver claves (admin).\n";
-        $response .= "/deleteallkeys - Eliminar todas las claves (admin).\n";
-        $response .= "/mypremium - Ver estado premium.\n";
-        $response .= "/claim [key] - Reclamar clave premium.\n";
-        $response .= "/clean - Limpiar expirados (admin).\n";
-        sendMessage($chatId, $response);
-    }
+$messageParts = explode(' ', trim($messageText)); // Eliminamos espacios extra y dividimos el mensaje
+$comando = $messageParts[0] ?? ''; // Obtenemos el primer elemento o una cadena vacía
 
-        // (Otras verificaciones de comandos...)
-        
-    } else {
-        // Si no es un comando reconocido, ejecuta handleCommands()
-        handleCommands($chat_id, $message, $message_id, $admin, $update);
-    }
+// Si el mensaje coincide con un comando, ejecutamos su acción
+if (in_array($comando, $comandosReconocidos)) {
 
+   
+    // Aquí puedes agregar el manejo de otros comandos
+
+} else {
+    // Si no es un comando reconocido, ejecuta handleCommands()
+    handleCommands($chat_id, $message, $message_id, $admin, $update);
+}
 
 // Función para obtener la hora actual en México
 function getCurrentTimeMexico() {
