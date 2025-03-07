@@ -52,8 +52,9 @@ if (in_array($comando, $comandosReconocidos)) {
     // Aquí puedes agregar el manejo de otros comandos
 
 } else {
+     sendMessage($chatId, $message);
     // Si no es un comando reconocido, ejecuta handleCommands()
-    handleCommands($chat_id, $message, $message_id, $admin, $update);
+    handleCommands($chatId, $message);
 }
 
 // Función para obtener la hora actual en México
