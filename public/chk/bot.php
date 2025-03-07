@@ -25,7 +25,7 @@ if((strpos($message, "!cmds") === 0)||(strpos($message, "/cmds") === 0)||(strpos
 }
 
 
-
+/*
     function sendMessage($chatID, $respuesta, $message_id) {
     $url = $GLOBALS["website"]."/sendMessage?disable_web_page_preview=true&chat_id=".$chatID."&reply_to_message_id=".$message_id."&parse_mode=HTML&text=".urlencode($respuesta);
 //$url = $GLOBALS["website"]."/sendMessage?disable_web_page_preview=true&chat_id=".$chatID."&parse_mode=HTML&text=".urlencode($respuesta);
@@ -33,6 +33,6 @@ if((strpos($message, "!cmds") === 0)||(strpos($message, "/cmds") === 0)||(strpos
 //------------EXTRAE EL ID DEL MENSAGE----------//
     $id_cap = capture($cap_message_id, '"message_id":', ',');
     file_put_contents("ID", $id_cap);
-    }
+    }*/
 }
 ?>
