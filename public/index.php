@@ -38,8 +38,18 @@ if (!$conn) {
   $comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
 
     // Si el mensaje coincide con un comando, ejecutamos su acción
-    if (in_array(explode(' ', $messageText)[0], $comandosReconocidos)) {
-        
+    if (in_array(explode(' ', $message)[0], $comandosReconocidos)) {
+           if ($messageText === '/start') {
+        $response = "¡Bienvenido! Comandos disponibles:\n";
+        $response .= "/genkey [cantidad][m/h/d] - Generar clave (admin).\n";
+        $response .= "/keys - Ver claves (admin).\n";
+        $response .= "/deleteallkeys - Eliminar todas las claves (admin).\n";
+        $response .= "/mypremium - Ver estado premium.\n";
+        $response .= "/claim [key] - Reclamar clave premium.\n";
+        $response .= "/clean - Limpiar expirados (admin).\n";
+        sendMessage($chatId, $response);
+    }
+
         // (Otras verificaciones de comandos...)
         
     } else {
