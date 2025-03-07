@@ -207,9 +207,14 @@ if ($messageText === '/id') {
             $name_title = $private_title;
             $ID = $private_id;
     }
-    $respuesta = "Nombre: ".$name_title."\nChat: ".$chat_type."\nTU ID: <code>".$ID."</code>";
+    $respuesta = "🔹 <b>Información de Usuario</b> 🔹\n" .
+             "📛 <b>Nombre:</b> {$name_title}\n" .
+             "💬 <b>Tipo de Chat:</b> {$chat_type}\n" .
+             "🆔 <b>Tu ID:</b> <code>{$ID}</code>\n" .
+             "✨ <b>Estado Actual:</b> {$tipoUsuario}\n";
+
     sendMessage($chatId, $respuesta);
-    sendMessage($chatId, "🔹 Tu estado actual:\n$tipoUsuario");
+  
 }
 
 
