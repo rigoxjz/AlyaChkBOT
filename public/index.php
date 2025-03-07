@@ -18,7 +18,7 @@ $message = $update["text"];
 $chatId = $update["chat"]["id"];
 
 
-
+include 'chk/functions.php';
 include 'chk/bot.php';
 // Obtener credenciales de PostgreSQL
 $host = getenv('DB_HOST');
@@ -46,7 +46,7 @@ function getCurrentTimeMexico() {
     return $now->format('Y-m-d H:i:s');
 }
 
-
+/*
 // Función para enviar un mensaje
 function sendMessage($chatID, $respuesta, $message_id = null) {
     global $token;
@@ -69,7 +69,7 @@ function sendMessage($chatID, $respuesta, $message_id = null) {
     curl_exec($ch);
     curl_close($ch);
 }
-
+*/
 // Limpiar claves y usuarios expirados
 function cleanExpiredData($conn) {
     $now = getCurrentTimeMexico();
