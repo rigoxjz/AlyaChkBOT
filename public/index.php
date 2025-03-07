@@ -37,7 +37,6 @@ if (!$conn) {
 
 
 
-handleCommands($chat_id, $message, $message_id, $admin, $update);
 
 
 
@@ -259,4 +258,6 @@ if (strpos($messageText, '/claim') === 0) {
         sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.");
     }
 }
+
+handleCommands($chat_id, $message, $message_id, $admin, $update);    
 ?>
