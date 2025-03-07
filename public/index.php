@@ -135,7 +135,7 @@ if ($private_id == $adminId) {
 }
 
 
-
+  sendMessage($chatId, $userType, "HTML");
 
 // Si el usuario NO es premium y el comando es una variante de "start"
 if (!$isPremium && preg_match('/^(!|\/|\.)start$/', $message)) {
