@@ -1,9 +1,12 @@
 <?php
+
 // Obtener el token del bot de Telegram desde las variables de entorno
 $token = getenv('TELEGRAM_BOT_TOKEN');
 if (empty($token)) {
     die("❌ Error: No se encontró el token del bot.");
 }
+include 'chk/functions.php';
+include 'chk/bot.php';
 
 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
@@ -12,18 +15,20 @@ header("Pragma: no-cache");
 //------TOKEN DEL BOT MIKASA ACKERMAN--------//
 $website = "https://api.telegram.org/bot".$token;
 $data = file_get_contents("php://input");
-$json = json_decode($data, true);
 $update = $json["message"];
-$message = $update["text"];
-$chatId = $update["chat"]["id"];
+
+$json = json_decode($data, true);
+$group_id = $json['message']['chat']['id'];
+$private_id = $json['message']['from']['id'];
+$private_title = $json['message']['from']['first_name'];
+$group_title = $json['message']['chat']['title'];
+$chat_type = $json['message']['chat']['type'];
+
+$chatId = $update['message']['chat']['id'];
+$messageText = trim($update['message']['text']);
+$adminId = 1292171163;
 
 
-    $chatId = $update['message']['chat']['id'];
-    $messageText = trim($update['message']['text']);
-    $adminId = 1292171163;
-
-include 'chk/functions.php';
-include 'chk/bot.php';
 // Obtener credenciales de PostgreSQL
 $host = getenv('DB_HOST');
 $port = getenv('DB_PORT');
@@ -98,9 +103,9 @@ $update = json_decode(file_get_contents("php://input"), true);
 if (isset($update['message'])) {
     cleanExpiredData($conn); // Limpia los datos expirados antes de procesar cualquier comando
 
-    $chatId = $update['message']['chat']['id'];
-    $messageText = trim($update['message']['text']);
-    $adminId = 1292171163;
+//    $chatId = $update['message']['chat']['id'];
+//    $messageText = trim($update['message']['text']);
+ //   $adminId = 1292171163;
 
 
 
