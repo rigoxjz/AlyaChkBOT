@@ -257,7 +257,8 @@ if (strpos($messageText, '/claim') === 0) {
         cleanExpiredData($conn);
         sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.");
     }
+handleCommands($chat_id, $message, $message_id, $admin, $update);
 }
 
-handleCommands($chat_id, $message, $message_id, $admin, $update);    
+    
 ?>
