@@ -37,7 +37,8 @@ if (!$conn) {
 
 
 
-handleCommands($chat_id, $message, $message_id, $admin);
+handleCommands($chat_id, $message, $message_id, $admin, $update);
+
 
 
 // Función para obtener la hora actual en México
