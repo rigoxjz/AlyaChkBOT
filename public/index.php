@@ -39,20 +39,6 @@ if (!$conn) {
     die("❌ Error al conectar a la base de datos: " . pg_last_error());
 }
 
-$comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
-
-// Comprobar si el mensaje es un comando reconocido
-if (in_array($messageText, $comandosReconocidos)) {
-     sendMessage($chatId, "Existe");
-    sendMessage($chatId, $messageText);
-      handleCommands($chatId, $messageText);
-    // Manejo de comandos
-} else {
-     sendMessage($chatId, "no existe");
-    // Si no es un comando reconocido, ejecuta handleCommands()
-    handleCommands($chatId, $messageText);
-}
-
 
 // Función para obtener la hora actual en México
 function getCurrentTimeMexico() {
@@ -116,6 +102,24 @@ if (isset($update['message'])) {
     $messageText = trim($update['message']['text']);
     $adminId = 1292171163;
 
+
+
+$comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
+
+// Comprobar si el mensaje es un comando reconocido
+if (in_array($messageText, $comandosReconocidos)) {
+     sendMessage($chatId, "Existe");
+    sendMessage($chatId, $messageText);
+      handleCommands($chatId, $messageText);
+    // Manejo de comandos
+} else {
+     sendMessage($chatId, "no existe");
+    // Si no es un comando reconocido, ejecuta handleCommands()
+    handleCommands($chatId, $messageText);
+}
+
+
+    
     // Comando /start
     if ($messageText === '/start') {
         $response = "¡Bienvenido! Comandos disponibles:\n";
