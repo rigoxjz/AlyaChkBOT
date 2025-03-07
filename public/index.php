@@ -52,7 +52,7 @@ if (in_array($comando, $comandosReconocidos)) {
     // Aquí puedes agregar el manejo de otros comandos
 
 } else {
-     sendMessage($chatId, $message);
+     sendMessage($chatId, "HOLA");
     // Si no es un comando reconocido, ejecuta handleCommands()
     handleCommands($chatId, $message);
 }
