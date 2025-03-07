@@ -131,6 +131,7 @@ if ($private_id == $adminId) {
     $userType = "⭐ Premium";
 } else {
     $userType = "🆓 Free";
+    $TypeUser = "Free";
 }
 
 
@@ -205,6 +206,8 @@ $isPremium = isset($row['premium']) && $row['premium'] == 't'; // 't' es TRUE en
 
 // Si el usuario NO es premium, enviar mensaje y salir
 if (!$isPremium) {
+
+} else {
     $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
     $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
     $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
