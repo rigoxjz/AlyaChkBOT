@@ -106,7 +106,7 @@ $chatId = $update['message']['chat']['id'];
 $messageText = trim($update['message']['text']);
 $adminId = 1292171163;
 
-
+/*
  // Verificar si el usuario es premium
     $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($private_id));
 
@@ -127,7 +127,42 @@ $adminId = 1292171163;
         // Si el usuario no es premium, bloquear mensajes
         sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.");
     }
+*/
 
+    $creator_id = '123456789';  // ID del creador, reemplaza esto por el valor correcto
+
+// Si es el comando /start, todos pueden usarlo
+if ($message == '/start') {
+    sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
+} else {
+    // Verificar si el usuario es el creador
+    if ($private_id == $creator_id) {
+        // El creador siempre puede enviar mensajes
+        sendMessage($chatId, "✨ Eres el creador, puedes enviar mensajes.");
+    } else {
+        // Comprobar si el usuario es premium
+        $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($private_id));
+
+        if ($result && pg_num_rows($result) > 0) {
+            $row = pg_fetch_assoc($result);
+            $expirationDate = new DateTime($row['expiration'], new DateTimeZone('America/Mexico_City'));
+            $now = new DateTime(getCurrentTimeMexico());
+
+            if ($expirationDate > $now) {
+                // El usuario es premium, puede enviar mensajes
+                sendMessage($chatId, "✨ Eres usuario premium. Puedes enviar mensajes.");
+            } else {
+                // Si la membresía ha expirado, eliminamos al usuario de la lista premium
+                pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($private_id));
+                sendMessage($chatId, "⚠️ Tu membresía premium ha expirado.");
+            }
+        } else {
+            // Si el usuario no es premium, bloquear mensajes
+            sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.");
+        }
+    }
+}
+    
     
     
     //    $chatId = $update['message']['chat']['id'];
