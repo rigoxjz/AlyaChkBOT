@@ -5,7 +5,12 @@ function handleCommands($chat_id, $message, $message_id, $admin, $update) {
 
     $token = getenv('TELEGRAM_BOT_TOKEN');
     // Verificar si existe "message" en el update
-    
+
+    $website = "https://api.telegram.org/bot".$token;
+    $upda = json_decode(file_get_contents('php://input'), true);
+    $data = file_get_contents("php://input");
+    $json = json_decode($data, true);
+    $update = $json["message"];
     // Obtener información del usuario
     $id = $update["message"]["from"]["id"] ?? "Unknown";
     $Name = $update["message"]["from"]["first_name"] ?? "Unknown";
