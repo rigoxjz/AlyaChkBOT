@@ -45,8 +45,7 @@ function handleCommands($chat_id, $message, $message_id, $admin) {
 	$respuesta = "     [ ↯ ] ᴍʏ ᴀʙᴏᴜᴛ [ ↯ ]\n\n‣ ᴜsᴇʀ ɪᴅ: <code>".$id."</code>\n‣ ғᴜʟʟ ɴᴀᴍᴇ: ".$Name." ".$last."\n‣ ᴜsᴇʀɴᴀᴍᴇ: @".$user."\n‣ ᴜsᴇʀ ᴛʏᴘᴇ: ".$tipo."\n";
 	sendMessage($chat_id,$respuesta,$message_id);
     }
-}
-
+	
 function sendMessage($chatID, $respuesta, $message_id = null) {
     global $token;
     $url = "https://api.telegram.org/bot$token/sendMessage";
@@ -68,6 +67,7 @@ function sendMessage($chatID, $respuesta, $message_id = null) {
     ];
     $context  = stream_context_create($options);
     file_get_contents($url, false, $context);
+}
 }
 
 ?>
