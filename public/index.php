@@ -133,11 +133,16 @@ $adminId = 1292171163;
     $creator_id = '123456789';  // ID del creador, reemplaza esto por el valor correcto
 
 // Si es el comando /start, todos pueden usarlo
-if ($message == '/start') {
-    sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
+    $ComandosAutorizados = ['/start', '/id', '/claim'];
+
+// Comprobar si el mensaje es un comando reconocido
+if (in_array($message, $ComandosAutorizados) {
+    
+//if ($message == '/start') {
+   // sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
 } else {
     // Verificar si el usuario es el creador
-    if ($chatId == $creator_id) {
+    if ($chatId == $adminId) {
         // El creador siempre puede enviar mensajes
         sendMessage($chatId, "✨ Eres el creador, puedes enviar mensajes.");
     } else {
