@@ -137,14 +137,15 @@ $adminId = 1292171163;
 
 // Comprobar si el mensaje es un comando reconocido
 if (in_array($message, $ComandosAutorizados)) {
-    
+  /////AQUI SE PROCESAN LOS MENSAJES ADMITIDOS//  
 //if ($message == '/start') {
-   sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
+//   sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
 } else {
     // Verificar si el usuario es el creador
     if ($chatId == $adminId) {
+        ///AQUI SE PROCESAN LOS MENSAJES PARA EL ADMIN//
         // El creador siempre puede enviar mensajes
-        sendMessage($chatId, "✨ Eres el creador, puedes enviar mensajes.");
+//        sendMessage($chatId, "✨ Eres el creador, puedes enviar mensajes.");
     } else {
         // Comprobar si el usuario es premium
         $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($private_id));
