@@ -152,13 +152,13 @@ if ($TypeUser == "Free" && preg_match('/^(!|\/|\.)start$/', $message)) {
 $ComandosAutorizados = ['/start', '/id', '/vip', '/claim'];
 $command = explode(' ', $message)[0];
 
-if (in_array($command, $ComandosAutorizados)) {
+//if (in_array($command, $ComandosAutorizados)) {
     // Procesar comandos permitidos aquí
 //    if ($command == '/start') {
 //        sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
  //   }
     
-} else {
+//} else {
     // Verificar si el usuario es el creador
     if ($chatId == $adminId) {
         ///AQUI SE PROCESAN LOS MENSAJES PARA EL ADMIN//
@@ -187,7 +187,7 @@ if (in_array($command, $ComandosAutorizados)) {
             die();
         }
     }
-}
+//}
     
     
     
