@@ -135,55 +135,30 @@ if ($private_id == $adminId) {
 }
 
 
-// Comando /claim [key]
-// Comando /claim [key]
-if (strpos($messageText, '/claim') === 0) {
-    $parts = explode(" ", $messageText);
-    if (count($parts) < 2) {
-        sendMessage($chatId, "❌ Debes proporcionar una clave. Ejemplo: /claim 123456");
-        return;
-    }
 
-    $key = trim($parts[1]);
 
-    // Verificar si la clave existe y está disponible
-    $result = pg_query_params($conn, "SELECT expiration FROM keys WHERE \"key\" = $1 AND claimed = FALSE", array($key));
-
-    if (!$result || pg_num_rows($result) === 0) {
-        sendMessage($chatId, "❌ Clave inválida o ya ha sido reclamada.");
-        return;
-    }
-
-    $row = pg_fetch_assoc($result);
-    $expirationDate = $row['expiration'];
-
-    // Marcar la clave como reclamada
-    pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE \"key\" = $1", array($key));
-
-    // Obtener el username del usuario
-    $username = $update['message']['from']['username'] ?? 'Desconocido';
-
-    // Agregar al usuario a la tabla de usuarios premium con fecha de expiración
-    pg_query_params($conn, "INSERT INTO premium_users (chat_id, username, expiration) 
-                            VALUES ($1, $2, $3) 
-                            ON CONFLICT (chat_id) 
-                            DO UPDATE SET expiration = $3", 
-                    array($chatId, $username, $expirationDate));
-
-    sendMessage($chatId, "✅ ¡Felicidades! Ahora eres usuario premium hasta el $expirationDate.");
-    die();
+// Si el usuario NO es premium y el comando es una variante de "start"
+if (!$isPremium && preg_match('/^(!|\/|\.)start$/', $message)) {
+    $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
+    $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
+    $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
+    $response .= "🆓 También puedes usarlo gratis uniéndote a nuestro grupo: @checker_bins\n\n";
+    $response .= "📩 Contacta con <a href='http://t.me/rigo_jz'>@rigo_jz</a> para más información.";
+    sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
+    exit();
 }
     
-    
-   
-// Si es el comando /start, todos pueden usarlo
-    $ComandosAutorizados = ['/start', '/id', '/claim'];
 
-// Comprobar si el mensaje es un comando reconocido
-if (in_array($message, $ComandosAutorizados)) {
-  /////AQUI SE PROCESAN LOS MENSAJES ADMITIDOS//  
-//if ($message == '/start') {
-//   sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
+// Si es el comando /start, todos pueden usarlo
+$ComandosAutorizados = ['/start', '/id', '/claim'];
+$command = explode(' ', $message)[0];
+
+if (in_array($command, $ComandosAutorizados)) {
+    // Procesar comandos permitidos aquí
+//    if ($command == '/start') {
+//        sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
+ //   }
+    
 } else {
     // Verificar si el usuario es el creador
     if ($chatId == $adminId) {
@@ -209,15 +184,6 @@ if (in_array($message, $ComandosAutorizados)) {
             }
         } else {
             // Si el usuario no es premium, bloquear mensajes
-               if ((strpos($message, "!start") === 0) || (strpos($message, "/start") === 0) || (strpos($message, ".start") === 0)) {
-                   $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
-                    $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
-                    $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
-                    $response .= "🆓 También puedes usarlo gratis uniéndote a nuestro grupo: @checker_bins\n\n";
-                    $response .= "📩 Contacta con <a href='http://t.me/rigo_jz'>@rigo_jz</a> para más información.";
-                    sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
-                    exit(); // Detener la ejecución si no es premium
-                 }
             sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.");
             die();
         }
@@ -380,6 +346,46 @@ if ($messageText === '/id') {
 
         sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate.");
     }
+
+
+    // Comando /claim [key]
+// Comando /claim [key]
+if (strpos($messageText, '/claim') === 0) {
+    $parts = explode(" ", $messageText);
+    if (count($parts) < 2) {
+        sendMessage($chatId, "❌ Debes proporcionar una clave. Ejemplo: /claim 123456");
+        return;
+    }
+
+    $key = trim($parts[1]);
+
+    // Verificar si la clave existe y está disponible
+    $result = pg_query_params($conn, "SELECT expiration FROM keys WHERE \"key\" = $1 AND claimed = FALSE", array($key));
+
+    if (!$result || pg_num_rows($result) === 0) {
+        sendMessage($chatId, "❌ Clave inválida o ya ha sido reclamada.");
+        return;
+    }
+
+    $row = pg_fetch_assoc($result);
+    $expirationDate = $row['expiration'];
+
+    // Marcar la clave como reclamada
+    pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE \"key\" = $1", array($key));
+
+    // Obtener el username del usuario
+    $username = $update['message']['from']['username'] ?? 'Desconocido';
+
+    // Agregar al usuario a la tabla de usuarios premium con fecha de expiración
+    pg_query_params($conn, "INSERT INTO premium_users (chat_id, username, expiration) 
+                            VALUES ($1, $2, $3) 
+                            ON CONFLICT (chat_id) 
+                            DO UPDATE SET expiration = $3", 
+                    array($chatId, $username, $expirationDate));
+
+    sendMessage($chatId, "✅ ¡Felicidades! Ahora eres usuario premium hasta el $expirationDate.");
+    die();
+}
 
     
     // Comando /deleteallkeys (admin)
