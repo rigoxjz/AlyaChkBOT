@@ -106,6 +106,30 @@ $chatId = $update['message']['chat']['id'];
 $messageText = trim($update['message']['text']);
 $adminId = 1292171163;
 
+
+ // Verificar si el usuario es premium
+    $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($private_id));
+
+    if ($result && pg_num_rows($result) > 0) {
+        $row = pg_fetch_assoc($result);
+        $expirationDate = new DateTime($row['expiration'], new DateTimeZone('America/Mexico_City'));
+        $now = new DateTime(getCurrentTimeMexico());
+
+        if ($expirationDate > $now) {
+            // El usuario es premium, puede enviar mensajes
+            sendMessage($chatId, "✨ Eres usuario premium. Puedes enviar mensajes.");
+        } else {
+            // Si la membresía ha expirado, eliminamos al usuario de la lista premium
+            pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($private_id));
+            sendMessage($chatId, "⚠️ Tu membresía premium ha expirado.");
+        }
+    } else {
+        // Si el usuario no es premium, bloquear mensajes
+        sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.");
+    }
+
+    
+    
     //    $chatId = $update['message']['chat']['id'];
 //    $messageText = trim($update['message']['text']);
  //   $adminId = 1292171163;
