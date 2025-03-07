@@ -205,18 +205,16 @@ $row = pg_fetch_assoc($result);
 $isPremium = isset($row['premium']) && $row['premium'] == 't'; // 't' es TRUE en PostgreSQL
 
 // Si el usuario NO es premium, enviar mensaje y salir
-if (!$isPremium) {
+if ($TypeUser == "Free") {
         if ((strpos($message, "!start") === 0) || (strpos($message, "/start") === 0) || (strpos($message, ".start") === 0)) {
     $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
     $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
     $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
     $response .= "🆓 También puedes usarlo gratis uniéndote a nuestro grupo: @checker_bins\n\n";
     $response .= "📩 Contacta con <a href='http://t.me/rigo_jz'>@rigo_jz</a> para más información.";
-        }
-
     sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
     exit(); // Detener la ejecución si no es premium
-} else {
+                 }
     // Si el usuario es premium, permitir comandos
 }
 
