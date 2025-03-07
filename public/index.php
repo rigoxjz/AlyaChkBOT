@@ -107,28 +107,25 @@ $messageText = trim($update['message']['text']);
 $message = $messageText;
 $adminId = 1292171163;
 
-/*
- // Verificar si el usuario es premium
-    $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($private_id));
+  
+// Consulta para verificar si el usuario es Premium o Admin
+$query = "SELECT premium, admin FROM users WHERE id = $private_id";
+$result = pg_query($conn, $query);
+$row = pg_fetch_assoc($result);
 
-    if ($result && pg_num_rows($result) > 0) {
-        $row = pg_fetch_assoc($result);
-        $expirationDate = new DateTime($row['expiration'], new DateTimeZone('America/Mexico_City'));
-        $now = new DateTime(getCurrentTimeMexico());
+$isPremium = isset($row['premium']) && $row['premium'] == 't'; // 't' es TRUE en PostgreSQL
+$isAdmin = isset($row['admin']) && $row['admin'] == 't';
 
-        if ($expirationDate > $now) {
-            // El usuario es premium, puede enviar mensajes
-            sendMessage($chatId, "✨ Eres usuario premium. Puedes enviar mensajes.");
-        } else {
-            // Si la membresía ha expirado, eliminamos al usuario de la lista premium
-            pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($private_id));
-            sendMessage($chatId, "⚠️ Tu membresía premium ha expirado.");
-        }
-    } else {
-        // Si el usuario no es premium, bloquear mensajes
-        sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.");
-    }
-*/
+// Determinar el tipo de usuario
+if ($private_id == $adminId) {
+    $userType = "👑 Creador";
+} elseif ($isAdmin) {
+    $userType = "🔹 Admin";
+} elseif ($isPremium) {
+    $userType = "⭐ Premium";
+} else {
+    $userType = "🆓 Free";
+}
 
     $creator_id = '123456789';  // ID del creador, reemplaza esto por el valor correcto
 
@@ -191,9 +188,28 @@ if (in_array($messageText, $comandosReconocidos)) {
 }
 
 
+////PARTE PARA COMANDOS//
+
+$query = "SELECT premium FROM users WHERE id = $private_id";
+$result = pg_query($conn, $query);
+$row = pg_fetch_assoc($result);
+
+$isPremium = isset($row['premium']) && $row['premium'] == 't'; // 't' es TRUE en PostgreSQL
+
+// Si el usuario NO es premium, enviar mensaje y salir
+if (!$isPremium) {
+    $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
+    $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
+    $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
+    $response .= "🆓 También puedes usarlo gratis uniéndote a nuestro grupo: @checker_bins\n\n";
+    $response .= "📩 Contacta con <a href='http://t.me/rigo_jz'>@rigo_jz</a> para más información.";
+    
+    sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
+    exit(); // Detener la ejecución si no es premium
+}
     
     // Comando /start
-    if ($messageText === '/start') {
+    if ($messageText === '/vip') {
 
         $response = "🎉 <b>¡Bienvenido!</b> 🎉\n\n";
         $response .= "📌 <b>Comandos disponibles:</b>\n";
