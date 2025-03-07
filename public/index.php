@@ -18,15 +18,6 @@ $data = file_get_contents("php://input");
 $json = json_decode($data, true);
 $update = $json["message"];
 
-$group_id = $json['message']['chat']['id'];
-$private_id = $json['message']['from']['id'];
-$private_title = $json['message']['from']['first_name'];
-$group_title = $json['message']['chat']['title'];
-$chat_type = $json['message']['chat']['type'];
-
-$chatId = $update['message']['chat']['id'];
-$messageText = trim($update['message']['text']);
-$adminId = 1292171163;
 
 // Obtener credenciales de PostgreSQL
 $host = getenv('DB_HOST');
@@ -105,7 +96,7 @@ if (isset($update['message'])) {
     cleanExpiredData($conn); // Limpia los datos expirados antes de procesar cualquier comando
 
     
-$group_id = update['message']['chat']['id'];
+$group_id = $update['message']['chat']['id'];
 $private_id = $update['message']['from']['id'];
 $private_title = $update['message']['from']['first_name'];
 $group_title = $update['message']['chat']['title'];
