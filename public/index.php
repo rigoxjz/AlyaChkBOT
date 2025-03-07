@@ -35,9 +35,17 @@ if (!$conn) {
     die("❌ Error al conectar a la base de datos: " . pg_last_error());
 }
 
+  $comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
 
-
-
+    // Si el mensaje coincide con un comando, ejecutamos su acción
+    if (in_array(explode(' ', $messageText)[0], $comandosReconocidos)) {
+        
+        // (Otras verificaciones de comandos...)
+        
+    } else {
+        // Si no es un comando reconocido, ejecuta handleCommands()
+        handleCommands($chat_id, $message, $message_id, $admin, $update);
+    }
 
 
 // Función para obtener la hora actual en México
@@ -257,7 +265,7 @@ if (strpos($messageText, '/claim') === 0) {
         cleanExpiredData($conn);
         sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.");
     }
-handleCommands($chat_id, $message, $message_id, $admin, $update);
+
 }
 
     
