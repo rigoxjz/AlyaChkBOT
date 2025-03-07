@@ -17,17 +17,6 @@ $website = "https://api.telegram.org/bot".$token;
 $data = file_get_contents("php://input");
 $update = $json["message"];
 
-$json = json_decode($data, true);
-$group_id = $json['message']['chat']['id'];
-$private_id = $json['message']['from']['id'];
-$private_title = $json['message']['from']['first_name'];
-$group_title = $json['message']['chat']['title'];
-$chat_type = $json['message']['chat']['type'];
-
-$chatId = $update['message']['chat']['id'];
-$messageText = trim($update['message']['text']);
-$adminId = 1292171163;
-
 
 // Obtener credenciales de PostgreSQL
 $host = getenv('DB_HOST');
@@ -103,7 +92,19 @@ $update = json_decode(file_get_contents("php://input"), true);
 if (isset($update['message'])) {
     cleanExpiredData($conn); // Limpia los datos expirados antes de procesar cualquier comando
 
-//    $chatId = $update['message']['chat']['id'];
+
+$json = json_decode($data, true);
+$group_id = $json['message']['chat']['id'];
+$private_id = $json['message']['from']['id'];
+$private_title = $json['message']['from']['first_name'];
+$group_title = $json['message']['chat']['title'];
+$chat_type = $json['message']['chat']['type'];
+
+$chatId = $update['message']['chat']['id'];
+$messageText = trim($update['message']['text']);
+$adminId = 1292171163;
+
+    //    $chatId = $update['message']['chat']['id'];
 //    $messageText = trim($update['message']['text']);
  //   $adminId = 1292171163;
 
