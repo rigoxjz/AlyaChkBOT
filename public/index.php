@@ -194,14 +194,26 @@ if (in_array($messageText, $comandosReconocidos)) {
     
     // Comando /start
     if ($messageText === '/start') {
-        $response = "¡Bienvenido! Comandos disponibles:\n";
-        $response .= "/genkey [cantidad][m/h/d] - Generar clave (admin).\n";
-        $response .= "/keys - Ver claves (admin).\n";
-        $response .= "/deleteallkeys - Eliminar todas las claves (admin).\n";
-        $response .= "/mypremium - Ver estado premium.\n";
-        $response .= "/claim [key] - Reclamar clave premium.\n";
-        $response .= "/clean - Limpiar expirados (admin).\n";
-        sendMessage($chatId, $response);
+
+        $response = "🎉 <b>¡Bienvenido!</b> 🎉\n\n";
+        $response .= "📌 <b>Comandos disponibles:</b>\n";
+        $response .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $response .= "🔑 <b>Generar Clave (Admin)</b>\n";
+        $response .= "   ➜ <code>/genkey [cantidad][m/h/d]</code>\n\n";
+        $response .= "📂 <b>Ver Claves (Admin)</b>\n";
+        $response .= "   ➜ <code>/keys</code>\n\n";
+        $response .= "🗑 <b>Eliminar Todas las Claves (Admin)</b>\n";
+        $response .= "   ➜ <code>/deleteallkeys</code>\n\n";
+        $response .= "🌟 <b>Estado Premium</b>\n";
+        $response .= "   ➜ <code>/mypremium</code>\n\n";
+        $response .= "🎟 <b>Reclamar Clave Premium</b>\n";
+        $response .= "   ➜ <code>/claim [key]</code>\n\n";
+        $response .= "🧹 <b>Limpiar Expirados (Admin)</b>\n";
+        $response .= "   ➜ <code>/clean</code>\n";
+        $response .= "━━━━━━━━━━━━━━━━━━━━\n";
+        sendMessage($chatId, $response, $message_id, "HTML");
+
+        //sendMessage($chatId, $response);
     }
 
 
