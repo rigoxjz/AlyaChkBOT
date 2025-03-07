@@ -249,7 +249,8 @@ if (in_array($messageText, $comandosReconocidos)) {
 
     
     // Comando /start
-    if ($messageText === '/vip') {
+//    if ($messageText === '/vip') {
+    if (strpos($message, '/vip') && $chatId == $adminId) {
 
         $response = "🎉 <b>¡Bienvenido!</b> 🎉\n\n";
         $response .= "📌 <b>Comandos disponibles:</b>\n";
