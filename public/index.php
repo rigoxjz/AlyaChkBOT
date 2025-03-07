@@ -43,8 +43,11 @@ $comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen',
 
 // Comprobar si el mensaje es un comando reconocido
 if (in_array($messageText, $comandosReconocidos)) {
+     handleCommands($chatId, $messageText);
+     sendMessage($chatId, "Existe");
     // Manejo de comandos
 } else {
+     sendMessage($chatId, "no existe");
     // Si no es un comando reconocido, ejecuta handleCommands()
     handleCommands($chatId, $messageText);
 }
