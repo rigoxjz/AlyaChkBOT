@@ -46,4 +46,28 @@ function handleCommands($chat_id, $message, $message_id, $admin) {
 	sendMessage($chat_id,$respuesta,$message_id);
     }
 }
+
+function sendMessage($chatID, $respuesta, $message_id = null) {
+    global $token;
+    $url = "https://api.telegram.org/bot$token/sendMessage";
+    $data = [
+        'chat_id' => $chatID,
+        'text' => $respuesta,
+        'parse_mode' => 'HTML',
+        'disable_web_page_preview' => true,
+    ];
+    if ($message_id) {
+        $data['reply_to_message_id'] = $message_id;
+    }
+    $options = [
+        'http' => [
+            'header'  => "Content-Type: application/json\r\n",
+            'method'  => 'POST',
+            'content' => json_encode($data),
+        ],
+    ];
+    $context  = stream_context_create($options);
+    file_get_contents($url, false, $context);
+}
+
 ?>
