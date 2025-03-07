@@ -2,9 +2,9 @@
 
 function handleCommands($chat_id, $message, $message_id, $admin, $update) {
     global $token;
-    
+
+    $token = getenv('TELEGRAM_BOT_TOKEN');
     // Verificar si existe "message" en el update
-    if (!isset($update["message"])) return;
     
     // Obtener información del usuario
     $id = $update["message"]["from"]["id"] ?? "Unknown";
@@ -20,30 +20,14 @@ if((strpos($message, "!cmds") === 0)||(strpos($message, "/cmds") === 0)||(strpos
 }
 
 
-// Verificar si la función ya existe antes de declararla
-if (!function_exists('sendMessage')) {
-    function sendMessage($chatID, $respuesta, $message_id = null) {
-        global $token;
-        $url = "https://api.telegram.org/bot$token/sendMessage";
-        $data = [
-            'chat_id' => $chatID,
-            'text' => $respuesta,
-            'parse_mode' => 'HTML',
-            'disable_web_page_preview' => true,
-        ];
-        if ($message_id) {
-            $data['reply_to_message_id'] = $message_id;
-        }
-        $options = [
-            'http' => [
-                'header'  => "Content-Type: application/json\r\n",
-                'method'  => 'POST',
-                'content' => json_encode($data),
-            ],
-        ];
-        $context  = stream_context_create($options);
-        file_get_contents($url, false, $context);
+
+    function sendMessage($chatID, $respuesta, $message_id) {
+    $url = $GLOBALS["website"]."/sendMessage?disable_web_page_preview=true&chat_id=".$chatID."&reply_to_message_id=".$message_id."&parse_mode=HTML&text=".urlencode($respuesta);
+//$url = $GLOBALS["website"]."/sendMessage?disable_web_page_preview=true&chat_id=".$chatID."&parse_mode=HTML&text=".urlencode($respuesta);
+    $cap_message_id = file_get_contents($url);
+//------------EXTRAE EL ID DEL MENSAGE----------//
+    $id_cap = capture($cap_message_id, '"message_id":', ',');
+    file_put_contents("ID", $id_cap);
     }
 }
-
 ?>
