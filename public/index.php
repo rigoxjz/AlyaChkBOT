@@ -39,23 +39,16 @@ if (!$conn) {
     die("❌ Error al conectar a la base de datos: " . pg_last_error());
 }
 
- 
 $comandosReconocidos = ['/start', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
 
-$messageParts = explode(' ', trim($messageText)); // Eliminamos espacios extra y dividimos el mensaje
-$comando = $messageParts[0] ?? ''; // Obtenemos el primer elemento o una cadena vacía
-
-// Si el mensaje coincide con un comando, ejecutamos su acción
-if (in_array($comando, $comandosReconocidos)) {
-
-   
-    // Aquí puedes agregar el manejo de otros comandos
-
+// Comprobar si el mensaje es un comando reconocido
+if (in_array($messageText, $comandosReconocidos)) {
+    // Manejo de comandos
 } else {
-     sendMessage($chatId, "HOLA");
     // Si no es un comando reconocido, ejecuta handleCommands()
-    handleCommands($chatId, $message);
+    handleCommands($chatId, $messageText);
 }
+
 
 // Función para obtener la hora actual en México
 function getCurrentTimeMexico() {
