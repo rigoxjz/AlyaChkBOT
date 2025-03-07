@@ -135,10 +135,9 @@ if ($private_id == $adminId) {
 }
 
 
-  sendMessage($chatId, $userType, "HTML");
 
 // Si el usuario NO es premium y el comando es una variante de "start"
-if (!$isPremium && preg_match('/^(!|\/|\.)start$/', $message)) {
+if ($TypeUser == "Free" && preg_match('/^(!|\/|\.)start$/', $message)) {
     $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
     $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
     $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
