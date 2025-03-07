@@ -175,7 +175,7 @@ if ($messageText === '/keys' && $chatId == $adminId) {
 
 
 // Comando /mypremium
-if ($messageText === '/mypremium') {
+if ($messageText === '/id') {
     $adminId = 1292171163; // ID del creador del bot
     $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
     
@@ -196,6 +196,16 @@ if ($messageText === '/mypremium') {
         }
     }
 
+    
+    if ($private_title == "Channel"){
+            $name_title = $group_title;
+            $ID = $group_id;
+    }else{
+            $name_title = $private_title;
+            $ID = $private_id;
+    }
+    $respuesta = "Nombre: ".$name_title."\nChat: ".$chat_type."\nTU ID: <code>".$ID."</code>";
+    sendMessage($chat_id, $respuesta, $message_id);
     sendMessage($chatId, "🔹 Tu estado actual:\n$tipoUsuario");
 }
 
