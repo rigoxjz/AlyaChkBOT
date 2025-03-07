@@ -196,7 +196,7 @@ if (in_array($command, $ComandosAutorizados)) {
  //   $adminId = 1292171163;
 
 
-
+/*
 $comandosReconocidos = ['/start', '/vip', '/id', '/gts', '/bin', '/iban', '/sk', '/gen', '/extb', '/claim', '/keys', '/deleteallkeys', '/mypremium', '/clean', '/genkey'];
 
 // Comprobar si el mensaje es un comando reconocido
@@ -207,7 +207,7 @@ if (in_array($messageText, $comandosReconocidos)) {
     // Si no es un comando reconocido, ejecuta handleCommands()
     handleCommands($chatId, $messageText);
 }
-
+*/
 
 ////PARTE PARA COMANDOS//
 
