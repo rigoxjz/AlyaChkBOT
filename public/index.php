@@ -215,7 +215,9 @@ if (in_array($messageText, $comandosReconocidos)) {
     
     // Comando /start
 //    if ($messageText === '/vip') {
-    if (strpos($message, '/vip') && $private_id == $adminId) {
+  //  if (strpos($message, '/vip') && $private_id == $adminId) {
+    if (preg_match('/^([\/|!|\.])vip$/', $message) && $private_id == $adminId) {
+    // Código aquí
 
         $response = "🎉 <b>¡Bienvenido!</b> 🎉\n\n";
         $response .= "📌 <b>Comandos disponibles:</b>\n";
