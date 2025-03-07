@@ -199,17 +199,17 @@ if (in_array($messageText, $comandosReconocidos)) {
         $response .= "📌 <b>Comandos disponibles:</b>\n";
         $response .= "━━━━━━━━━━━━━━━━━━━━\n";
         $response .= "🔑 <b>Generar Clave (Admin)</b>\n";
-        $response .= "   ➜ <code>/genkey [cantidad][m/h/d]</code>\n\n";
+        $response .= "   ➜ /genkey <code>[cantidad][m/h/d]</code>\n\n";
         $response .= "📂 <b>Ver Claves (Admin)</b>\n";
-        $response .= "   ➜ <code>/keys</code>\n\n";
+        $response .= "   ➜ /keys\n\n";
         $response .= "🗑 <b>Eliminar Todas las Claves (Admin)</b>\n";
-        $response .= "   ➜ <code>/deleteallkeys</code>\n\n";
+        $response .= "   ➜ /deleteallkeys\n\n";
         $response .= "🌟 <b>Estado Premium</b>\n";
-        $response .= "   ➜ <code>/mypremium</code>\n\n";
+        $response .= "   ➜ /mypremium\n\n";
         $response .= "🎟 <b>Reclamar Clave Premium</b>\n";
-        $response .= "   ➜ <code>/claim [key]</code>\n\n";
+        $response .= "   ➜ /claim [key]\n\n";
         $response .= "🧹 <b>Limpiar Expirados (Admin)</b>\n";
-        $response .= "   ➜ <code>/clean</code>\n";
+        $response .= "   ➜ /clean\n";
         $response .= "━━━━━━━━━━━━━━━━━━━━\n";
         sendMessage($chatId, $response, $message_id, "HTML");
 
