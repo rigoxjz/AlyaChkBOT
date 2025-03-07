@@ -104,6 +104,7 @@ $chat_type = $update['message']['chat']['type'];
 
 $chatId = $update['message']['chat']['id'];
 $messageText = trim($update['message']['text']);
+$message = $messageText;
 $adminId = 1292171163;
 
 /*
@@ -136,7 +137,7 @@ if ($message == '/start') {
     sendMessage($chatId, "👋 Bienvenido. Usa este bot para interactuar.");
 } else {
     // Verificar si el usuario es el creador
-    if ($private_id == $creator_id) {
+    if ($chatId == $creator_id) {
         // El creador siempre puede enviar mensajes
         sendMessage($chatId, "✨ Eres el creador, puedes enviar mensajes.");
     } else {
@@ -159,6 +160,7 @@ if ($message == '/start') {
         } else {
             // Si el usuario no es premium, bloquear mensajes
             sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.");
+            die();
         }
     }
 }
