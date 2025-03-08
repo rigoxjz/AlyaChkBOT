@@ -404,14 +404,11 @@ if (strpos($messageText, '/claim') === 0) {
 
 
 // Manejar el comando
-$response = handleCommands($chatId, $messageText);  // Llama a la función que genera la respuesta
+$response = handleCommands($chatId, $messageText, $message_id);  // Llama a la función que genera la respuesta
 // Enviar el mensaje de espera con el reply_to_message_id
-sendMessage($chatId, $response, $update['message']['message_id'], "HTML");  // Enviar el mensaje
+sendMessage($chatId, $response, $message_id, "HTML");  // Enviar el mensaje
 
-// Guardar el message_id del mensaje enviado (para editar más tarde)
-$id_text = $update['message']['message_id'];  // Guardamos el message_id
-file_put_contents("ID", $id_text);  // Guardamos el message_id en un archivo (o puedes usar una base de datos)
-    
+
     
 }
 
