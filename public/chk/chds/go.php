@@ -1,7 +1,7 @@
 <?php
 
 function chkgo($chatId, $message, $message_id) {
- global $user, $admin, $logo, userType; 
+ global $user, $admin, $logo, $userType; 
 	
 if (preg_match('/^(!|\/|\.)go/', $message)) {
 
