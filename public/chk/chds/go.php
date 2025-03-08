@@ -51,7 +51,6 @@ $id_text = file_get_contents("ID");
 $startTime = microtime(true); //TIEMPO DE INICIO
 $BinData = BinData($bin); //Extrae los datos del bin
 
-sendMessage($chatId, $BinData, "HTML");  // Enviar el mensaje
 
 //RANDOM USER//
 $ch = curl_init();
