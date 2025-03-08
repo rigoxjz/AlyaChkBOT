@@ -104,15 +104,16 @@ $private_title = $update['message']['from']['first_name'];
 $group_title = $update['message']['chat']['title'];
 $chat_type = $update['message']['chat']['type'];
 
-    sendMessage($chatId, $user);
-    
+
 $chatId = $update['message']['chat']['id'];
 $message_id = $update["message"]["message_id"];
 $messageText = trim($update['message']['text']);
 $message = $messageText;
 $adminId = 1292171163;
 
-  
+      sendMessage($chatId, $user);
+
+    
 // Consulta para verificar si el usuario es Premium o Admin
 $query = "SELECT premium, admin FROM users WHERE id = $private_id";
 $result = pg_query($conn, $query);
