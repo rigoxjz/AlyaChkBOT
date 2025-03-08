@@ -8,9 +8,20 @@ function handleCommands($chatId, $message) {
    //     sendMessage($chatId, $respuesta);
 //}
 if (preg_match('/^(!|\/|\.)cmds$/', $message)) {
-    $respuesta = "🔹 <b>CHECKER COMMANDS</b> 🔹\n━━━━━━━━━━━━━━━━━━━━━\n➩ <b>Check User Info</b> ✔\n   💠 <code>/me</code>\n➩ <b>Check ID chat</b> ✔\n   💠 <code>/id</code>\n➩ <b>List Command Gates</b> ✔\n   💠 <code>/gts</code>\n\n🌟 <b>EXTRAS</b> 🌟\n━━━━━━━━━━━━━━━━━━━━━\n⌦ <b>Bin Check</b> ✔\n   💠 <code>/bin xxxxxx</code>\n⌦ <b>Checker IBAN</b> ✔\n   💠 <code>/iban xxxxxx</code>\n⌦ <b>SK Key Check</b> ✔\n   💠 <code>/sk sk_live_xxxx</code>\n⌦ <b>Gen ccs</b> ✔\n   💠 <code>/gen xxxxxx</code>\n\n📌 <b>EXTRAPOLACIÓN</b> 📌\n━━━━━━━━━━━━━━━━━━━━━\n° ᭄ <b>Básica</b> ✔\n   💠 <code>/extb ccs</code>\n° ᭄ <b>Indentación</b> ✔\n   💠 <code>/extb ccs</code>\n\n📩 <b>Contacto</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n🤖 <b>Bot by</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";  
-    sendMessage($chatId, $respuesta, $update['message']['message_id'], "HTML");
+    $respuesta = "🔹 <b>CHECKER COMMANDS</b> 🔹\n━━━━━━━━━━━━━━━━━━━━━\n"
+               . "➩ <b>Check User Info</b> ✔\n   └ 💠 <code>/me</code>\n"
+               . "➩ <b>Check ID chat</b> ✔\n   └ 💠 <code>/id</code>\n"
+               . "➩ <b>List Command Gates</b> ✔\n   └ 💠 <code>/gts</code>\n\n"
+               . "🌟 <b>EXTRAS</b> 🌟\n━━━━━━━━━━━━━━━━━━━━━\n"
+               . "⌦ <b>Bin Check</b> ✔\n   └ 💠 <code>/bin xxxxxx</code>\n"
+               . "⌦ <b>Checker IBAN</b> ✔\n   └ 💠 <code>/iban xxxxxx</code>\n"
+               . "⌦ <b>SK Key Check</b> ✔\n   └ 💠 <code>/sk sk_live_xxxx</code>\n"
+               . "⌦ <b>Gen ccs</b> ✔\n   └ 💠 <code>/gen xxxxxx</code>\n\n"
+               . "📩 <b>Contacto</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n"
+               . "🤖 <b>Bot by</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";  
+    sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
 }
+
 
 /*
     function sendMessage($chatID, $respuesta, $message_id) {
