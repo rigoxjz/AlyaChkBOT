@@ -18,13 +18,14 @@ $ma = "$mes/$ano1";
 $card = "$cc$mes$ano$cvv";
 $num = "$cc$mes$ano1$cvv";
 //-----------------------------------------------------//
+sendMessage($chatId, $lista, "HTML");  // Enviar el mensaje
 
 
 
 $longitud_cc = (substr($cc, 0, 2) == "37" || substr($cc, 0, 2) == "34") ? 15 : 16;
 if (!is_numeric($cc) || strlen($cc) != $longitud_cc || !is_numeric($mes) || !is_numeric($ano) || !is_numeric($cvv)) {
     $respuesta = "🚫 Oops!\nUse this format: /go CC|MM|YYYY|CVV\n";
-    sendMessage($chat_id, $respuesta, $message_id);
+    sendMessage($chatId, $respuesta, $message_id);
     die();
 }
 
@@ -42,7 +43,8 @@ if (!is_numeric($cc) || strlen($cc) != 16 || !is_numeric($mes) || !is_numeric($a
 
 //----------------MENSAGE DE ESPERA-------------------//
 $respuesta = "<b>🕒 Wait for Result...</b>";
-sendMessage($chatId, $respuesta, $message_id);
+sendMessage($chatId, $respuesta, $message_id, "HTML");  // Enviar el mensaje
+
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
@@ -201,7 +203,7 @@ if (array_in_string($respo, $live_array)) {
 }
 
 if ($live) {
-    editMessage($chatId, $respuesta, $id_text);
+    editMessage($chatId, $respuesta, $id_text);  // Editar el mensaje con el resultado generado
 } else {
     editMessage($chatId, $respuesta, $id_text);
 }
