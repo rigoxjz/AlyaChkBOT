@@ -155,19 +155,19 @@ if ($comando == "bin" && count($tr) > 1) {
     } else {
 //        echo "Error: Debes proporcionar un número de 6 dígitos después del comando /bin";
 	    $respuesta = "🚫 Oops!\nUse this format: /bin xxxxxx\n";
-	    sendMessage($chatId,$respuesta,$message_id);
+	    sendMessage($chatId, $respuesta, $message_id);
 	    die();
     }
 } else {
      $respuesta = "🚫 Oops!\nUse this format: /bin xxxxxx\n";
-     sendMessage($chatId,$respuesta,$message_id);
+     sendMessage($chatId, $respuesta, $message_id);
      die();
     //echo "Error: Comando no válido o no se proporcionó un número de 6 dígitos";
 }
 
 //----------------MENSAGE DE ESPERA-------------------//
 $respuesta = "<b>🕒 Wait for Result...</b>";
-sendMessage($chatId,$respuesta,$message_id);
+sendMessage($chatId, $respuesta, $message_id);
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
@@ -175,7 +175,7 @@ $startTime = microtime(true); //TIEMPO DE INICIO
 //Extrae la información del bin///
 $bin_info = Bininfo($bin);
 $respuesta = "".$bin_info."—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n➭ 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n➭ 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦ 么◦✧——————\n";
-editMessage($chatId,$respuesta,$id_text);
+editMessage($chatId, $respuesta, $id_text);
 }
 //----------------------END CHECK BIN-----------------------//
 
