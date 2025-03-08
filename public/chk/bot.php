@@ -251,7 +251,8 @@ $respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n
 
 
 //$respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n➭ 𝙱𝙸𝙽 𝙸𝙽𝙵𝙾: $brand - $type - $level\n➭ 𝙱𝙰𝙽𝙺: $bank\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: $count\n";
-editMessage($chatId,$respuesta,$id_text);
+//editMessage($chatId,$respuesta,$id_text);
+sendMessage($chatId,$respuesta,$message_id);
 unlink("cc-gen");
 die();
 }
