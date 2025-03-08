@@ -401,20 +401,16 @@ if (strpos($messageText, '/claim') === 0) {
         sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.");
     }
 
-// Paso 1: Procesar el comando y generar el mensaje de "Esperando..."
-$response = handleCommands($chatId, $messageText);  // Obtener la respuesta (que puede ser "🕒 Wait for Result...")
-// Paso 2: Enviar el mensaje de "Esperando..." y guardar el message_id
+
+// Manejar el comando
+$response = handleCommands($chatId, $messageText);  // Llama a la función que genera la respuesta
+// Enviar el mensaje de espera con el reply_to_message_id
 sendMessage($chatId, $response, $update['message']['message_id'], "HTML");  // Enviar el mensaje
 
-// Si la respuesta es "🕒 Wait for Result...", seguimos con el procesamiento
-if ($response == "🕒 Wait for Result...") {
-    // Paso 3: Procesar el comando para obtener el resultado final
-    $respuesta = handleCommands($chatId, $messageText);  // Obtener el resultado final
-
-    // Paso 4: Obtener el message_id del mensaje de "Esperando..." y editarlo
-    $id_text = file_get_contents("ID");  // Obtener el ID del mensaje enviado anteriormente
-    editMessage($chatId, $respuesta, $id_text);  // Reemplazar el mensaje de "Esperando..." con el resultado
-}
+// Guardar el message_id del mensaje enviado (para editar más tarde)
+$id_text = $update['message']['message_id'];  // Guardamos el message_id
+file_put_contents("ID", $id_text);  // Guardamos el message_id en un archivo (o puedes usar una base de datos)
+    
     
 }
 
