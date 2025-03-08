@@ -12,6 +12,53 @@ $GLOBALS["website"] = "https://api.telegram.org/bot" . $token;
  */
 
 
+$live_array = array(
+    'incorrect_cvc',
+    'Your card zip code is incorrect.',
+    'The zip code you supplied failed validation.',
+    '"cvc_check":"pass"',
+    'Thank You.',
+    '"status": "succeeded"',
+    'Thank You For Donation.',
+    'Success',
+    'SUCCEEDED',
+    '"cvc_check": "fail"',
+    '"cvc_check": "pass"',
+    '"status": "succeeded"',
+    'Rejected: avs',
+    'Your payment has already been processed',
+    'Your contribution has been submitted to Credit Card for processing',
+    'Nice! New payment method added',
+    'Approved',
+    'Charged $5',
+    'insufficient_funds',
+    'Your card has insufficient funds.',
+    "Your card's security code is invalid.",
+    "Your card's security code is incorrect.",
+    "The card's security code is incorrect.",
+    "Your card's expiration month is invalid.",
+    'Card Issuer Declined CVV',
+    'Credit card expiration date is invalid.',
+    'This transaction cannot be processed. Please enter a valid Credit Card Verification Number.',
+    'Insufficient Funds',
+    'Transaction not permitted by issuer',
+    'EXISTING_ACCOUNT_RESTRICTED',
+    'VALIDATION_ERROR',
+    '3DS authentication is required.',
+    '𝑨𝒑𝒑𝒓𝒐𝒗𝒆𝒅!',
+    'Insufficient balance',
+    'Charged $10',
+//    'Your payment method was rejected due to 3D Secure.',
+    'transaction_not_allowed',
+    'CVV INVALID',
+    'incorrect_zip',
+    'pickup_card',
+    'lost_card',
+    'stolen_card',
+    '"seller_message": "Payment complete."'
+);
+
+
 function array_in_string($str, array $arr) {
     foreach($arr as $arr_value) {
         if (stripos($str,$arr_value) !== false)
