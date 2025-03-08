@@ -16,13 +16,16 @@ $str = explode($start, $string);
 $str = explode($end, $str[1]);
 return $str[0];
 }
-function array_in_string($str, array $arr) {
-    foreach($arr as $arr_value) {
-        if (stripos($str,$arr_value) !== false)
-    return true;
+
+function array_in_string($string, $array) {
+    foreach ($array as $item) {
+        if (strpos($string, $item) !== false) {
+            return true;
+        }
     }
     return false;
 }
+
 
 ///Verifica las repeticiones de una cc///
 $archivo_contadores = "contadores.txt";
