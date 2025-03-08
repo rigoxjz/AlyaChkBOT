@@ -72,6 +72,52 @@ function handleComando($dato) {
   return $contadores[$dato];
 }
 
+
+
+
+function Bin_Gen_Info($Bin){
+$curl = curl_init('https://binlist.io/lookup/'.$Bin.'');
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+$content = curl_exec($curl);
+$data = json_decode($content, true);
+curl_close($curl);
+// Extraer cada uno de los elementos
+$scheme = $data['scheme']; // Esquema
+$type = $data['type']; // Tipo
+$category = $data['category']; // Categoría
+$alpha2 = $data['country']['alpha2']; // Código de país alpha2
+$country = $data['country']['name']; // Nombre del país
+$emoji = $data['country']['emoji']; // Emoji del país
+$bank = $data['bank']['name']; // Nombre del banco
+$count = "".$country." - ".$alpha2." ".$emoji."";
+
+if (empty($category)){
+   $curl = curl_init('https://bincheck.io/es/details/'.$Bin.'');
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+   $response = curl_exec($curl);
+   curl_close($curl);
+    //_Nivel de tarjeta_
+   preg_match('/Nivel de tarjeta<\/td>\s*<td width="65%" class="p-2">\s*([^<]+)\s*<\/td>/', $response, $matches);
+   $category = trim($matches[1]);
+
+}
+
+$type = trim($type);
+$bank = trim($bank);
+
+$Bin = "<code>".$Bin."</code>";
+//$bindata = "━━━━━━━━•⟮ʙɪɴ ᴅᴀᴛᴀ⟯•━━━━━━━\n➭ 𝙱𝙸𝙽: ".$in."\n➭ 𝙱𝚁𝙰𝙽𝙳: ".$scheme."".$tipo."".$level."\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: ".$count."".$banco."";
+$bingeninfo = "➭ 𝙱𝙸𝙽 𝙸𝙽𝙵𝙾: $scheme - $type - $category\n➭ 𝙱𝙰𝙽𝙺: $bank\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: $count\n";
+
+return $bingeninfo;
+}
+
+
+
+
+
 function sendMessage($chatID, $respuesta, $message_id = null) {
     $url = $GLOBALS["website"] . "/sendMessage?disable_web_page_preview=true&chat_id=" . $chatID . "&parse_mode=HTML&text=" . urlencode($respuesta);
 
