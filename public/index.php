@@ -104,6 +104,8 @@ $private_title = $update['message']['from']['first_name'];
 $group_title = $update['message']['chat']['title'];
 $chat_type = $update['message']['chat']['type'];
 
+    sendMessage($chatId, $user);
+    
 $chatId = $update['message']['chat']['id'];
 $message_id = $update["message"]["message_id"];
 $messageText = trim($update['message']['text']);
