@@ -146,7 +146,7 @@ elseif (preg_match('/^(!|\/|\.)gen/', $message)) {
     }
 
     // Mensaje de espera
-    sendMessage($chat_id, "<b>🕒 Wait for Result...</b>", $message_id);
+    sendMessage($chatId, "<b>🕒 Wait for Result...</b>", $message_id);
     
     // Extraer ID del mensaje de espera
     $id_text = file_get_contents("ID");
@@ -212,7 +212,7 @@ elseif (preg_match('/^(!|\/|\.)gen/', $message)) {
     $respuesta = "➭ 𝙱𝙸𝙽: <code>$Bin</code>\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n" . $Bin_Gen;
 
     // Actualizar el mensaje con el resultado final
-    editMessage($chat_id, $respuesta, $id_text);
+    editMessage($chatId, $respuesta, $id_text);
 
     // Limpiar archivo temporal
     unlink("cc-gen");
