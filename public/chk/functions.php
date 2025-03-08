@@ -73,6 +73,65 @@ function handleComando($dato) {
 }
 
 
+function BinData($bin){
+$curl = curl_init('https://binlist.io/lookup/'.$bin.'');
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+$content = curl_exec($curl);
+$data = json_decode($content, true);
+curl_close($curl);
+
+// Extraer cada uno de los elementos
+$iin = $data['number']['iin']; // Número IIN
+$length = $data['number']['length']; // Longitud
+$luhn = $data['number']['luhn']; // Luhn
+$scheme = $data['scheme']; // Esquema
+$type = $data['type']; // Tipo
+$category = $data['category']; // Categoría
+$alpha2 = $data['country']['alpha2']; // Código de país alpha2
+$alpha3 = $data['country']['alpha3']; // Código de país alpha3
+$country = $data['country']['name']; // Nombre del país
+$emoji = $data['country']['emoji']; // Emoji del país
+$bank = $data['bank']['name']; // Nombre del banco
+$bankPhone = $data['bank']['phone']; // Teléfono del banco
+$bankUrl = $data['bank']['url']; // URL del banco
+$success = $data['success']; // Estado de éxito
+$count = "".$country." - ".$alpha2." ".$emoji."";
+
+if (empty($category)){
+   $curl = curl_init('https://bincheck.io/es/details/'.$bin.'');
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+   $response = curl_exec($curl);
+   curl_close($curl);
+    //_Nivel de tarjeta_
+   preg_match('/Nivel de tarjeta<\/td>\s*<td width="65%" class="p-2">\s*([^<]+)\s*<\/td>/', $response, $matches);
+   $category = trim($matches[1]);
+
+}
+
+$type = trim($type);
+$bank = trim($bank);
+
+$logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
+
+
+if ($type !== "" ){
+$tipo = " - ".$type."";
+}
+if ($category !== "" ){
+$level = " - ".$category."";
+}
+if ($bank !== "" ){
+$banco = "\n".$logo." 𝐁𝐚𝐧𝐤: ".$bank."";
+}
+$in = "<code>".$bin."</code>";
+
+$bindata = "————✧◦⟮ʙɪɴ ᴅᴀᴛᴀ⟯◦✧————\n".$logo." 𝐁𝐢𝐧: ".$in."\n".$logo." 𝐈𝐧𝐟𝐨: ".$scheme."".$tipo."".$level."\n".$logo." 𝐂𝐨𝐮𝐧𝐭𝐫𝐲: ".$count."".$banco."";
+return $bindata;
+}
+
+
 
 
 function Bin_Gen_Info($Bin){
