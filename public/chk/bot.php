@@ -31,8 +31,8 @@ try {
 
     if ($count >= $maxMessages) {
 //        $respuesta = '⏳Por favor, espera ' . ($timeout - $diff) . ' segundos antes de enviar otro mensaje.';
-	$respuesta = '[ANTI SPAM] Please try again after ' . ($timeout - $diff) . ' seconds.';
-        sendMessage($chatId, $respuesta, $message_id);
+	return '[ANTI SPAM] Please try again after ' . ($timeout - $diff) . ' seconds.';
+        //sendMessage($chatId, $respuesta, $message_id);
  //       echo "$respuesta\n";
         exit;
     }
