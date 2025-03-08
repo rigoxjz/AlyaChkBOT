@@ -137,37 +137,46 @@ if (preg_match('/^(!|\/|\.)me$/', $message)) {
            . "‣ ᴜsᴇʀ ᴛʏᴘᴇ: " . $tipo . "\n";
 }
 
-
 if (preg_match('/^(!|\/|\.)gen/', $message)) {
     $si = substr($message, 5);
 
     if (empty($si)) {
-        return "🚫 Oops!\nUse this format: /gen xxxxxx\n";
+        $respuesta = "🚫 Oops!\nUse this format: /gen xxxxxx\n";
+        sendMessage($chatId, $respuesta, $message_id);
+        die();
     }
 
     // Mensaje de espera
-    return "<b>🕒 Wait for Result...</b>";
+    $respuesta = "<b>🕒 Wait for Result...</b>";
+    sendMessage($chatId, $respuesta, $message_id);
 
     // Obtener ID del mensaje de espera
     $id_text = file_get_contents("ID");
 
-    // Extraer datos de la tarjeta
-    $lista = substr($message, 5);
-    $datos = explode("|", $lista);
+    // Extraer datos del BIN y otros parámetros
+    $datos = explode("|", substr($message, 5));
     $bin = $datos[0] ?? '';
-    $mes1 = $datos[1] ?? "rnd";
-    $ano1 = $datos[2] ?? "rnd";
-    $cvv1 = $datos[3] ?? "rnd";
+    $mes1 = $datos[1] ?? 'rnd';
+    $ano1 = $datos[2] ?? 'rnd';
+    $cvv1 = $datos[3] ?? 'rnd';
 
+    // Validar BIN
+    if (strlen($bin) < 6) {
+        $respuesta = "🚫 El BIN debe tener al menos 6 dígitos.";
+        sendMessage($chatId, $respuesta, $message_id);
+        die();
+    }
+
+    // Ajustar formato de año
     if (strlen($ano1) == 2) {
         $ano1 = '20' . $ano1;
     }
 
-    // Definir tipo de tarjeta según BIN
+    // Definir longitud de tarjeta según tipo
     $target = substr($bin, 0, 2);
     $bin_length = ($target == "37" || $target == "34") ? 15 : 16;
     $bin = substr($bin . str_repeat("x", $bin_length), 0, $bin_length);
-    
+
     $Bin = substr($bin, 0, 6);
     $amount = 10;
     sleep(1);
@@ -195,11 +204,29 @@ if (preg_match('/^(!|\/|\.)gen/', $message)) {
     $Bin_Gen = Bin_Gen_Info($Bin);
     $respuesta = "➭ 𝙱𝙸𝙽: <code>$Bin</code>\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: $amount\n\n$ccs\n$Bin_Gen";
 
+    // Editar mensaje con resultado
     editMessage($chatId, $respuesta, $id_text);
     unlink("cc-gen");
     die();
 }
 
+/**
+ * Genera un número de tarjeta basado en un binario con longitud específica.
+ */
+function generarNumeroTarjeta($bin, $length) {
+    while (strlen($bin) < ($length - 1)) {
+        $bin .= rand(0, 9);
+    }
+
+    $ccNumber = str_split($bin);
+    $generated = "";
+
+    foreach ($ccNumber as $digit) {
+        $generated .= str_replace("x", rand(0, 9), $digit);
+    }
+
+    return Calculate($generated, $length);
+}
 /**
  * Genera un número de tarjeta basado en un binario con longitud específica.
  */
