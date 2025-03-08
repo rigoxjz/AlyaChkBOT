@@ -19,7 +19,7 @@ $ma = "$mes/$ano1";
 $card = "$cc$mes$ano$cvv";
 $num = "$cc$mes$ano1$cvv";
 //-----------------------------------------------------//
-
+$tipo = $userType;
 
 
 $longitud_cc = (substr($cc, 0, 2) == "37" || substr($cc, 0, 2) == "34") ? 15 : 16;
