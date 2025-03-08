@@ -115,7 +115,7 @@ return $bingeninfo;
 
 
 
-
+/*
 
 function sendMessage($chatID, $respuesta, $message_id = null) {
     $url = $GLOBALS["website"] . "/sendMessage?disable_web_page_preview=true&chat_id=" . $chatID . "&parse_mode=HTML&text=" . urlencode($respuesta);
@@ -140,6 +140,61 @@ function editMessage($chatId, $respuesta, $id_text){
 $url = $GLOBALS["website"]."/editMessageText?disable_web_page_preview=true&chat_id=".$chatId."&message_id=".$id_text."&parse_mode=HTML&text=".urlencode($respuesta);
 file_get_contents($url);
 }
+*/
+
+function sendMessage($chatID, $respuesta, $message_id = null) {
+    $url = $GLOBALS["website"] . "/sendMessage?disable_web_page_preview=true&chat_id=" . $chatID . "&parse_mode=HTML&text=" . urlencode($respuesta);
+
+    // Agregar el message_id si se proporciona
+    if ($message_id) {
+        $url .= "&reply_to_message_id=" . $message_id;
+    }
+
+    // Intentar enviar la solicitud
+    $cap_message_id = @file_get_contents($url);
+
+    // Verificar si la solicitud fue exitosa
+    if ($cap_message_id === FALSE) {
+        error_log("Error al enviar el mensaje a Telegram");
+        return false;
+    }
+
+    // Extraer el message_id del JSON de la respuesta
+    $message_id_parsed = captureMessageId($cap_message_id);
+    
+    // Guardar el message_id en un archivo si se obtiene
+    if ($message_id_parsed) {
+        file_put_contents("ID", $message_id_parsed);
+        return true;
+    } else {
+        error_log("No se pudo obtener el message_id");
+        return false;
+    }
+}
+
+function editMessage($chatId, $respuesta, $id_text) {
+    $url = $GLOBALS["website"] . "/editMessageText?disable_web_page_preview=true&chat_id=" . $chatId . "&message_id=" . $id_text . "&parse_mode=HTML&text=" . urlencode($respuesta);
+
+    // Intentar realizar la solicitud de edición
+    $response = @file_get_contents($url);
+
+    // Verificar si hubo un error
+    if ($response === FALSE) {
+        error_log("Error al editar el mensaje en Telegram");
+        return false;
+    }
+    return true;
+}
+
+// Función para extraer el message_id de la respuesta JSON de Telegram
+function captureMessageId($response) {
+    // Usar expresión regular para capturar el message_id
+    if (preg_match('/"message_id":(\d+)/', $response, $matches)) {
+        return $matches[1];  // Retorna el ID del mensaje capturado
+    }
+    return null;  // Retorna null si no se encuentra un message_id válido
+}
+
 
 /**
  * Extrae una cadena entre dos delimitadores
