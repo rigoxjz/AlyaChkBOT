@@ -10,11 +10,7 @@ $GLOBALS["website"] = "https://api.telegram.org/bot" . $token;
  * @param string $respuesta Mensaje a enviar
  * @param int|null $message_id ID del mensaje al que responder (opcional)
  */
-function capture($string, $start, $end){
-$str = explode($start, $string);
-$str = explode($end, $str[1]);
- return $str[0];
-}
+
 function GetStr($string, $start, $end){
 $str = explode($start, $string);
 $str = explode($end, $str[1]);
