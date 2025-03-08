@@ -98,6 +98,7 @@ if (isset($update['message'])) {
 
     
 $group_id = $update['message']['chat']['id'];
+$user = $update["message"]["from"]["username"];
 $private_id = $update['message']['from']['id'];
 $private_title = $update['message']['from']['first_name'];
 $group_title = $update['message']['chat']['title'];
@@ -126,20 +127,20 @@ $isAdmin = isset($row['admin']) && $row['admin'] == 't';
 
 // Determinar el tipo de usuario
 if ($private_id == $adminId) {
-    $userType = "👑 Creador";
+    $userType = "Creador";
 } elseif ($isAdmin) {
-    $userType = "🔹 Admin";
+    $userType = "Admin";
 } elseif ($isPremium) {
-    $userType = "⭐ Premium";
+    $userType = "Premium";
 } else {
-    $userType = "🆓 Free";
+    $userType = "Free";
     $TypeUser = "Free";
 }
 
 
 
 // Si el usuario NO es premium y el comando es una variante de "start"
-if ($TypeUser == "Free" && preg_match('/^(!|\/|\.)start$/', $message)) {
+if ($userType == "Free" && preg_match('/^(!|\/|\.)start$/', $message)) {
     $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
     $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
     $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
