@@ -1,7 +1,8 @@
 <?php
 
 function chkgo($chatId, $message, $message_id) {
-
+ global $user, $admin, $logo; 
+	
 if (preg_match('/^(!|\/|\.)go/', $message)) {
 
 $lista = substr($message, 4);
