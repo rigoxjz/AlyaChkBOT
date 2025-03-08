@@ -1,7 +1,7 @@
 <?php
 
 function chkgo($chatId, $message, $message_id) {
- global $user, $admin, $logo; 
+ global $user, $admin, $logo, userType; 
 	
 if (preg_match('/^(!|\/|\.)go/', $message)) {
 
@@ -171,8 +171,7 @@ if ($respo == "SUCCEEDED"){
     $respo = "Charged $5";
 }
 // Aquí podrías guardar $responseLog en un archivo o base de datos para depuración
-$logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
-$admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
+
 	
 	unlink('cookie.txt');
 //\n".$logo." 𝐑𝐞𝐭𝐫𝐢𝐞𝐬: ".$retri."
