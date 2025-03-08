@@ -10,6 +10,68 @@ $GLOBALS["website"] = "https://api.telegram.org/bot" . $token;
  * @param string $respuesta Mensaje a enviar
  * @param int|null $message_id ID del mensaje al que responder (opcional)
  */
+
+
+function array_in_string($str, array $arr) {
+    foreach($arr as $arr_value) {
+        if (stripos($str,$arr_value) !== false)
+    return true;
+    }
+    return false;
+}
+
+function Calculate($ccnumber, $length)
+    {
+        $sum = 0;
+        $pos = 0;
+        $reversedCCnumber = strrev($ccnumber);
+
+        while ($pos < $length - 1) {
+            $odd = $reversedCCnumber[$pos] * 2;
+            if ($odd > 9) {
+                $odd -= 9;
+            }
+            $sum += $odd;
+
+            if ($pos != ($length - 2)) {
+
+                $sum += $reversedCCnumber[$pos + 1];
+            }
+            $pos += 2;
+        }
+
+     //   # Calculate check digit
+        $checkdigit = ((floor($sum / 10) + 1) * 10 - $sum) % 10;
+        $ccnumber .= $checkdigit;
+        return $ccnumber;
+    }
+
+
+///Verifica las repeticiones de una cc///
+$archivo_contadores = "contadores.txt";
+function handleComando($dato) {
+  global $archivo_contadores;
+  if (file_exists($archivo_contadores)) {
+    $contadores = @unserialize(file_get_contents($archivo_contadores));
+    if ($contadores === false) {
+      $contadores = array();
+    }
+  } else {
+    $contadores = array();
+  }
+
+  if (isset($contadores[$dato])) {
+    $contadores[$dato]++;
+  } else {
+    $contadores[$dato] = 1;
+  }
+
+  if (@file_put_contents($archivo_contadores, serialize($contadores)) === false) {
+    return "Error!";
+  }
+  return $contadores[$dato];
+}
+
 function sendMessage($chatID, $respuesta, $message_id = null) {
     $url = $GLOBALS["website"] . "/sendMessage?disable_web_page_preview=true&chat_id=" . $chatID . "&parse_mode=HTML&text=" . urlencode($respuesta);
 
