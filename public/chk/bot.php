@@ -149,7 +149,7 @@ die();
 }
 //----------------MENSAGE DE ESPERA-------------------//
 $respuesta = "<b>🕒 Wait for Result...</b>";
-sendMessage($chatId, $response, $update['message']['message_id'], "HTML");  // Enviar el mensaje
+sendMessage($chatId, $respuesta, $update['message']['message_id'], "HTML");  // Enviar el mensaje
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = $update['message']['message_id'];  // Guardamos el message_id
 file_put_contents("ID", $id_text);  
