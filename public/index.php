@@ -405,7 +405,13 @@ if (strpos($messageText, '/claim') === 0) {
     $response = handleCommands($chatId, $messageText);
     sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
 
-
+if ($response == "🕒 Wait for Result...") {
+    // Aquí procesamos el comando para obtener el resultado final
+    $respuesta = handleCommands($chatId, $messageText);  // Reprocesamos o generamos el resultado final
+    $id_text = file_get_contents("ID");  // Obtener el message_id guardado al enviar el mensaje de espera
+    editMessage($chatId, $respuesta, $id_text);  // Editar el mensaje de espera con el resultado final
+}
+    
 }
 
    
