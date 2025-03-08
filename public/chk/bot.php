@@ -248,10 +248,10 @@ $Bin_Gen = Bin_Gen_Info($Bin); //
 $Bin = "<code>$Bin</code>";
 $respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n".$Bin_Gen."";
 
-editMessage($chatId, $respuesta, $id_text, $update['message']['message_id'], "HTML");  // Enviar el mensaje
+//editMessage($chatId, $respuesta, $id_text, $update['message']['message_id'], "HTML");  // Enviar el mensaje
 
 //$respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n➭ 𝙱𝙸𝙽 𝙸𝙽𝙵𝙾: $brand - $type - $level\n➭ 𝙱𝙰𝙽𝙺: $bank\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: $count\n";
-//editMessage($chatId,$respuesta,$id_text);
+editMessage($chatId,$respuesta,$id_text);
 unlink("cc-gen");
 die();
 }
