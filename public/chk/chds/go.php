@@ -44,7 +44,6 @@ if (!is_numeric($cc) || strlen($cc) != 16 || !is_numeric($mes) || !is_numeric($a
 //----------------MENSAGE DE ESPERA-------------------//
 $respuesta = "<b>🕒 Wait for Result...</b>";
 sendMessage($chatId, $respuesta, $message_id, "HTML");  // Enviar el mensaje
-
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
@@ -110,7 +109,7 @@ $token = $json["id"];
 $ip = $json["client_ip"];
 curl_close($curl);
 //echo "$token\n";
-sendMessage($chatId, $response, "HTML");  // Enviar el mensaje
+
 //---------------PRUEBA LAS CCS EN PAGINA DE DONACION---------------//
 $curl = curl_init();
 
@@ -169,7 +168,6 @@ if (isset($json['status'])) {
 }
 
 curl_close($curl);
-sendMessage($chatId, $respo, "HTML");  // Enviar el mensaje
 	
 $timetakeen = (microtime(true) - $startTime);
 $time = substr_replace($timetakeen, '', 4);
