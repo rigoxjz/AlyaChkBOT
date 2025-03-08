@@ -408,6 +408,9 @@ $response = handleCommands($chatId, $messageText, $message_id);  // Llama a la f
 // Enviar el mensaje de espera con el reply_to_message_id
 sendMessage($chatId, $response, $message_id, "HTML");  // Enviar el mensaje
 
+$response1 = chkgo($chatId, $messageText, $message_id);  // Llama a la función que genera la respuesta
+// Enviar el mensaje de espera con el reply_to_message_id
+sendMessage($chatId, $response1, $message_id, "HTML");  // Enviar el mensaje
 
     
 }
