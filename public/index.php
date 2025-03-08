@@ -131,20 +131,20 @@ $isAdmin = isset($row['admin']) && $row['admin'] == 't';
 
 // Determinar el tipo de usuario
 if ($private_id == $adminId) {
-    $userType = "Creador";
+    $userType = "ᴀᴅᴍɪɴ";
 } elseif ($isAdmin) {
-    $userType = "Admin";
+    $userType = "ᴀᴅᴍɪɴ";
 } elseif ($isPremium) {
-    $userType = "Premium";
+    $userType = "ᴘʀᴇᴍɪᴜᴍ ᴜsᴇʀ";
 } else {
-    $userType = "Free";
+    $userType = "ғʀᴇᴇ ᴜsᴇʀ";
     $TypeUser = "Free";
 }
 
 
 
 // Si el usuario NO es premium y el comando es una variante de "start"
-if ($userType == "Free" && preg_match('/^(!|\/|\.)start$/', $message)) {
+if ($userType == "ғʀᴇᴇ ᴜsᴇʀ" && preg_match('/^(!|\/|\.)start$/', $message)) {
     $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
     $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
     $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
