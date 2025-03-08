@@ -1,6 +1,6 @@
 <?php
 
-function handleCommands($chatId, $message) {
+function handleCommands($chatId, $message, $message_id) {
 
 
 if((strpos($message, "!") === 0)||(strpos($message, "/") === 0)||(strpos($message, ".") === 0)){
@@ -148,8 +148,8 @@ return "🚫 Oops!\nUse this format: /gen xxxxxx\n";
 die();
 }
 //----------------MENSAGE DE ESPERA-------------------//
-return "<b>🕒 Wait for Result...</b>";
-//sendMessage($chatId, $response, $update['message']['message_id'], "HTML");  // Enviar el mensaje
+$response = "<b>🕒 Wait for Result...</b>";
+sendMessage($chatId, $response, $message_id, "HTML");  // Enviar el mensaje
 
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 //$id_text = $update['message']['message_id'];  // Guardamos el message_id
@@ -157,7 +157,7 @@ return "<b>🕒 Wait for Result...</b>";
 
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
-sendMessage($chatId, $id_text, $update['message']['message_id'], "HTML");  // Enviar el mensaje
+sendMessage($chatId, $id_text, "HTML");  // Enviar el mensaje
 
 
 $lista = substr($message, 5);
