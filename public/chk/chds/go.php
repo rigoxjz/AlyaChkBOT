@@ -42,7 +42,7 @@ if (!is_numeric($cc) || strlen($cc) != 16 || !is_numeric($mes) || !is_numeric($a
 
 //----------------MENSAGE DE ESPERA-------------------//
 $respuesta = "<b>🕒 Wait for Result...</b>";
-sendMessage($chat_id,$respuesta, $message_id);
+sendMessage($chatId, $respuesta, $message_id);
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
@@ -201,9 +201,9 @@ if (array_in_string($respo, $live_array)) {
 }
 
 if ($live) {
-    editMessage($chat_id, $respuesta, $id_text);
+    editMessage($chatId, $respuesta, $id_text);
 } else {
-    editMessage($chat_id, $respuesta, $id_text);
+    editMessage($chatId, $respuesta, $id_text);
 }
 
 //--------FIN DEL CHECKER MERCHAND - CHARGED--------/
