@@ -110,7 +110,9 @@ $message_id = $update["message"]["message_id"];
 $messageText = trim($update['message']['text']);
 $message = $messageText;
 $adminId = 1292171163;
-
+$logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
+$admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
+    
       sendMessage($chatId, $user);
 
     
