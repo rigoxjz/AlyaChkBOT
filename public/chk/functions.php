@@ -116,8 +116,8 @@ return $bingeninfo;
 
 
 
-function sendMessage($chatID, $respuesta, $message_id = null) {
-    $url = $GLOBALS["website"] . "/sendMessage?disable_web_page_preview=true&chat_id=" . $chatID . "&parse_mode=HTML&text=" . urlencode($respuesta);
+function sendMessage($chatId, $respuesta, $message_id = null) {
+    $url = $GLOBALS["website"] . "/sendMessage?disable_web_page_preview=true&chat_id=" . $chatId . "&parse_mode=HTML&text=" . urlencode($respuesta);
 
     // Agregar el mensaje de respuesta si se proporciona un message_id
     if ($message_id) {
