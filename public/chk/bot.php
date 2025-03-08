@@ -246,12 +246,14 @@ $da = "".$data."\n";
 
 $Bin_Gen = Bin_Gen_Info($Bin); //
 $Bin = "<code>$Bin</code>";
+
+// Recuperar el message_id desde el archivo donde lo guardamos
+$id_text = file_get_contents("ID");  // Recuperamos el message_id
+// Aquí va tu código que genera el resultado (por ejemplo, el BIN y la cuenta generada)
 $respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n".$Bin_Gen."";
+// Editar el mensaje de espera con el resultado final
+editMessage($chatId, $respuesta, $id_text);  // Editar el mensaje con el resultado generado
 
-//editMessage($chatId, $respuesta, $id_text, $update['message']['message_id'], "HTML");  // Enviar el mensaje
-
-//$respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n➭ 𝙱𝙸𝙽 𝙸𝙽𝙵𝙾: $brand - $type - $level\n➭ 𝙱𝙰𝙽𝙺: $bank\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: $count\n";
-editMessage($chatId,$respuesta,$id_text);
 unlink("cc-gen");
 die();
 }
