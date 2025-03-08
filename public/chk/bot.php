@@ -143,13 +143,13 @@ $si = substr($message, 5);
 if($si != ''){
 }else{
 //$respuesta = "━━━━━━━•⟮ɢᴇɴ ᴄᴄs⟯•━━━━━━━\n\n❗𝙵𝙾𝚁𝙼𝙰𝚃𝙾 1: /gen xxxxxxx\n❗𝙵𝙾𝚁𝙼𝙰𝚃𝙾 1: !gen xxxxxxx\n❗𝙵𝙾𝚁𝙼𝙰𝚃𝙾 1: .gen xxxxxxx\n";
-$respuesta = "🚫 Oops!\nUse this format: /gen xxxxxx\n";
-sendMessage($chatId,$respuesta,$message_id);
+return "🚫 Oops!\nUse this format: /gen xxxxxx\n";
+//sendMessage($chatId,$respuesta,$message_id);
 die();
 }
 //----------------MENSAGE DE ESPERA-------------------//
-$respuesta = "<b>🕒 Wait for Result...</b>";
-sendMessage($chatId,$respuesta,$message_id);
+return "<b>🕒 Wait for Result...</b>";
+//sendMessage($chatId,$respuesta,$message_id);
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
