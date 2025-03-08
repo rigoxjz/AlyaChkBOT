@@ -137,7 +137,7 @@ function sendMessage($chatID, $respuesta, $message_id = null) {
 
 
 function editMessage($chatId, $respuesta, $id_text){
-$url = $GLOBALS["website"]."/editMessageText?disable_web_page_preview=true&chat_id=".$chatID."&message_id=".$id_text."&parse_mode=HTML&text=".urlencode($respuesta);
+$url = $GLOBALS["website"]."/editMessageText?disable_web_page_preview=true&chat_id=".$chatId."&message_id=".$id_text."&parse_mode=HTML&text=".urlencode($respuesta);
 file_get_contents($url);
 }
 
