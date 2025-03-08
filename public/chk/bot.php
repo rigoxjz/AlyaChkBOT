@@ -148,10 +148,13 @@ return "🚫 Oops!\nUse this format: /gen xxxxxx\n";
 die();
 }
 //----------------MENSAGE DE ESPERA-------------------//
-return "<b>🕒 Wait for Result...</b>";
-//sendMessage($chatId,$respuesta,$message_id);
+$respuesta = "<b>🕒 Wait for Result...</b>";
+sendMessage($chatId, $response, $update['message']['message_id'], "HTML");  // Enviar el mensaje
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
-$id_text = file_get_contents("ID");
+$id_text = $update['message']['message_id'];  // Guardamos el message_id
+file_put_contents("ID", $id_text);  
+
+	//$id_text = file_get_contents("ID");
 //----------------------------------------------------//
 
 
