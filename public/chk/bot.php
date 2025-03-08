@@ -50,7 +50,7 @@ try {
 
 
 if (preg_match('/^(!|\/|\.)cmds$/', $message)) {
-    $respuesta = "🔹 <b>CHECKER COMMANDS</b> 🔹\n━━━━━━━━━━━━━━━━━━━━━\n"
+   return "🔹 <b>CHECKER COMMANDS</b> 🔹\n━━━━━━━━━━━━━━━━━━━━━\n"
                . "➩ <b>Check User Info</b> ✔\n   └ 💠 /me\n"
                . "➩ <b>Check ID chat</b> ✔\n   └ 💠 /id\n"
                . "➩ <b>List Command Gates</b> ✔\n   └ 💠 /gts\n\n"
@@ -61,7 +61,8 @@ if (preg_match('/^(!|\/|\.)cmds$/', $message)) {
                . "⌦ <b>Gen ccs</b> ✔\n   └ 💠 /gen xxxxxx\n\n"
                . "📩 <b>Contacto</b> ➜ <a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n"
                . "🤖 <b>Bot by</b> ➜ <a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";  
-    sendMessage($chatId, $respuesta, $update['message']['message_id'], "HTML");
+	
+    //sendMessage($chatId, $respuesta, $update['message']['message_id'], "HTML");
 }
 
 
@@ -74,5 +75,7 @@ if (preg_match('/^(!|\/|\.)cmds$/', $message)) {
     $id_cap = capture($cap_message_id, '"message_id":', ',');
     file_put_contents("ID", $id_cap);
     }*/
+
+	 return null; // Si el mensaje no es un comando válido, devuelve null
 }
 ?>
