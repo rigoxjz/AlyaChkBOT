@@ -10,6 +10,48 @@ $GLOBALS["website"] = "https://api.telegram.org/bot" . $token;
  * @param string $respuesta Mensaje a enviar
  * @param int|null $message_id ID del mensaje al que responder (opcional)
  */
+function capture($string, $start, $end){
+$str = explode($start, $string);
+$str = explode($end, $str[1]);
+ return $str[0];
+}
+function GetStr($string, $start, $end){
+$str = explode($start, $string);
+$str = explode($end, $str[1]);
+return $str[0];
+}
+function array_in_string($str, array $arr) {
+    foreach($arr as $arr_value) {
+        if (stripos($str,$arr_value) !== false)
+    return true;
+    }
+    return false;
+}
+
+///Verifica las repeticiones de una cc///
+$archivo_contadores = "contadores.txt";
+function handleComando($dato) {
+  global $archivo_contadores;
+  if (file_exists($archivo_contadores)) {
+    $contadores = @unserialize(file_get_contents($archivo_contadores));
+    if ($contadores === false) {
+      $contadores = array();
+    }
+  } else {
+    $contadores = array();
+  }
+
+  if (isset($contadores[$dato])) {
+    $contadores[$dato]++;
+  } else {
+    $contadores[$dato] = 1;
+  }
+
+  if (@file_put_contents($archivo_contadores, serialize($contadores)) === false) {
+    return "Error!";
+  }
+  return $contadores[$dato];
+}
 
 
 $live_array = array(
@@ -59,13 +101,6 @@ $live_array = array(
 );
 
 
-function array_in_string($str, array $arr) {
-    foreach($arr as $arr_value) {
-        if (stripos($str,$arr_value) !== false)
-    return true;
-    }
-    return false;
-}
 
 function Calculate($ccnumber, $length)
     {
@@ -92,32 +127,6 @@ function Calculate($ccnumber, $length)
         $ccnumber .= $checkdigit;
         return $ccnumber;
     }
-
-
-///Verifica las repeticiones de una cc///
-$archivo_contadores = "contadores.txt";
-function handleComando($dato) {
-  global $archivo_contadores;
-  if (file_exists($archivo_contadores)) {
-    $contadores = @unserialize(file_get_contents($archivo_contadores));
-    if ($contadores === false) {
-      $contadores = array();
-    }
-  } else {
-    $contadores = array();
-  }
-
-  if (isset($contadores[$dato])) {
-    $contadores[$dato]++;
-  } else {
-    $contadores[$dato] = 1;
-  }
-
-  if (@file_put_contents($archivo_contadores, serialize($contadores)) === false) {
-    return "Error!";
-  }
-  return $contadores[$dato];
-}
 
 
 function BinData($bin){
@@ -218,6 +227,95 @@ $Bin = "<code>".$Bin."</code>";
 $bingeninfo = "➭ 𝙱𝙸𝙽 𝙸𝙽𝙵𝙾: $scheme - $type - $category\n➭ 𝙱𝙰𝙽𝙺: $bank\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: $count\n";
 return $bingeninfo;
 }
+
+
+function Bininfo($bin){
+$curl = curl_init('https://binlist.io/lookup/'.$bin.'');
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+$content = curl_exec($curl);
+$data = json_decode($content, true);
+curl_close($curl);
+
+// Extraer cada uno de los elementos
+$iin = $data['number']['iin']; // Número IIN
+$scheme = $data['scheme']; // Esquema
+$type = $data['type']; // Tipo
+$category = $data['category']; // Categoría
+$alpha2 = $data['country']['alpha2']; // Código de país alpha2
+$country = $data['country']['name']; // Nombre del país
+$emoji = $data['country']['emoji']; // Emoji del país
+$bank = $data['bank']['name']; // Nombre del banco
+$success = $data['success']; // Estado de éxito
+
+$curl = curl_init();
+curl_setopt_array($curl, [
+  CURLOPT_URL => 'https://bincheck.io/es/details/'.$bin.'',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'GET',
+//  CURLOPT_COOKIE => 'XSRF-TOKEN=eyJpdiI6IlVxQmFHdW1NUkZSYzgyVktnbncyRnc9PSIsInZhbHVlIjoiajZMY09qQlVyQlloR2JiV3JlczEyVnc2ZzM2amZzdWZvdjY4cXN5SlZuQjJpUThrK0hSbTJJdDNtZDkxRWpNOEIxT29TT3EycHFGL1hTMmU2MmwxRTlNT3FRa0M2RXJBallwalJYTGRuSW1SLzU5d3BvYytPQnIrRW5xZG91TVAiLCJtYWMiOiIxZDI2YzFlOGIxZjkzNzIwZTI3M2UzOGJhNDFjZDU3NTBlZmI4YzcxNWMxMGZlM2MwNTRiMWQ4Njk1ZjE2OGViIiwidGFnIjoiIn0%3D; bincheck_session=eyJpdiI6Ii9WbDdYTS9BaXRzWnd5R1JkblpUYlE9PSIsInZhbHVlIjoiOWJlNmJOa0xNTnNWTHlkS2haNncxdlgrMmdIQm1ZRmF4WUVUMkNxdWlUa251QmZyZFVUd1FxSkNNOFdPbmg4bTZYTDI0ejVlcVQ4TE5VQmo2elVrUnpoRmtTVDNNQW5ZV3FKR29mSXorbUlNRXd2OEZCSm53QVJScmJuYmpNSngiLCJtYWMiOiIyZjZhMzZkNzgxMTI1NjE5YTg4YTg2ODY5ZWIyODNjNGQzMDU2NGYzNmIyNTVhNTIzM2UwMTRjNzRiMzNiN2UwIiwidGFnIjoiIn0%3D',
+  CURLOPT_HTTPHEADER => [
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+//    'referer: https://bincheck.io/es/details/474340',
+  ],
+]);
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+curl_close($curl);
+
+
+preg_match('/Nombre del emisor \/ Banco<\/td>\s*<td width="65%" class="p-2">\s*<a[^>]*>([^<]+)<\/a>/', $response, $matches);
+$bank1 = trim($matches[1]);
+preg_match('/Nombre de país ISO<\/td>\s*<td width="65%" class="p-2">\s*<a[^>]*>([^<]+)<\/a>/', $response, $matches);
+$country1 = trim($matches[1]);
+preg_match('/Código de país ISO A2<\/td>\s*<td width="65%" class="p-2">([^<]+)<\/td>/', $response, $matches);
+$alpha1 = trim($matches[1]);
+preg_match('/<td width="35%" class="p-2 font-medium">Nivel de tarjeta<\/td>\s*<td width="65%" class="p-2">([^<]+)<\/td>/', $response, $matches);
+$category1 = trim($matches[1]);
+preg_match('/Moneda del país ISO<\/td>\s*<td width="65%" class="p-2">\s*<div class="font-medium">([^<]+)<\/div>/', $response, $matches);
+$currency = trim($matches[1]);
+
+if ($bank == "UNKNOWN"){
+	$bank = $bank1;
+}
+if (empty($category)){
+	$category = $category1;
+}
+
+if ($country != $country1) {
+$alpha2 = $alpha1;
+$country = $country1;
+$emoji = '';
+}
+//$type = trim($type);
+//$bank = trim($bank);
+
+$count = "".$country." - ".$alpha2." ".$emoji."";
+
+if ($type !== "" ){
+$typo = "\n➭ 𝐓𝐲𝐩𝐞: ".$type."";
+}
+if ($category !== "" ){
+$level = "\n➭ 𝐋𝐞𝐯𝐞𝐥: ".$category."";
+}
+if (trim($bank !== "" )){
+$banco = "\n➭ 𝐁𝐚𝐧𝐤: ".$bank."";
+}
+if ($currency !== "" ){
+$moneda = "\n➭ 𝐂𝐮𝐫𝐫𝐞𝐧𝐜𝐲: 💲".$currency."";
+}
+
+$Bin = "<code>".$bin."</code>";
+$bininfo = "𝘊𝙤𝙢𝙢𝙖𝙣𝙙 ➟ ʙɪɴ ᴄʜᴇᴄᴋᴇʀ\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n➭ 𝐁𝐢𝐧: ".$Bin."\n➭ 𝐁𝐫𝐚𝐧𝐝: ".$scheme."".$typo."".$level."\n➭ 𝐂𝐨𝐮𝐧𝐭𝐫𝐲: ".$count."".$moneda."".$banco."\n";
+//$bininfo = "━━━━━━━•⟮ʙɪɴ ᴄʜᴇᴄᴋᴇʀ⟯•━━━━━━━\n➭ 𝙱𝙸𝙽: ".$Bin."\n➭ 𝙱𝚁𝙰𝙽𝙳: ".$scheme."".$typo."".$level."\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: ".$count."".$moneda."".$banco."\n";
+return $bininfo;
+}
+//-----------------------VARIABLES-------------------------//
 
 
 
