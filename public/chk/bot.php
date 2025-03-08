@@ -1,6 +1,7 @@
 <?php
 
-function handleCommands($chatId,$message, $message_id) {
+function handleCommands($chatId, $message, $message_id) {
+	 global $user, $admin, $logo;
 
 
 if((strpos($message, "!") === 0)||(strpos($message, "/") === 0)||(strpos($message, ".") === 0)){
