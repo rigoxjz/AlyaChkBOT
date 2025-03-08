@@ -19,7 +19,7 @@ if (preg_match('/^(!|\/|\.)cmds$/', $message)) {
                . "⌦ <b>Gen ccs</b> ✔\n   └ 💠 <code>/gen xxxxxx</code>\n\n"
                . "📩 <b>Contacto</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n"
                . "🤖 <b>Bot by</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";  
-    sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
+    sendMessage($chatId, $respuesta, $update['message']['message_id'], "HTML");
 }
 
 
