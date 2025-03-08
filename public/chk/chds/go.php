@@ -3,6 +3,8 @@
 function chkgo($chatId, $message, $message_id) {
  global $user, $admin, $logo, $userType; 
 	
+	$tipo = $userType; //TIPO DE USUARIO//
+	
 if (preg_match('/^(!|\/|\.)go/', $message)) {
 
 $lista = substr($message, 4);
@@ -19,7 +21,6 @@ $ma = "$mes/$ano1";
 $card = "$cc$mes$ano$cvv";
 $num = "$cc$mes$ano1$cvv";
 //-----------------------------------------------------//
-$tipo = $userType;
 
 
 $longitud_cc = (substr($cc, 0, 2) == "37" || substr($cc, 0, 2) == "34") ? 15 : 16;
