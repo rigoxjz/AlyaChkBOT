@@ -138,6 +138,87 @@ if (preg_match('/^(!|\/|\.)me$/', $message)) {
 }
 
 
+elseif (preg_match('/^(!|\/|\.)gen/', $message)) {
+    $params = substr($message, 5);  // Obtener los parámetros del comando
+
+    if (empty($params)) {
+        return "🚫 Oops!\nUse this format: /gen xxxxxx\n";
+    }
+
+    // Mensaje de espera
+    sendMessage($chat_id, "<b>🕒 Wait for Result...</b>", $message_id);
+    
+    // Extraer ID del mensaje de espera
+    $id_text = file_get_contents("ID");
+
+    // Separar la información recibida del comando
+    $lista = explode("|", $params);
+    $bin = $lista[0] ?? '';
+    $mes1 = $lista[1] ?? 'rnd';
+    $ano1 = $lista[2] ?? 'rnd';
+    $cvv1 = $lista[3] ?? 'rnd';
+
+    // Validar BIN, mes, año y CVV
+    if (strlen($ano1) == 2) {
+        $ano1 = '20' . $ano1;
+    }
+
+    // Ajustar el BIN según el tipo de tarjeta
+    $d4 = $bin . "xxxxxxxxxxxxxxxxx";
+    $target = substr($bin, 0, 2);
+    $cant = ($target == "37" || $target == "34") ? 15 : 16;
+
+    // Generar el BIN, con 6 primeros dígitos
+    $Bin = substr($bin, 0, 6);
+    $amount = 10;
+
+    // Generar fechas y datos de tarjetas
+    for ($i = 0; $i < $amount; $i++) {
+        // Generar mes, año y CVV de manera aleatoria si no están definidos
+        $randMonth = str_pad(rand(1, 12), 2, '0', STR_PAD_LEFT);
+        $randYear = '20' . rand(25, 30);
+        $randCvv = ($target == "37" || $target == "34") ? rand(1000, 9999) : rand(100, 999);
+        $randCvv = str_pad($randCvv, ($target == "37" || $target == "34") ? 4 : 3, '0', STR_PAD_LEFT);
+        
+        // Usar los datos recibidos o los generados
+        $mes = (is_numeric($mes1)) ? $mes1 : $randMonth;
+        $ano = (is_numeric($ano1)) ? $ano1 : $randYear;
+        $cvv = (is_numeric($cvv1)) ? $cvv1 : $randCvv;
+        
+        // Construir el número de tarjeta
+        $ccNumber = $bin;
+        while (strlen($ccNumber) < ($cant - 1)) {
+            $ccNumber .= rand(0, 9);
+        }
+
+        $ccNumber = str_split($ccNumber);
+        $replace = "";
+        foreach ($ccNumber as $key) {
+            $replace .= rand(0, 9);
+        }
+
+        $ccs = Calculate($replace, $cant);
+        $cards = $ccs . "|$mes|$ano|$cvv";
+
+        // Guardar las tarjetas generadas
+        file_put_contents("cc-gen", "<code>$cards</code>\n", FILE_APPEND);
+    }
+
+    // Obtener las tarjetas generadas
+    $ccs = file_get_contents("cc-gen");
+
+    // Información del BIN generado
+    $Bin_Gen = Bin_Gen_Info($Bin);
+    $respuesta = "➭ 𝙱𝙸𝙽: <code>$Bin</code>\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n" . $Bin_Gen;
+
+    // Actualizar el mensaje con el resultado final
+    editMessage($chat_id, $respuesta, $id_text);
+
+    // Limpiar archivo temporal
+    unlink("cc-gen");
+    die();
+}
+
 	
 /*
     function sendMessage($chatID, $respuesta, $message_id) {
