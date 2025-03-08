@@ -9,16 +9,16 @@ function handleCommands($chatId, $message) {
 //}
 if (preg_match('/^(!|\/|\.)cmds$/', $message)) {
     $respuesta = "🔹 <b>CHECKER COMMANDS</b> 🔹\n━━━━━━━━━━━━━━━━━━━━━\n"
-               . "➩ <b>Check User Info</b> ✔\n   └ 💠 <code>/me</code>\n"
-               . "➩ <b>Check ID chat</b> ✔\n   └ 💠 <code>/id</code>\n"
-               . "➩ <b>List Command Gates</b> ✔\n   └ 💠 <code>/gts</code>\n\n"
+               . "➩ <b>Check User Info</b> ✔\n   └ 💠 /me\n"
+               . "➩ <b>Check ID chat</b> ✔\n   └ 💠 /id\n"
+               . "➩ <b>List Command Gates</b> ✔\n   └ 💠 /gts\n\n"
                . "🌟 <b>EXTRAS</b> 🌟\n━━━━━━━━━━━━━━━━━━━━━\n"
-               . "⌦ <b>Bin Check</b> ✔\n   └ 💠 <code>/bin xxxxxx</code>\n"
-               . "⌦ <b>Checker IBAN</b> ✔\n   └ 💠 <code>/iban xxxxxx</code>\n"
-               . "⌦ <b>SK Key Check</b> ✔\n   └ 💠 <code>/sk sk_live_xxxx</code>\n"
-               . "⌦ <b>Gen ccs</b> ✔\n   └ 💠 <code>/gen xxxxxx</code>\n\n"
-               . "📩 <b>Contacto</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n"
-               . "🤖 <b>Bot by</b> ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";  
+               . "⌦ <b>Bin Check</b> ✔\n   └ 💠 /bin xxxxxx\n"
+               . "⌦ <b>Checker IBAN</b> ✔\n   └ 💠 /iban xxxxxx\n"
+               . "⌦ <b>SK Key Check</b> ✔\n   └ 💠 /sk sk_live_xxxx\n"
+               . "⌦ <b>Gen ccs</b> ✔\n   └ 💠 /gen xxxxxx\n\n"
+               . "📩 <b>Contacto</b> ➜ <a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n"
+               . "🤖 <b>Bot by</b> ➜ <a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";  
     sendMessage($chatId, $respuesta, $update['message']['message_id'], "HTML");
 }
 
