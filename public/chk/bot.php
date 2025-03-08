@@ -138,112 +138,123 @@ if (preg_match('/^(!|\/|\.)me$/', $message)) {
 }
 
 if (preg_match('/^(!|\/|\.)gen/', $message)) {
-    $si = substr($message, 5);
+$si = substr($message, 5);
 
-    if (empty($si)) {
-        $respuesta = "🚫 Oops!\nUse this format: /gen xxxxxx\n";
-        sendMessage($chatId, $respuesta, $message_id);
-        die();
-    }
+if($si != ''){
+}else{
+//$respuesta = "━━━━━━━•⟮ɢᴇɴ ᴄᴄs⟯•━━━━━━━\n\n❗𝙵𝙾𝚁𝙼𝙰𝚃𝙾 1: /gen xxxxxxx\n❗𝙵𝙾𝚁𝙼𝙰𝚃𝙾 1: !gen xxxxxxx\n❗𝙵𝙾𝚁𝙼𝙰𝚃𝙾 1: .gen xxxxxxx\n";
+$respuesta = "🚫 Oops!\nUse this format: /gen xxxxxx\n";
+sendMessage($chatId,$respuesta,$message_id);
+die();
+}
+//----------------MENSAGE DE ESPERA-------------------//
+$respuesta = "<b>🕒 Wait for Result...</b>";
+sendMessage($chatId,$respuesta,$message_id);
+//-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
+$id_text = file_get_contents("ID");
+//----------------------------------------------------//
 
-    // Mensaje de espera
-    $respuesta = "<b>🕒 Wait for Result...</b>";
-    sendMessage($chatId, $respuesta, $message_id);
 
-    // Obtener ID del mensaje de espera
-    $id_text = file_get_contents("ID");
+$lista = substr($message, 5);
+$target = substr($lista, 0,2);
 
-    // Extraer datos del BIN y otros parámetros
-    $datos = explode("|", substr($message, 5));
-    $bin = $datos[0] ?? '';
-    $mes1 = $datos[1] ?? 'rnd';
-    $ano1 = $datos[2] ?? 'rnd';
-    $cvv1 = $datos[3] ?? 'rnd';
+$bin = explode("|", $lista)[0];
+$mes1 = explode("|", $lista)[1];
+$ano1 = explode("|", $lista)[2];
+$cvv1 = explode("|", $lista)[3];
+if (strlen($ano1) == 2) {
+    $ano1 = '20' . $ano1;
+}
+$d4 = "".$bin."xxxxxxxxxxxxxxxxx";
 
-    // Validar BIN
-    if (strlen($bin) < 6) {
-        $respuesta = "🚫 El BIN debe tener al menos 6 dígitos.";
-        sendMessage($chatId, $respuesta, $message_id);
-        die();
-    }
+if ($target == "37" || $target == "34"){
+        $bin = substr($d4, 0, 14);
+        $cant = "15";
 
-    // Ajustar formato de año
-    if (strlen($ano1) == 2) {
-        $ano1 = '20' . $ano1;
-    }
+}else{
+        $bin = substr($d4, 0, 15);
+        $cant = "16";
+}
+	
+$Bin = substr($bin, 0, 6);
+$amount = "10";
 
-    // Definir longitud de tarjeta según tipo
-    $target = substr($bin, 0, 2);
-    $bin_length = ($target == "37" || $target == "34") ? 15 : 16;
-    $bin = substr($bin . str_repeat("x", $bin_length), 0, $bin_length);
+if (empty($mes1)){
+$mes1="rnd";
+}
+if (empty($ano1)){
+$ano1="rnd";
+}
+if (empty($cvv1)){
+$cvv1="rnd";
+}
+sleep(1);
 
-    $Bin = substr($bin, 0, 6);
-    $amount = 10;
-    sleep(1);
 
-    // Generar tarjetas
-    $tarjetas = [];
-    for ($i = 0; $i < $amount; $i++) {
-        $randMonth = str_pad(rand(1, 12), 2, "0", STR_PAD_LEFT);
-        $randYear = "20" . rand(25, 30);
-        $randCvv = ($target == "37" || $target == "34") ? rand(1000, 9999) : rand(100, 999);
+for ($i=$amount;$i>-0;$i--){
 
-        $mes = is_numeric($mes1) ? $mes1 : $randMonth;
-        $ano = is_numeric($ano1) ? $ano1 : $randYear;
-        $cvv = is_numeric($cvv1) ? $cvv1 : $randCvv;
+//-------GERADOR DE MES - AÑO - CCV -------//
+        $randMonth = rand(1, 12);
+        $randYears = rand(25, 30);
+if ($target == "37" || $target == "34"){
+        $randCvv = rand(1000, 9999);
+}else{
+        $randCvv = rand(100, 999);
+}
+        $randMonth < 10 ? $randMonth = "0" . $randMonth : $randMonth = $randMonth;
+        $randCvv < 100 ? $randCvv = "0" . $randCvv : $randCvv = $randCvv;
+        $fecha = "|".$randMonth."|20".$randYears."|".$randCvv;
 
-        $ccNumber = generarNumeroTarjeta($bin, $bin_length);
-        $tarjetas[] = "$ccNumber|$mes|$ano|$cvv";
-    }
+//-----GENERADOR DE CC------//
+if(is_numeric($mes1)){
+$mes = $mes1;
+}else{
+$mes = $randMonth;
+}
+if(is_numeric($ano1)){
+$ano = $ano1;
+}else{
+$ano = "20$randYears";
+}
+if(is_numeric($cvv1)){
+$cvv = $cvv1;
+}else{
+$cvv = $randCvv;
+}
+$data = "|$mes|$ano|$cvv";
+            $ccNumber = $bin;
+            while (strlen($ccNumber) < ($cant - 1)) {
+                $ccNumber .= rand(0, 9);
+            }
+            $ccNumber = str_split($ccNumber);
+            $replace = "";
+            foreach ($ccNumber as $cc => $key) {
+            $replace .= str_replace("x", rand(0, 9), $key);
+            }
 
-    // Guardar y obtener tarjetas generadas
-    file_put_contents("cc-gen", implode("\n", $tarjetas));
-    $ccs = file_get_contents("cc-gen");
+$ccs = Calculate($replace, $cant);
+$cards = $ccs.$data;
+$data = "<code>".$cards."</code>";
 
-    // Obtener información de la BIN
-    $Bin_Gen = Bin_Gen_Info($Bin);
-    $respuesta = "➭ 𝙱𝙸𝙽: <code>$Bin</code>\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: $amount\n\n$ccs\n$Bin_Gen";
+$da = "".$data."\n";
+        $archivo = fopen("cc-gen","a");
+        fwrite($archivo,$da);
+        fclose($archivo);
+        }
 
-    // Editar mensaje con resultado
-    editMessage($chatId, $respuesta, $id_text);
-    unlink("cc-gen");
-    die();
+        $ccs = file_get_contents("cc-gen");
+
+$Bin_Gen = Bin_Gen_Info($Bin); //
+$Bin = "<code>$Bin</code>";
+$respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n".$Bin_Gen."";
+
+
+//$respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n➭ 𝙱𝙸𝙽 𝙸𝙽𝙵𝙾: $brand - $type - $level\n➭ 𝙱𝙰𝙽𝙺: $bank\n➭ 𝙲𝙾𝚄𝙽𝚃𝚁𝚈: $count\n";
+editMessage($chatId,$respuesta,$id_text);
+unlink("cc-gen");
+die();
 }
 
-/**
- * Genera un número de tarjeta basado en un binario con longitud específica.
- */
-function generarNumeroTarjeta($bin, $length) {
-    while (strlen($bin) < ($length - 1)) {
-        $bin .= rand(0, 9);
-    }
-
-    $ccNumber = str_split($bin);
-    $generated = "";
-
-    foreach ($ccNumber as $digit) {
-        $generated .= str_replace("x", rand(0, 9), $digit);
-    }
-
-    return Calculate($generated, $length);
-}
-/**
- * Genera un número de tarjeta basado en un binario con longitud específica.
- */
-function generarNumeroTarjeta($bin, $length) {
-    while (strlen($bin) < ($length - 1)) {
-        $bin .= rand(0, 9);
-    }
-    
-    $ccNumber = str_split($bin);
-    $generated = "";
-    
-    foreach ($ccNumber as $digit) {
-        $generated .= str_replace("x", rand(0, 9), $digit);
-    }
-    
-    return Calculate($generated, $length);
-}
 
 
 
