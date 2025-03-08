@@ -10,6 +10,17 @@ $GLOBALS["website"] = "https://api.telegram.org/bot" . $token;
  * @param string $respuesta Mensaje a enviar
  * @param int|null $message_id ID del mensaje al que responder (opcional)
  */
+$admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
+$logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
+
+function capture($string, $start, $end) {
+    $str = explode($start, $string);
+    if (isset($str[1])) {
+        $str = explode($end, $str[1]);
+        return trim($str[0]);
+    }
+    return false;
+}
 
 function GetStr($string, $start, $end){
 $str = explode($start, $string);
@@ -351,13 +362,5 @@ file_get_contents($url);
  * @param string $end Delimitador de fin
  * @return string|false Devuelve la cadena capturada o false si no se encuentra
  */
-function capture($string, $start, $end) {
-    $str = explode($start, $string);
-    if (isset($str[1])) {
-        $str = explode($end, $str[1]);
-        return trim($str[0]);
-    }
-    return false;
-}
 
 ?>
