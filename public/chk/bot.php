@@ -253,7 +253,7 @@ $Bin_Gen = Bin_Gen_Info($Bin); //
 $Bin = "<code>$Bin</code>";
 
 // Recuperar el message_id desde el archivo donde lo guardamos
-$id_text = file_get_contents("ID");  // Recuperamos el message_id
+//$id_text = file_get_contents("ID");  // Recuperamos el message_id
 // Aquí va tu código que genera el resultado (por ejemplo, el BIN y la cuenta generada)
 $respuesta = "➭ 𝙱𝙸𝙽: $Bin\n➭ 𝙰𝙼𝙾𝚄𝙽𝚃: 10\n\n$ccs\n".$Bin_Gen."";
 // Editar el mensaje de espera con el resultado final
