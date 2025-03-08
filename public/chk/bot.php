@@ -157,7 +157,7 @@ sendMessage($chatId, $response, $message_id, "HTML");  // Enviar el mensaje
 
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
-sendMessage($chatId, $id_text, "HTML");  // Enviar el mensaje
+//sendMessage($chatId, $id_text, "HTML");  // Enviar el mensaje
 
 
 $lista = substr($message, 5);
