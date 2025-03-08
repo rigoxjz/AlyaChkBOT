@@ -155,12 +155,12 @@ if ($comando == "bin" && count($tr) > 1) {
     } else {
 //        echo "Error: Debes proporcionar un número de 6 dígitos después del comando /bin";
 	    $respuesta = "🚫 Oops!\nUse this format: /bin xxxxxx\n";
-	    sendMessage($chat_id,$respuesta,$message_id);
+	    sendMessage($chatId,$respuesta,$message_id);
 	    die();
     }
 } else {
      $respuesta = "🚫 Oops!\nUse this format: /bin xxxxxx\n";
-     sendMessage($chat_id,$respuesta,$message_id);
+     sendMessage($chatId,$respuesta,$message_id);
      die();
     //echo "Error: Comando no válido o no se proporcionó un número de 6 dígitos";
 }
