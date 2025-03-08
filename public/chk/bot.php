@@ -2,11 +2,53 @@
 
 function handleCommands($chatId, $message) {
 
-   // Cmds Commands
-//if((strpos($message, "!cmds") === 0)||(strpos($message, "/cmds") === 0)||(strpos($message, ".cmds") === 0)) {
- //       $respuesta = "ᴄʜᴇᴄᴋᴇʀ ᴄᴏᴍᴍᴀɴᴅs\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n➩ Check User Info ✔\n⁕ Usage: /me\n➩ Check ID chat ✔\n⁕ Usage: /id\n➩ List Command Gates ✔\n⁕ Usage: /gts\n\n☆. 𝙴𝚇𝚃𝚁𝙰𝚂 .☆\n- - - - - - - - - -- - - - - - - - - -\n⌦ Bin Check ✔\n⁕ Usage ➟ /bin xxxxxx\n⌦ Checker IBAN ✔\n⁕ Usage ➟ /iban xxxxxx\n⌦ SK Key Check ✔\n⁕ Usage ➟ /sk sk_live_xxxx\n⌦ Gen ccs ✔\n⁕ Usage ➟ /gen xxxxxx\n\n☆. 𝙴𝚇𝚃𝚁𝙰𝙿𝙾𝙻𝙰𝙲𝙸𝙾𝙽 .☆\n- - - - - - - - - -- - - - - - - - - -\n° ᭄ Basica ✔\n⁕ Usage ➟ /extb ᴄᴄs\n° ᭄ Indentacion ✔\n⁕ Usage ➟ /extb ᴄᴄs\n\n⟐ Contact ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n⟐ Bot by ➜ <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n";
-   //     sendMessage($chatId, $respuesta);
-//}
+
+if((strpos($message, "!") === 0)||(strpos($message, "/") === 0)||(strpos($message, ".") === 0)){
+
+$timeout = 60; // Tiempo de espera en segundos
+$maxMessages = 3; // Máximo de mensajes permitidos
+$file = 'users.txt';
+$userId = $id; // Reemplaza con la lógica para obtener el ID del usuario actual
+
+try {
+    if (file_exists($file)) {
+        $data = json_decode(file_get_contents($file), true);
+    } else {
+        $data = array();
+    }
+
+    if (!isset($data[$userId])) {
+        $data[$userId] = array('lastSend' => 0, 'count' => 0);
+    }
+
+    $lastSend = $data[$userId]['lastSend'];
+    $count = $data[$userId]['count'];
+    $diff = time() - $lastSend;
+
+    if ($diff >= $timeout) {
+        $count = 0; // Resetear contador después del timeout
+    }
+
+    if ($count >= $maxMessages) {
+//        $respuesta = '⏳Por favor, espera ' . ($timeout - $diff) . ' segundos antes de enviar otro mensaje.';
+	$respuesta = '[ANTI SPAM] Please try again after ' . ($timeout - $diff) . ' seconds.';
+        sendMessage($chatId, $respuesta, $message_id);
+ //       echo "$respuesta\n";
+        exit;
+    }
+
+    // Envía el mensaje...
+    $count++;
+    $data[$userId] = array('lastSend' => time(), 'count' => $count);
+    file_put_contents($file, json_encode($data));
+//    echo "Mensaje enviado con éxito.\n";
+} catch (Exception $e) {
+    echo 'Error: ' . $e->getMessage();
+    exit;
+}
+}
+
+
 if (preg_match('/^(!|\/|\.)cmds$/', $message)) {
     $respuesta = "🔹 <b>CHECKER COMMANDS</b> 🔹\n━━━━━━━━━━━━━━━━━━━━━\n"
                . "➩ <b>Check User Info</b> ✔\n   └ 💠 /me\n"
