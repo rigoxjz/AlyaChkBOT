@@ -140,7 +140,6 @@ $url = $GLOBALS["website"]."/editMessageText?disable_web_page_preview=true&chat_
 file_get_contents($url);
 }
 
-
 /**
  * Extrae una cadena entre dos delimitadores
  *
