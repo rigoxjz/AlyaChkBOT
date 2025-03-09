@@ -120,19 +120,21 @@ $admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
 
 
 // Consulta para verificar si el usuario es Premium o Admin
-$query = "SELECT premium, admin FROM users WHERE id = $private_id";
+$query = "SELECT premium, admin FROM premium_users WHERE chat_id = $private_id";
 $result = pg_query($conn, $query);
 
 if (!$result) {
-    error_log("Error en la consulta SQL: " . pg_last_error($conn)); // Guarda el error en logs
+    error_log("Error en la consulta SQL: " . pg_last_error($conn)); // Si hay un error en la consulta
     sendMessage($private_id, "⚠️ Error al obtener información del usuario.");
     exit();
 }
+    
+    $row = pg_fetch_assoc($result);
+    // Aquí puedes procesar la lógica para determinar si el usuario es premium
+    $isPremium = isset($row['premium']) && $row['premium'] == 't'; // Si premium es 't'
+    $isAdmin = isset($row['admin']) && $row['admin'] == 't'; // Si admin es 't'
 
-$row = pg_fetch_assoc($result);
-$isPremium = isset($row['premium']) && $row['premium'] == 't'; // 't' es TRUE en PostgreSQL
-$isAdmin = isset($row['admin']) && $row['admin'] == 't';
-
+    
 // Determinar el tipo de usuario
 if (in_array($private_id, $adminIds)) {
     $userType = "ᴀᴅᴍɪɴ";
