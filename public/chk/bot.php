@@ -107,7 +107,7 @@ if (preg_match('/^(!|\/|\.)ats$/', $message)) {
      return "💠 <b>Gates Auth</b> 💠\n"
                . "--------------------------------------\n"
                . "🔥 <b>Braintree Auth</b> ✔\n"
-               . "└ 💻 <code>/bt</code>\n"
+               . "└ 💻 <code>/chk</code>\n"
                . "⁕ <i>Status:</i> ON!✅\n\n"
                . "🔥 <b>Braintree Auth (Wa)</b> ✔\n"
                . "└ 💻 <code>/tr</code>\n"
