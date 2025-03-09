@@ -2,7 +2,7 @@
 
 function handleCommands($chatId, $message, $message_id) {
 	 global $user, $admin, $logo, $userType;
-
+ 
 $tipo = $userType;
 if((strpos($message, "!") === 0)||(strpos($message, "/") === 0)||(strpos($message, ".") === 0)){
 
