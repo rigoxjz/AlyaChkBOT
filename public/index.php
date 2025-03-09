@@ -224,11 +224,12 @@ $command = explode(' ', $message)[0];
 
             if ($expirationDate > $now) {
                 // El usuario es premium, puede enviar mensajes
-                sendMessage($chatId, "✨ Eres usuario premium. Puedes enviar mensajes.", $message_id);
+//                sendMessage($chatId, "✨ Eres usuario premium. Puedes enviar mensajes.", $message_id);
             } else {
                 // Si la membresía ha expirado, eliminamos al usuario de la lista premium
                 pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($private_id));
                 sendMessage($chatId, "⚠️ Tu membresía premium ha expirado.", $message_id);
+                 die();
             }
         } else {
             // Si el usuario no es premium, bloquear mensajes
@@ -395,7 +396,21 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
         $key = "Alya-".$key."-KEY";
         pg_query_params($conn, "INSERT INTO keys (chat_id, \"key\", expiration, claimed) VALUES ($1, $2, $3, FALSE)", array($chatId, $key, $expirationDate));
 
-        sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate.", $message_id);
+//        sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate.", $message_id);
+        $message = "🟡 𝗞𝗘𝗬 𝗚𝗘𝗡𝗘𝗥𝗔𝗗𝗔\n"
+           . "━━━━━━━━━━━━━━━━━━━━━━\n"
+           . "🔑 𝗞𝗲𝘆: <ode>$key</code>\n"
+           . "🌟 𝗣𝗹𝗮𝗻: Premium\n"
+           . "⏳ 𝗗𝘂𝗿𝗮𝗰𝗶𝗼𝗻: $expirationDate\n"
+           . "━━━━━━━━━━━━━━━━━━━━━━\n"
+           . "📄 𝗙𝗼𝗿𝗺𝗮𝘁: /claim [key]\n"
+           . "━━━━━━━━━━━━━━━━━━━━━━\n"
+           . "🤖 𝗕𝗼𝘁: @Alya_Chk_BOT\n;
+    // Enviar mensaje con el formato adecuado (usando HTML)//
+    sendMessage($chatId, $message, $message_id, "HTML");
+
+
+        die();
     }
 
     
