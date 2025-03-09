@@ -134,7 +134,7 @@ $isPremium = isset($row['premium']) && $row['premium'] == 't'; // 't' es TRUE en
 $isAdmin = isset($row['admin']) && $row['admin'] == 't';
 
 // Determinar el tipo de usuario
-if ($private_id == $adminIds) {
+if (in_array($private_id, $adminIds)) {
     $userType = "ᴀᴅᴍɪɴ";
 } elseif ($isAdmin) {
     $userType = "ᴀᴅᴍɪɴ";
