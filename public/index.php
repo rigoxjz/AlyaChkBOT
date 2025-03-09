@@ -147,7 +147,7 @@ if ($private_id == $adminId) {
 if ($userType == "ғʀᴇᴇ ᴜsᴇʀ" && preg_match('/^(!|\/|\.)start$/', $message)) {
     $response = "🚀 <b>Acceso Restringido</b> 🚀\n\n";
     $response .= "🔒 Este bot es <b>Premium</b>. Para acceder a sus funciones, necesitas una clave de acceso.\n";
-    $response .= "🔑 Usa <code>/claim [key]</code> para activarlo.\n\n";
+    $response .= "🔑 Usa /claim [key] para activarlo.\n\n";
     $response .= "🆓 También puedes usarlo gratis uniéndote a nuestro grupo: @checker_bins\n\n";
     $response .= "📩 Contacta con <a href='http://t.me/rigo_jz'>@rigo_jz</a> para más información.";
     sendMessage($chatId, $response, $update['message']['message_id'], "HTML");
@@ -240,7 +240,12 @@ $command = explode(' ', $message)[0];
 //}
     
     
-    
+
+if (preg_match('/^(!|\/|\.)start$/', $message)) {
+    $respuesta = "─ Checker Panel ─\n\n⁕ Registered as ➞ ".$admin."\n⁕ Use ➞ ".$update["chat"]["type"]." | ".$message1["chat"]["type"]." /cmds to show available commands.\n⁕ Bot by: $admin\n";
+    sendMessage($chatId, $respuesta, $message_id);
+    die();
+}
     //    $chatId = $update['message']['chat']['id'];
 //    $messageText = trim($update['message']['text']);
  //   $adminId = 1292171163;
