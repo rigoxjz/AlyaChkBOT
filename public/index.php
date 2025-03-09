@@ -297,6 +297,7 @@ if (in_array($messageText, $comandosReconocidos)) {
         $response .= "   ➜ /clean\n";
         $response .= "━━━━━━━━━━━━━━━━━━━━\n";
         sendMessage($chatId, $response, $message_id, "HTML");
+         die();
 
         //sendMessage($chatId, $response);
     }
@@ -332,6 +333,7 @@ if (preg_match('/^(!|\/|\.)keys$/', $messageText) && in_array($private_id, $admi
             $keysList .= "Clave: <code>{$row['key']}</code>\nExpira: {$row['expiration']}\nEstado: {$estado}\n\n";
         }
         sendMessage($chatId, $keysList, $message_id);
+         die();
     }
 
     // Eliminar claves expiradas después de mostrarlas
@@ -380,7 +382,7 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
              "✨ <b>Estado Actual:</b> {$tipoUsuario}\n";
 
     sendMessage($chatId, $respuesta, $message_id);
-  
+   die();
 }
 
 
