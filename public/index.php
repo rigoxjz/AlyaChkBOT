@@ -110,6 +110,8 @@ $message_id = $update["message"]["message_id"];
 $messageText = trim($update['message']['text']);
 $message = $messageText;
 $adminId = 1292171163;
+$adminIds = [1292171163, 1087968824]; // Agregamos ambos IDs de admin
+
 $logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
 $admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
     
@@ -209,8 +211,8 @@ $command = explode(' ', $message)[0];
     
 //} else {
     // Verificar si el usuario es el creador
-    if ($chatId == $adminId) {
-        ///AQUI SE PROCESAN LOS MENSAJES PARA EL ADMIN//
+if (in_array($chatId, $adminIds)) {
+    ///AQUI SE PROCESAN LOS MENSAJES PARA EL ADMIN//
         // El creador siempre puede enviar mensajes
 //        sendMessage($chatId, "✨ Eres el creador, puedes enviar mensajes.");
     } else {
@@ -271,7 +273,7 @@ if (in_array($messageText, $comandosReconocidos)) {
     // Comando /start
 //    if ($messageText === '/vip') {
   //  if (strpos($message, '/vip') && $private_id == $adminId) {
-    if (preg_match('/^([\/|!|\.])vip$/', $message) && $chatId == $adminId) {
+    if (preg_match('/^([\/|!|\.])vip$/', $message) && in_array($chatId, $adminIds)) {
     // Código aquí
 
         $response = "🎉 <b>¡Bienvenido!</b> 🎉\n\n";
@@ -297,7 +299,7 @@ if (in_array($messageText, $comandosReconocidos)) {
 
 
 // Comando /keys (admin) 
-if ($messageText === '/keys' && $chatId == $adminId) {
+if ($messageText === '/keys' && in_array($chatId, $adminIds)) {
     $now = getCurrentTimeMexico(); // Obtener la hora actual
 
     // Consultar todas las claves, incluyendo las expiradas
@@ -380,7 +382,7 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
 
 
     // Comando /genkey (admin)
-    if (strpos($messageText, '/genkey') === 0 && $chatId == $adminId) {
+    if (strpos($messageText, '/genkey') === 0 && in_array($chatId, $adminIds)) {
         if (!preg_match('/(\d+)([mdh])/', $messageText, $matches)) {
             sendMessage($chatId, "❌ Uso incorrecto. Ejemplo: /genkey 5m", $message_id);
             return;
@@ -418,7 +420,7 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
 
     
     // Comando /deleteallkeys (admin)
-    if ($messageText === '/deleteallkeys' && $chatId == $adminId) {
+    if ($messageText === '/deleteallkeys' && in_array($chatId, $adminIds)) {
         deleteAllKeys($conn);
         sendMessage($chatId, "🗑 Todas las claves han sido eliminadas.", $message_id);
     }
