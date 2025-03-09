@@ -109,13 +109,14 @@ $chatId = $update['message']['chat']['id'];
 $message_id = $update["message"]["message_id"];
 $messageText = trim($update['message']['text']);
 $message = $messageText;
-$adminId = 1292171163;
+//$adminId = 1292171163;
 $adminIds = [1292171163, 1087968824]; // Agregamos ambos IDs de admin
 
 $logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
 $admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
-    
 
+$nose = "chat id: $chatId - Private ID: $private_id - group id: $group_id";
+  sendMessage($chatId, $nose);
     
 // Consulta para verificar si el usuario es Premium o Admin
 $query = "SELECT premium, admin FROM users WHERE id = $private_id";
