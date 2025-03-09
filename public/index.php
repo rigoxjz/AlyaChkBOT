@@ -307,7 +307,9 @@ if (in_array($messageText, $comandosReconocidos)) {
 
 
 // Comando /keys (admin) 
-if ($messageText === '/keys' && in_array($private_id, $adminIds)) {
+//if ($messageText === '/keys' && in_array($private_id, $adminIds)) {
+if (preg_match('/^(!|\/|\.)keys$/', $messageText) && in_array($private_id, $adminIds)) {
+
     $now = getCurrentTimeMexico(); // Obtener la hora actual
 
     // Consultar todas las claves, incluyendo las expiradas
@@ -390,7 +392,8 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
 
 
     // Comando /genkey (admin)
-    if (strpos($messageText, '/genkey') === 0 && in_array($private_id, $adminIds)) {
+//    if (strpos($messageText, '/genkey') === 0 && in_array($private_id, $adminIds)) {
+    if (preg_match('/^(!|\/|\.)genkey/', $messageText) && in_array($private_id, $adminIds)) {
         if (!preg_match('/(\d+)([mdh])/', $messageText, $matches)) {
             sendMessage($chatId, "❌ Uso incorrecto. Ejemplo: /genkey 5m", $message_id);
             return;
@@ -428,14 +431,18 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
 
     
     // Comando /deleteallkeys (admin)
-    if ($messageText === '/deleteallkeys' && in_array($private_id, $adminIds)) {
+  //  if ($messageText === '/deleteallkeys' && in_array($private_id, $adminIds)) {
+    if (preg_match('/^(!|\/|\.)deleteallkeys$/', $messageText) && in_array($private_id, $adminIds)) {
+
         deleteAllKeys($conn);
         sendMessage($chatId, "🗑 Todas las claves han sido eliminadas.", $message_id);
         die();
     }
 
     // Comando /clean (admin)
-    if ($messageText === '/clean' && $chatId == $adminId) {
+    //if ($messageText === '/clean' && $chatId == $adminId) {
+    if (preg_match('/^(!|\/|\.)clean$/', $messageText) && in_array($private_id, $adminIds)) {
+
         cleanExpiredData($conn);
         sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.", $message_id);
          die();
