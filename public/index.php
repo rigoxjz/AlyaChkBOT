@@ -155,6 +155,48 @@ if ($userType == "ғʀᴇᴇ ᴜsᴇʀ" && preg_match('/^(!|\/|\.)start$/', $mes
 }
     
 
+
+    // Comando /claim [key]
+// Comando /claim [key]
+//if (preg_match('/^(!|\/|\.)claim/', $message)) {
+if ($userType == "ғʀᴇᴇ ᴜsᴇʀ" && preg_match('/^(!|\/|\.)claim/', $message)) {
+    $parts = explode(" ", $messageText);
+    if (count($parts) < 2) {
+        sendMessage($chatId, "❌ Debes proporcionar una clave. Ejemplo: /claim 123456", $message_id);
+        return;
+    }
+
+    $key = trim($parts[1]);
+
+    // Verificar si la clave existe y está disponible
+    $result = pg_query_params($conn, "SELECT expiration FROM keys WHERE \"key\" = $1 AND claimed = FALSE", array($key));
+
+    if (!$result || pg_num_rows($result) === 0) {
+        sendMessage($chatId, "❌ Clave inválida o ya ha sido reclamada.", $message_id);
+        return;
+    }
+
+    $row = pg_fetch_assoc($result);
+    $expirationDate = $row['expiration'];
+
+    // Marcar la clave como reclamada
+    pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE \"key\" = $1", array($key));
+
+    // Obtener el username del usuario
+    $username = $update['message']['from']['username'] ?? 'Desconocido';
+
+    // Agregar al usuario a la tabla de usuarios premium con fecha de expiración
+    pg_query_params($conn, "INSERT INTO premium_users (chat_id, username, expiration) 
+                            VALUES ($1, $2, $3) 
+                            ON CONFLICT (chat_id) 
+                            DO UPDATE SET expiration = $3", 
+                    array($chatId, $username, $expirationDate));
+
+    sendMessage($chatId, "✅ ¡Felicidades! Ahora eres usuario premium hasta el $expirationDate.", $message_id);
+    die();
+}
+
+    
 // Si es el comando /start, todos pueden usarlo
 $ComandosAutorizados = ['/start', '/id', '/vip', '/claim'];
 $command = explode(' ', $message)[0];
@@ -288,7 +330,7 @@ if ($messageText === '/keys' && $chatId == $adminId) {
 
 
 // Comando /mypremium
-if ($messageText === '/id') {
+if (preg_match('/^(!|\/|\.)id$/', $message)) {
     $adminId = 1292171163; // ID del creador del bot
     $result = pg_query_params($conn, "SELECT expiration FROM premium_users WHERE chat_id = $1", array($chatId));
     
@@ -317,7 +359,7 @@ if ($messageText === '/id') {
             $name_title = $private_title;
             $ID = $private_id;
     }
-    $respuesta = "🔹 <b>Información de Usuario</b> 🔹\n" .
+    $respuesta = "🔹 <b>Información de Usuario</b> 🔹\n\n" .
              "📛 <b>Nombre:</b> {$name_title}\n" .
              "💬 <b>Tipo de Chat:</b> {$chat_type}\n" .
              "🆔 <b>Tu ID:</b> <code>{$ID}</code>\n" .
@@ -355,46 +397,6 @@ if ($messageText === '/id') {
 
         sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate.", $message_id);
     }
-
-
-    // Comando /claim [key]
-// Comando /claim [key]
-if (strpos($messageText, '/claim') === 0) {
-    $parts = explode(" ", $messageText);
-    if (count($parts) < 2) {
-        sendMessage($chatId, "❌ Debes proporcionar una clave. Ejemplo: /claim 123456", $message_id);
-        return;
-    }
-
-    $key = trim($parts[1]);
-
-    // Verificar si la clave existe y está disponible
-    $result = pg_query_params($conn, "SELECT expiration FROM keys WHERE \"key\" = $1 AND claimed = FALSE", array($key));
-
-    if (!$result || pg_num_rows($result) === 0) {
-        sendMessage($chatId, "❌ Clave inválida o ya ha sido reclamada.", $message_id);
-        return;
-    }
-
-    $row = pg_fetch_assoc($result);
-    $expirationDate = $row['expiration'];
-
-    // Marcar la clave como reclamada
-    pg_query_params($conn, "UPDATE keys SET claimed = TRUE WHERE \"key\" = $1", array($key));
-
-    // Obtener el username del usuario
-    $username = $update['message']['from']['username'] ?? 'Desconocido';
-
-    // Agregar al usuario a la tabla de usuarios premium con fecha de expiración
-    pg_query_params($conn, "INSERT INTO premium_users (chat_id, username, expiration) 
-                            VALUES ($1, $2, $3) 
-                            ON CONFLICT (chat_id) 
-                            DO UPDATE SET expiration = $3", 
-                    array($chatId, $username, $expirationDate));
-
-    sendMessage($chatId, "✅ ¡Felicidades! Ahora eres usuario premium hasta el $expirationDate.", $message_id);
-    die();
-}
 
     
     // Comando /deleteallkeys (admin)
