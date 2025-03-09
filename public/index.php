@@ -182,15 +182,15 @@ $command = explode(' ', $message)[0];
 
             if ($expirationDate > $now) {
                 // El usuario es premium, puede enviar mensajes
-                sendMessage($chatId, "✨ Eres usuario premium. Puedes enviar mensajes.");
+                sendMessage($chatId, "✨ Eres usuario premium. Puedes enviar mensajes.", $message_id);
             } else {
                 // Si la membresía ha expirado, eliminamos al usuario de la lista premium
                 pg_query_params($conn, "DELETE FROM premium_users WHERE chat_id = $1", array($private_id));
-                sendMessage($chatId, "⚠️ Tu membresía premium ha expirado.");
+                sendMessage($chatId, "⚠️ Tu membresía premium ha expirado.", $message_id);
             }
         } else {
             // Si el usuario no es premium, bloquear mensajes
-            sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.");
+            sendMessage($chatId, "❌ Solo los usuarios premium pueden enviar mensajes.", $message_id);
             die();
         }
     }
@@ -242,7 +242,7 @@ if (in_array($messageText, $comandosReconocidos)) {
         $response .= "🧹 <b>Limpiar Expirados (Admin)</b>\n";
         $response .= "   ➜ /clean\n";
         $response .= "━━━━━━━━━━━━━━━━━━━━\n";
-        sendMessage($chatId, $response, "HTML");
+        sendMessage($chatId, $response, $message_id, "HTML");
 
         //sendMessage($chatId, $response);
     }
@@ -275,7 +275,7 @@ if ($messageText === '/keys' && $chatId == $adminId) {
             // Agregar a la lista
             $keysList .= "Clave: <code>{$row['key']}</code>\nExpira: {$row['expiration']}\nEstado: {$estado}\n\n";
         }
-        sendMessage($chatId, $keysList);
+        sendMessage($chatId, $keysList, $message_id);
     }
 
     // Eliminar claves expiradas después de mostrarlas
@@ -323,7 +323,7 @@ if ($messageText === '/id') {
              "🆔 <b>Tu ID:</b> <code>{$ID}</code>\n" .
              "✨ <b>Estado Actual:</b> {$tipoUsuario}\n";
 
-    sendMessage($chatId, $respuesta);
+    sendMessage($chatId, $respuesta, $message_id);
   
 }
 
@@ -334,7 +334,7 @@ if ($messageText === '/id') {
     // Comando /genkey (admin)
     if (strpos($messageText, '/genkey') === 0 && $chatId == $adminId) {
         if (!preg_match('/(\d+)([mdh])/', $messageText, $matches)) {
-            sendMessage($chatId, "❌ Uso incorrecto. Ejemplo: /genkey 5m");
+            sendMessage($chatId, "❌ Uso incorrecto. Ejemplo: /genkey 5m", $message_id);
             return;
         }
 
@@ -350,9 +350,10 @@ if ($messageText === '/id') {
 
         $expirationDate = $now->format('Y-m-d H:i:s');
         $key = bin2hex(random_bytes(8));
+        $key = "Alya-".$key."-KEY";
         pg_query_params($conn, "INSERT INTO keys (chat_id, \"key\", expiration, claimed) VALUES ($1, $2, $3, FALSE)", array($chatId, $key, $expirationDate));
 
-        sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate.");
+        sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate.", $message_id);
     }
 
 
@@ -361,7 +362,7 @@ if ($messageText === '/id') {
 if (strpos($messageText, '/claim') === 0) {
     $parts = explode(" ", $messageText);
     if (count($parts) < 2) {
-        sendMessage($chatId, "❌ Debes proporcionar una clave. Ejemplo: /claim 123456");
+        sendMessage($chatId, "❌ Debes proporcionar una clave. Ejemplo: /claim 123456", $message_id);
         return;
     }
 
@@ -371,7 +372,7 @@ if (strpos($messageText, '/claim') === 0) {
     $result = pg_query_params($conn, "SELECT expiration FROM keys WHERE \"key\" = $1 AND claimed = FALSE", array($key));
 
     if (!$result || pg_num_rows($result) === 0) {
-        sendMessage($chatId, "❌ Clave inválida o ya ha sido reclamada.");
+        sendMessage($chatId, "❌ Clave inválida o ya ha sido reclamada.", $message_id);
         return;
     }
 
@@ -391,7 +392,7 @@ if (strpos($messageText, '/claim') === 0) {
                             DO UPDATE SET expiration = $3", 
                     array($chatId, $username, $expirationDate));
 
-    sendMessage($chatId, "✅ ¡Felicidades! Ahora eres usuario premium hasta el $expirationDate.");
+    sendMessage($chatId, "✅ ¡Felicidades! Ahora eres usuario premium hasta el $expirationDate.", $message_id);
     die();
 }
 
@@ -399,13 +400,13 @@ if (strpos($messageText, '/claim') === 0) {
     // Comando /deleteallkeys (admin)
     if ($messageText === '/deleteallkeys' && $chatId == $adminId) {
         deleteAllKeys($conn);
-        sendMessage($chatId, "🗑 Todas las claves han sido eliminadas.");
+        sendMessage($chatId, "🗑 Todas las claves han sido eliminadas.", $message_id);
     }
 
     // Comando /clean (admin)
     if ($messageText === '/clean' && $chatId == $adminId) {
         cleanExpiredData($conn);
-        sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.");
+        sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.", $message_id);
     }
 
 
