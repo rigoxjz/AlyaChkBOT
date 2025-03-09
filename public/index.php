@@ -151,7 +151,8 @@ if (in_array($private_id, $adminIds)) {
     // Si no es un administrador, pero el chatId coincide con el grupo específico
     die(); // Termina la ejecución del script
 }
-    
+    $nose = "Estado: $userType";
+sendMessage($chatId, $nose);
 
 // Si el usuario NO es premium y el comando es una variante de "start"
 if ($userType == "ғʀᴇᴇ ᴜsᴇʀ" && preg_match('/^(!|\/|\.)start$/', $message)) {
