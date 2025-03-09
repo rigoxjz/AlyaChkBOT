@@ -1,6 +1,6 @@
 <?php
 
-function chkgo($chatId, $message, $message_id) {
+function ats($chatId, $message, $message_id) {
  global $user, $admin, $logo, $userType; 
 	
 	$tipo = $userType; //TIPO DE USUARIO//
