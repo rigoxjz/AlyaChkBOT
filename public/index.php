@@ -145,8 +145,12 @@ if (in_array($private_id, $adminIds)) {
 if (in_array($private_id, $adminIds)) {
     // El código se ejecutará si $private_id está en el array de administradores
 } elseif ($chatId == "-1002452370727") {
+    if ($userType == "ғʀᴇᴇ ᴜsᴇʀ" && preg_match('/^(!|\/|\.)claim/', $message)) {
+
+    } else {
     // Si no es un administrador, pero el chatId coincide con el grupo específico
-    die(); // Termina la ejecución del script
+        die(); // Termina la ejecución del script
+    }
 }
  
 
