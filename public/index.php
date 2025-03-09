@@ -334,11 +334,11 @@ if (preg_match('/^(!|\/|\.)keys$/', $messageText) && in_array($private_id, $admi
             $keysList .= "Clave: <code>{$row['key']}</code>\nExpira: {$row['expiration']}\nEstado: {$estado}\n\n";
         }
         sendMessage($chatId, $keysList, $message_id);
-         die();
     }
 
     // Eliminar claves expiradas después de mostrarlas
     pg_query_params($conn, "DELETE FROM keys WHERE expiration < $1", array($now));
+         die();
 }
 
 
