@@ -115,9 +115,10 @@ $adminIds = [1292171163, 1087968824]; // Agregamos ambos IDs de admin
 $logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
 $admin = "<a href='t.me/rigo_jz'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
 
-$nose = "chat id: $chatId - Private ID: $private_id - group id: $group_id";
-  sendMessage($chatId, $nose);
-    
+//$nose = "chat id: $chatId - Private ID: $private_id - group id: $group_id";
+ // sendMessage($chatId, $nose);
+
+
 // Consulta para verificar si el usuario es Premium o Admin
 $query = "SELECT premium, admin FROM users WHERE id = $private_id";
 $result = pg_query($conn, $query);
@@ -144,7 +145,13 @@ if ($private_id == $adminId) {
     $TypeUser = "Free";
 }
 
-
+if (in_array($private_id, $adminIds)) {
+    // El código se ejecutará si $private_id está en el array de administradores
+} elseif ($chatId == "-1002452370727") {
+    // Si no es un administrador, pero el chatId coincide con el grupo específico
+    die(); // Termina la ejecución del script
+}
+    
 
 // Si el usuario NO es premium y el comando es una variante de "start"
 if ($userType == "ғʀᴇᴇ ᴜsᴇʀ" && preg_match('/^(!|\/|\.)start$/', $message)) {
@@ -212,7 +219,7 @@ $command = explode(' ', $message)[0];
     
 //} else {
     // Verificar si el usuario es el creador
-if (in_array($chatId, $adminIds)) {
+if (in_array($private_id, $adminIds)) {
     ///AQUI SE PROCESAN LOS MENSAJES PARA EL ADMIN//
         // El creador siempre puede enviar mensajes
 //        sendMessage($chatId, "✨ Eres el creador, puedes enviar mensajes.");
@@ -274,7 +281,7 @@ if (in_array($messageText, $comandosReconocidos)) {
     // Comando /start
 //    if ($messageText === '/vip') {
   //  if (strpos($message, '/vip') && $private_id == $adminId) {
-    if (preg_match('/^([\/|!|\.])vip$/', $message) && in_array($chatId, $adminIds)) {
+    if (preg_match('/^([\/|!|\.])vip$/', $message) && in_array($private_id, $adminIds)) {
     // Código aquí
 
         $response = "🎉 <b>¡Bienvenido!</b> 🎉\n\n";
@@ -300,7 +307,7 @@ if (in_array($messageText, $comandosReconocidos)) {
 
 
 // Comando /keys (admin) 
-if ($messageText === '/keys' && in_array($chatId, $adminIds)) {
+if ($messageText === '/keys' && in_array($private_id, $adminIds)) {
     $now = getCurrentTimeMexico(); // Obtener la hora actual
 
     // Consultar todas las claves, incluyendo las expiradas
@@ -383,7 +390,7 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
 
 
     // Comando /genkey (admin)
-    if (strpos($messageText, '/genkey') === 0 && in_array($chatId, $adminIds)) {
+    if (strpos($messageText, '/genkey') === 0 && in_array($private_id, $adminIds)) {
         if (!preg_match('/(\d+)([mdh])/', $messageText, $matches)) {
             sendMessage($chatId, "❌ Uso incorrecto. Ejemplo: /genkey 5m", $message_id);
             return;
@@ -421,7 +428,7 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
 
     
     // Comando /deleteallkeys (admin)
-    if ($messageText === '/deleteallkeys' && in_array($chatId, $adminIds)) {
+    if ($messageText === '/deleteallkeys' && in_array($private_id, $adminIds)) {
         deleteAllKeys($conn);
         sendMessage($chatId, "🗑 Todas las claves han sido eliminadas.", $message_id);
     }
