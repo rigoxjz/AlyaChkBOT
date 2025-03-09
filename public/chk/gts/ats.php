@@ -1,7 +1,7 @@
 <?php
 
 function ats($chatId, $message, $message_id) {
- global $user, $admin, $logo, $userType; 
+ global $user, $admin, $logo, $userType, $live_array; 
 	
 	$tipo = $userType; //TIPO DE USUARIO//
 
