@@ -294,7 +294,7 @@ if (in_array($messageText, $comandosReconocidos)) {
         $response .= "🗑 <b>Eliminar Todas las Claves (Admin)</b>\n";
         $response .= "   ➜ /deleteallkeys\n\n";
         $response .= "🌟 <b>Estado Premium</b>\n";
-        $response .= "   ➜ /mypremium\n\n";
+        $response .= "   ➜ /id\n\n";
         $response .= "🎟 <b>Reclamar Clave Premium</b>\n";
         $response .= "   ➜ /claim [key]\n\n";
         $response .= "🧹 <b>Limpiar Expirados (Admin)</b>\n";
@@ -414,7 +414,7 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
 //        sendMessage($chatId, "✅ Clave generada: <code>$key</code>\nExpira: $expirationDate.", $message_id);
         $response = "🟡 𝗞𝗘𝗬 𝗚𝗘𝗡𝗘𝗥𝗔𝗗𝗔\n"
            . "━━━━━━━━━━━━━━━━━━━━━━\n"
-           . "🔑 𝗞𝗲𝘆: <ode>$key</code>\n"
+           . "🔑 𝗞𝗲𝘆: <code>$key</code>\n"
            . "🌟 𝗣𝗹𝗮𝗻: Premium\n"
            . "⏳ 𝗗𝘂𝗿𝗮𝗰𝗶𝗼𝗻: $expirationDate\n"
            . "━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -431,12 +431,14 @@ if (preg_match('/^(!|\/|\.)id$/', $message)) {
     if ($messageText === '/deleteallkeys' && in_array($private_id, $adminIds)) {
         deleteAllKeys($conn);
         sendMessage($chatId, "🗑 Todas las claves han sido eliminadas.", $message_id);
+        die();
     }
 
     // Comando /clean (admin)
     if ($messageText === '/clean' && $chatId == $adminId) {
         cleanExpiredData($conn);
         sendMessage($chatId, "🗑 Claves y usuarios expirados eliminados.", $message_id);
+         die();
     }
 
 
