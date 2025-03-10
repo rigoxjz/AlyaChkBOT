@@ -172,11 +172,12 @@ $lista = "<code>".$lista."</code>";
 
 //	𝐆𝐀𝐓𝐄 𝐄𝐑𝐑𝐎𝐑
 //	𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝!
+	
 //	𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝
 if (array_in_string($respo, $live_array)) {
     $respuesta = "𝘎𝙖𝙩𝙚𝙬𝙖𝙮  ➟ 𝑩𝒓𝒂𝒊𝒏𝒕𝒓𝒆𝒆 𝑨𝒖𝒕𝒉\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n".$logo." 𝐂𝐚𝐫𝐝: ".$lista."\n".$logo." 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝! ✅\n".$logo." 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: ".$respo."\n".$BinData."\n—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n".$logo." 𝐏𝐫𝐨𝐱𝐲: ".$proxy."\n".$logo." 𝐓𝐢𝐦𝐞 𝐓𝐚𝐤𝐞𝐧: ".$time."'Seg\n".$logo." 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n".$logo." 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦么◦✧——————\n";
     $live = True;
-} elseif (strpos($respo, 'Call Issuer. Pick Up Card.') !== false || strpos($respo, 'Declined - Call Issuer') !== false || strpos($respo, 'Processor Declined') !== false || strpos($respo, 'Your card was declined.') !== false) {
+} elseif (strpos($respo, 'Call Issuer. Pick Up Card.') !== false || strpos($respo, 'Gateway Rejected: risk_threshold') !== false || strpos($respo, 'Declined - Call Issuer') !== false || strpos($respo, 'Processor Declined') !== false || strpos($respo, 'Your card was declined.') !== false) {
     $respuesta = "𝘎𝙖𝙩𝙚𝙬𝙖𝙮  ➟ 𝑩𝒓𝒂𝒊𝒏𝒕𝒓𝒆𝒆 𝑨𝒖𝒕𝒉\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n".$logo." 𝐂𝐚𝐫𝐝: ".$lista."\n".$logo." 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n".$logo." 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: ".$respo."\n".$BinData."\n—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n".$logo." 𝐏𝐫𝐨𝐱𝐲: ".$proxy."\n".$logo." 𝐓𝐢𝐦𝐞 𝐓𝐚𝐤𝐞𝐧: ".$time."'Seg\n".$logo." 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n".$logo." 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦么◦✧——————\n";
     $live = False;
 } else {
