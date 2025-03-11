@@ -286,6 +286,10 @@ if (empty($respo)) {
         $respo = $response;
 }
 
+
+if ($respo == '{"error":"Bad JSON Response"}') {
+$respo = "Service Unavailable";
+}
 /*if ($respo == "SUCCEEDED"){
     $respo = "Charged $5";
 }*/
