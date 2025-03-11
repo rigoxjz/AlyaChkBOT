@@ -40,13 +40,13 @@ $bin = substr($lista, 0, 6);
 $longitud_cc = (substr($cc, 0, 2) == "37" || substr($cc, 0, 2) == "34") ? 15 : 16;
 if (!is_numeric($cc) || strlen($cc) != $longitud_cc || !is_numeric($mes) || !is_numeric($ano) || !is_numeric($cvv)) {
     $respuesta = "🚫 Oops!\nUse this format: /cb CC|MM|YYYY|CVV\n";
-    sendMessage($chat_id, $respuesta, $message_id);
+    sendMessage($chatId, $respuesta, $message_id);
     die();
 }
 
 //----------------MENSAGE DE ESPERA-------------------//
 $respuesta = "<b>🕒 Wait for Result...</b>";
-sendMessage($chat_id,$respuesta, $message_id);
+sendMessage($chatId,$respuesta, $message_id);
 //-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
 $id_text = file_get_contents("ID");
 //----------------------------------------------------//
@@ -306,9 +306,9 @@ if (array_in_string($respo, $live_array)) {
 }
 
 if ($live) {
-    editMessage($chat_id, $respuesta, $id_text);
+    editMessage($chatId, $respuesta, $id_text);
 } else {
-    editMessage($chat_id, $respuesta, $id_text);
+    editMessage($chatId, $respuesta, $id_text);
 }
 
 //--------FIN DEL CHECKER MERCHAND - CHARGED--------/
