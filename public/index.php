@@ -21,6 +21,9 @@ $json = json_decode($data, true);
 $update = $json["message"];
 
 
+
+
+
 // Obtener las variables de entorno
 $host = getenv('DB_HOST');
 $port = getenv('DB_PORT');
@@ -39,11 +42,19 @@ $connectionString = "host=$host port=$port dbname=$database user=$user password=
 // Intentar conectar a PostgreSQL
 $conn = pg_connect($connectionString);
 
+// Verificar si la conexión fue exitosa
 if (!$conn) {
     die("❌ Error al conectar a PostgreSQL: " . pg_last_error());
 } else {
     echo "✅ Conexión exitosa a Neon PostgreSQL\n";
 }
+
+// Si la conexión falla, no se llega a ejecutar el siguiente código
+
+
+
+
+
 
 // Función para obtener la hora actual en México
 function getCurrentTimeMexico() {
