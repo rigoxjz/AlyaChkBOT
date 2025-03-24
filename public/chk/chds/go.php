@@ -594,7 +594,7 @@ curl_setopt_array($curl, [
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
+  CURLOPT_TIMEOUT => 60,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'GET',
   CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
@@ -624,8 +624,10 @@ curl_close($curl);
 //echo "-------------------------------\n";
 $dad = "casa - $err - $qfKey";
 sendMessage($chatId, $dad);
-sendMessage($chatId, $response);
-
+	if(empty($response)){
+		sendMessage($chatId, "Error de coneccion");
+		die();
+	}
 
 $curl = curl_init();
 curl_setopt_array($curl, [
