@@ -31,14 +31,19 @@ $database = getenv('DB_NAME');
 // Conectar a PostgreSQL
 //$connectionString = "host=$host port=$port dbname=$database user=$user password=$password";
 //$conn = pg_connect($connectionString);
+//if (!$conn) {
+//    die("❌ Error al conectar a la base de datos: " . pg_last_error());
+//}
+
 // Conectar a PostgreSQL (Neon requiere SSL)
 $connectionString = "host=$host port=$port dbname=$database user=$user password=$password sslmode=require";
 $conn = pg_connect($connectionString);
 
 if (!$conn) {
     die("❌ Error al conectar a la base de datos: " . pg_last_error());
+} else {
+    echo "✅ Conexión exitosa a Neon PostgreSQL";
 }
-
 
 // Función para obtener la hora actual en México
 function getCurrentTimeMexico() {
