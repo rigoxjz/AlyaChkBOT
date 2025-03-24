@@ -21,28 +21,28 @@ $json = json_decode($data, true);
 $update = $json["message"];
 
 
-// Obtener credenciales de PostgreSQL
+// Obtener las variables de entorno
 $host = getenv('DB_HOST');
 $port = getenv('DB_PORT');
 $user = getenv('DB_USER');
 $password = getenv('DB_PASS');
 $database = getenv('DB_NAME');
 
-// Conectar a PostgreSQL
-//$connectionString = "host=$host port=$port dbname=$database user=$user password=$password";
-//$conn = pg_connect($connectionString);
-//if (!$conn) {
-//    die("❌ Error al conectar a la base de datos: " . pg_last_error());
-//}
+// Validar que las variables de entorno estén cargadas
+if (!$host || !$port || !$user || !$password || !$database) {
+    die("❌ Error: Las variables de entorno no están configuradas correctamente.");
+}
 
-// Conectar a PostgreSQL (Neon requiere SSL)
+// Crear el string de conexión con SSL obligatorio (Neon lo requiere)
 $connectionString = "host=$host port=$port dbname=$database user=$user password=$password sslmode=require";
+
+// Intentar conectar a PostgreSQL
 $conn = pg_connect($connectionString);
 
 if (!$conn) {
-    die("❌ Error al conectar a la base de datos: " . pg_last_error());
+    die("❌ Error al conectar a PostgreSQL: " . pg_last_error());
 } else {
-    echo "✅ Conexión exitosa a Neon PostgreSQL";
+    echo "✅ Conexión exitosa a Neon PostgreSQL\n";
 }
 
 // Función para obtener la hora actual en México
