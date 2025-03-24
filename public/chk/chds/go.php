@@ -7,7 +7,7 @@ function chkgo($chatId, $message, $message_id) {
 	
 
 
-unlink('cookie.txt);
+unlink('cookie.txt');
 	
 	
 
