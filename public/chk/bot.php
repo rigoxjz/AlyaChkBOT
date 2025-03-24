@@ -82,9 +82,9 @@ if (preg_match('/^(!|\/|\.)gts$/', $message)) {
 if (preg_match('/^(!|\/|\.)chds$/', $message)) {
     return "💠 <b>Gates Chargeds</b> 💠\n"
                . "--------------------------------------\n"
-               . "🔥 <b>Braintree Charged</b> ($50) ✔\n"
-               . "└ 💻 <code>/stp</code>\n"
-               . "⁕ <i>Status:</i> OFF!❌\n\n"
+               . "🔥 <b>Stripe Charged</b> ($1) ✔\n"
+               . "└ 💻 <code>/th</code>\n"
+               . "⁕ <i>Status:</i> ON!✅\n\n"
                . "🔥 <b>Braintree Charged</b> ($5) ✔\n"
                . "└ 💻 <code>/go</code>\n"
                . "⁕ <i>Status:</i> OFF!❌\n\n"
@@ -96,7 +96,7 @@ if (preg_match('/^(!|\/|\.)chds$/', $message)) {
                . "⁕ <i>Status:</i> ON!✅\n\n"
                . "🔥 <b>Charged</b> ($5) ✔\n"
                . "└ 💻 <code>/br</code>\n"
-               . "⁕ <i>Status:</i> ON!✅\n\n"
+               . "⁕ <i>Status:</i> OFF!❌\n\n"
                . "📩 <b>Contacto:</b> <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>\n"
                . "🤖 <b>Bot by:</b> <a href='t.me/D4rkGh0st3'>ʀɪɢᴏ ᴊɪᴍᴇɴᴇᴢ</a>";
 
@@ -114,7 +114,7 @@ if (preg_match('/^(!|\/|\.)ats$/', $message)) {
                . "⁕ <i>Status:</i> ON!✅\n\n"
 	       . "🔥 <b>Stripe Auth</b> ✔\n"
                . "└ 💻 <code>/st</code>\n"
-               . "⁕ <i>Status:</i> ON!✅\n\n"
+               . "⁕ <i>Status:</i> OFF!❌\n\n"
                . "🔥 <b>Stripe 3D</b> ✔\n"
                . "└ 💻 <code>/ta</code>\n"
                . "⁕ <i>Status:</i> ON!✅\n\n"
