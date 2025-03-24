@@ -599,17 +599,35 @@ curl_setopt_array($curl, [
   CURLOPT_CUSTOMREQUEST => 'GET',
   CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
   CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-  CURLOPT_HTTPHEADER => [
+  CURLOPT_HTTPHEADER => [		  
     'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Encoding: gzip, deflate, br, zstd',
+    'sec-ch-ua: "Chromium";v="134", "Not:A-Brand";v="24", "Brave";v="134"',
+    'sec-ch-ua-mobile: ?1',
     'sec-ch-ua-platform: "Android"',
     'upgrade-insecure-requests: 1',
+    'sec-gpc: 1',
     'accept-language: es-US,es;q=0.9',
+    'sec-fetch-site: same-origin',
+    'sec-fetch-mode: navigate',
+    'sec-fetch-user: ?1',
+    'sec-fetch-dest: document',
     'referer: https://breastcancereducation.org/',
-  ],
+    'priority: u=0, i',		  
+ ],
 ]);
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
+
+$dad = "casa - $err - $qfKey";
+sendMessage($chatId, $dad);
+	if(empty($response)){
+		sendMessage($chatId, "Error de coneccion");
+		die();
+	}
+	
 $patron_qfKey = '/<input name="qfKey" type="hidden" value="([^"]+)"/';
 $patron_MAX_FILE_SIZE = '/<input name="MAX_FILE_SIZE" type="hidden" value="([^"]+)"/';
 preg_match($patron_qfKey, $response, $coincidencias_qfKey);
@@ -622,12 +640,7 @@ curl_close($curl);
 //echo "qfKey: $qfKey\n";
 //echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
 //echo "-------------------------------\n";
-$dad = "casa - $err - $qfKey";
-sendMessage($chatId, $dad);
-	if(empty($response)){
-		sendMessage($chatId, "Error de coneccion");
-		die();
-	}
+
 
 $curl = curl_init();
 curl_setopt_array($curl, [
