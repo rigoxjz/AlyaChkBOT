@@ -586,7 +586,7 @@ $brand = "Unavailable";
 $MV = ucwords(strtolower(trim($brand)));
 echo "$MV\n";
 
-sendMessage($chatId, $MV, $message_id);
+sendMessage($chatId, $MV);
 	
 $curl = curl_init();
 
@@ -624,7 +624,7 @@ echo "qfKey: $qfKey\n";
 echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
 echo "-------------------------------\n";
 
-sendMessage($chatId, $qfKey, $message_id);
+sendMessage($chatId, $qfKey);
 
 
 $curl = curl_init();
