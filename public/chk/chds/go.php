@@ -532,7 +532,7 @@ ob_flush();
 
 
 if (preg_match('/^(!|\/|\.)br/', $message)) {
-	die();
+	
 
 $lista = substr($message, 4);
 $i = preg_split('/[|:| ]/', $lista);
