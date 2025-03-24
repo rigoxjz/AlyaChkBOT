@@ -6,8 +6,8 @@ function chkgo($chatId, $message, $message_id) {
 	$tipo = $userType; //TIPO DE USUARIO//
 	
 
-	
-	
+
+unlink('cookie.txt);
 	
 	
 
@@ -586,7 +586,8 @@ $brand = "Unavailable";
 $MV = ucwords(strtolower(trim($brand)));
 echo "$MV\n";
 
-
+sendMessage($chatId, $MV, $message_id);
+	
 $curl = curl_init();
 
 curl_setopt_array($curl, [
