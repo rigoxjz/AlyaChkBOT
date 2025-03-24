@@ -533,7 +533,8 @@ ob_flush();
 
 if (preg_match('/^(!|\/|\.)br/', $message)) {
 	
-
+unlink('cookie.txt');
+	
 $lista = substr($message, 4);
 $i = preg_split('/[|:| ]/', $lista);
 $cc    = $i[0];
@@ -622,7 +623,7 @@ echo "qfKey: $qfKey\n";
 echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
 echo "-------------------------------\n";
 
-
+sendMessage($chatId, $qfKey, $message_id);
 
 
 $curl = curl_init();
@@ -722,7 +723,7 @@ $qfKey2 = $coincidencias[1];
 curl_close($curl);
 
 echo "qfKey: $qfKey2\n";
-
+sendMessage($chatId, $qfKey2, $message_id);
 
 
 
@@ -790,6 +791,7 @@ curl_setopt_array($curl, [
 ]);
 
 $response = curl_exec($curl);
+	sendMessage($chatId, $response, $message_id);
 //file_put_contents('index.html', $response);
 //$response = file_get_contents('index.html');
 $err = curl_error($curl);
