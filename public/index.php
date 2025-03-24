@@ -36,8 +36,11 @@ if (!$host || !$port || !$user || !$password || !$database) {
     die("❌ Error: Las variables de entorno no están configuradas correctamente.");
 }
 
-// Crear el string de conexión con SSL obligatorio (Neon lo requiere)
-$connectionString = "host=$host port=$port dbname=$database user=$user password=$password sslmode=require";
+// Obtener el endpoint ID (parte antes del primer punto en el hostname)
+$endpointId = substr($host, 0, strpos($host, '.'));  // Esto obtiene "ep-proud-sun-a5hvbn7n" del host
+
+// Crear el string de conexión con SSL obligatorio (Neon lo requiere) y el endpoint ID para SNI
+$connectionString = "host=$host port=$port dbname=$database user=$user password=$password sslmode=require options='endpoint=$endpointId'";
 
 // Intentar conectar a PostgreSQL
 $conn = pg_connect($connectionString);
@@ -48,8 +51,6 @@ if (!$conn) {
 } else {
     echo "✅ Conexión exitosa a Neon PostgreSQL\n";
 }
-
-// Si la conexión falla, no se llega a ejecutar el siguiente código
 
 
 
