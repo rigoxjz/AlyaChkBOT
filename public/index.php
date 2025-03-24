@@ -29,7 +29,10 @@ $password = getenv('DB_PASS');
 $database = getenv('DB_NAME');
 
 // Conectar a PostgreSQL
-$connectionString = "host=$host port=$port dbname=$database user=$user password=$password";
+//$connectionString = "host=$host port=$port dbname=$database user=$user password=$password";
+//$conn = pg_connect($connectionString);
+// Conectar a PostgreSQL (Neon requiere SSL)
+$connectionString = "host=$host port=$port dbname=$database user=$user password=$password sslmode=require";
 $conn = pg_connect($connectionString);
 
 if (!$conn) {
