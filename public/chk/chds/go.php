@@ -589,7 +589,6 @@ echo "$MV\n";
 sendMessage($chatId, $MV);
 	
 $curl = curl_init();
-
 curl_setopt_array($curl, [
   CURLOPT_URL => 'https://breastcancereducation.org/make-a-donation',
   CURLOPT_RETURNTRANSFER => true,
@@ -620,11 +619,12 @@ $qfKey = $coincidencias_qfKey[1];
 $MAX_FILE_SIZE = $coincidencias_MAX_FILE_SIZE[1];
 curl_close($curl);
 
-echo "qfKey: $qfKey\n";
-echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
-echo "-------------------------------\n";
-
-sendMessage($chatId, $qfKey);
+//echo "qfKey: $qfKey\n";
+//echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
+//echo "-------------------------------\n";
+$dad = "casa - $err - $qfKey";
+sendMessage($chatId, $dad);
+sendMessage($chatId, $response);
 
 
 $curl = curl_init();
