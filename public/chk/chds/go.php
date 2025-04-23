@@ -637,8 +637,8 @@ curl_close($ch);
         $name = $matches1[1][0];
         preg_match_all("(\"last\":\"(.*)\")siU", $get, $matches1);
         $last = $matches1[1][0];
-        preg_match_all("(\"email\":\"(.*)\")siU", $get, $matches1);
-        $email = $matches1[1][0];
+//        preg_match_all("(\"email\":\"(.*)\")siU", $get, $matches1);
+//        $email = $matches1[1][0];
         preg_match_all("(\"street\":\"(.*)\")siU", $get, $matches1);
         $street = $matches1[1][0];
         preg_match_all("(\"city\":\"(.*)\")siU", $get, $matches1);
@@ -651,7 +651,19 @@ curl_close($ch);
         $postcode = $matches1[1][0];
 
 ////SACA EL TOKEN//
-
+$response = file_get_contents('https://www.fakemailgenerator.com');
+preg_match('/value="([^"]+)"/', $response, $matches);
+$GmailUser = $matches[1];
+//---------------------------//
+// Extraer el valor del dominio
+preg_match('/<span id="domain">([^<]+)<\/span>/', $response, $matches);
+$dominio = trim($matches[1]);
+// Eliminar espacios en blanco
+//---------------------------//
+$usr = str_replace("@", "", $dominio);
+//---------------------------//
+$email = "$GmailUser$dominio";
+	
 
 $curl = curl_init();
 
