@@ -832,9 +832,9 @@ ob_flush();
 
 
 if (preg_match('/^(!|\/|\.)br/', $message)) {
-/*		$respuesta = "Gate no disponible por el momento !!!";
+		$respuesta = "Gate no disponible por el momento !!!";
 	sendMessage($chatId,$respuesta, $message_id);
-	die();*/
+	die();
 unlink('cookie.txt');
 	
 $lista = substr($message, 4);
