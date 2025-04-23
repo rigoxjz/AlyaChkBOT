@@ -833,9 +833,11 @@ if (array_in_string($respo, $live_array)) {
 }
 
 if ($live) {
-    editMessage($chatId, $respuesta, $id_text);  // Editar el mensaje con el resultado generado
+    editMessage($chatId, $respuesta, $id_text);
+    die();// Editar el mensaje con el resultado generado
 } else {
     editMessage($chatId, $respuesta, $id_text);
+    die();// Editar el mensaje con el resultado generado
 }
 
 //--------FIN DEL CHECKER MERCHAND - CHARGED--------/
