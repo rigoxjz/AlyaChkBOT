@@ -87,7 +87,7 @@ if (preg_match('/^(!|\/|\.)chds$/', $message)) {
                . "⁕ <i>Status:</i> OFF!❌\n\n"
                . "🔥 <b>Braintree Charged</b> ($5) ✔\n"
                . "└ 💻 <code>/go</code>\n"
-               . "⁕ <i>Status:</i> ON!✅\n\n\n"
+               . "⁕ <i>Status:</i> ON!✅\n\n"
                . "🔥 <b>Charged</b> (€1) ✔\n"
                . "└ 💻 <code>/cb</code>\n"
                . "⁕ <i>Status:</i> ON!✅\n\n"
