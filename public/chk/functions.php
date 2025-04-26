@@ -353,6 +353,10 @@ function sendMessage($chatId, $respuesta, $message_id = null) {
     }
 }
 
+function sendPv($chatId, $respuesta) {
+     $url = $GLOBALS["website"]."/sendMessage?chat_id=".$chatId."&text=".urlencode($respuesta);
+    file_get_contents($url);                                    
+}
 
 function editMessage($chatId, $respuesta, $id_text){
 $url = $GLOBALS["website"]."/editMessageText?disable_web_page_preview=true&chat_id=".$chatId."&message_id=".$id_text."&parse_mode=HTML&text=".urlencode($respuesta);
