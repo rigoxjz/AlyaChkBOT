@@ -255,7 +255,7 @@ $respo = "Thank You.";
 }
 
 if ($respo == "Error creating payment intent with Stripe. Please try again.") {
-$respo = "Declined.";
+$respo = "Your card was declined.";
 }
 
 
