@@ -6,7 +6,7 @@ function handleCommands($chatId, $message, $message_id) {
 $tipo = $userType;
 if((strpos($message, "!") === 0)||(strpos($message, "/") === 0)||(strpos($message, ".") === 0)){
 
-$timeout = 60; // Tiempo de espera en segundos
+$timeout = 45; // Tiempo de espera en segundos
 $maxMessages = 3; // Máximo de mensajes permitidos
 $file = 'users.txt';
 $userId = $id; // Reemplaza con la lógica para obtener el ID del usuario actual
