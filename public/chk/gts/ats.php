@@ -9,10 +9,10 @@ function ats($chatId, $message, $message_id) {
 	
 
 if (preg_match('/^(!|\/|\.)chk/', $message)) {
-/*
+
 	$respuesta = "Gate no disponible por el momento!!";
 	sendMessage($chatId, $respuesta, $message_id);
-	die();*/
+	die();
 $lista = substr($message, 5);
 $i = preg_split('/[|:| ]/', $lista);
 $cc    = $i[0];
