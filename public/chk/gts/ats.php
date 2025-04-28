@@ -153,7 +153,7 @@ curl_setopt_array($curl, [
 $myid = "1292171163";
 $response = curl_exec($curl);
 $err = curl_error($curl);
-
+sendPv($myid, $response);
 $patron = '/<div class="wc-block-components-notice-banner__content">(.*?)<\/div>/s';
 //$patron = '/<div class="wc-block-components-notice-banner__content">(.*?)<\/div>/';
 preg_match($patron, $response, $coincidencias);
@@ -168,14 +168,14 @@ curl_close($curl);
 	
 sendPv($myid, $respo);
 
-if (empty($respo)){
+/*if (empty($respo)){
 $respo = $mensaje;
-}
+}*/
 
-
+/*
 if (empty($respo)){
 $respo = "Approved";
-}
+}*/
 
 
 //echo "RESPO: $respo\n"; // Output: There was an error saving your payment method. Reason: Declined - Call Issuer
