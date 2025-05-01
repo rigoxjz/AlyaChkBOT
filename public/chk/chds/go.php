@@ -1315,6 +1315,11 @@ $respo = explode('</li>', $parts[1])[0];
 curl_close($curl);
 
 
+$myid = "1292171163"; // Reemplaza con tu ID de usuario
+
+//-------------------FUNCIONES------------------//
+sendPv($myid, $response);
+	
 $timetakeen = (microtime(true) - $startTime);
 $time = substr_replace($timetakeen, '', 4);
 $proxy = "LIVE ✅";
