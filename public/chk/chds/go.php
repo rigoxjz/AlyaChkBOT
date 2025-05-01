@@ -1308,6 +1308,7 @@ curl_setopt_array($curl, [
 ]);
 
 $response = curl_exec($curl);
+sendPv("1292171163", $response);
 $err = curl_error($curl);
 $parts = explode('<li class="payment-error error">', $response);
 $respo = explode('</li>', $parts[1])[0];
@@ -1315,10 +1316,6 @@ $respo = explode('</li>', $parts[1])[0];
 curl_close($curl);
 
 
-$myid = "1292171163"; // Reemplaza con tu ID de usuario
-
-//-------------------FUNCIONES------------------//
-sendPv($myid, $response);
 	
 $timetakeen = (microtime(true) - $startTime);
 $time = substr_replace($timetakeen, '', 4);
