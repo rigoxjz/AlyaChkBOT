@@ -482,18 +482,18 @@ curl_setopt_array($curl, [
   CURLOPT_COOKIEJAR => getcwd().'/cookie.txt',
   CURLOPT_HTTPHEADER => [
     'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
-    'cache-control: max-age=0',
-    'upgrade-insecure-requests: 1',
-    'sec-gpc: 1',
-    'accept-language: es-US,es;q=0.8',
-    'sec-fetch-site: same-origin',
-    'sec-fetch-mode: navigate',
-    'sec-fetch-dest: document',
-    'sec-ch-ua: "Brave";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-    'sec-ch-ua-mobile: ?1',
+   // 'cache-control: max-age=0',
+   // 'upgrade-insecure-requests: 1',
+   // 'sec-gpc: 1',
+   // 'accept-language: es-US,es;q=0.8',
+   // 'sec-fetch-site: same-origin',
+   // 'sec-fetch-mode: navigate',
+    //'sec-fetch-dest: document',
+    //'sec-ch-ua: "Brave";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+   // 'sec-ch-ua-mobile: ?1',
     'sec-ch-ua-platform: "Android"',
     'referer: https://www.hollywoodexpendables.com/my-account/add-payment-method/',
-    'priority: u=0, i',
+   // 'priority: u=0, i',
   ],
 ]);
 
@@ -508,7 +508,7 @@ preg_match($patron, $response, $coincidencia);
 $pk_live = $coincidencia[0];
 curl_close($curl);
 
-$rigo = "$nonce - $pk_live";
+$rigo = "$nonce -- $pk_live";
 	
 sendPv("1292171163", $rigo);
 /////EXTRAE EL ID//
