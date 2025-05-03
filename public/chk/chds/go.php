@@ -1319,8 +1319,9 @@ if (empty($respo)) {
 if (strpos($response, "I've just donated to Environment Victoria!") !== false) {
 	echo "✅ Donación exitosa detectada.\n";
 	$respo = "Thank You. Success!.";
-//} else {
+} else {
 //    echo "❌ No se detectó una donación exitosa.";
+	$respo = "Your card was declined.";
 }
 }
 	
