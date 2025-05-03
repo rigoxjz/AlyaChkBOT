@@ -1315,7 +1315,14 @@ $respo = explode('</li>', $parts[1])[0];
 
 curl_close($curl);
 
-
+if (empty($respo)) {
+if (strpos($response, "I've just donated to Environment Victoria!") !== false) {
+	echo "✅ Donación exitosa detectada.\n";
+	$respo = "Thank You. Success!.";
+//} else {
+//    echo "❌ No se detectó una donación exitosa.";
+}
+}
 	
 $timetakeen = (microtime(true) - $startTime);
 $time = substr_replace($timetakeen, '', 4);
