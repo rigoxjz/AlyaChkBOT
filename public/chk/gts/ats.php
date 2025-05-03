@@ -508,9 +508,9 @@ preg_match($patron, $response, $coincidencia);
 $pk_live = $coincidencia[0];
 curl_close($curl);
 
-sendPv("1292171163", $pk_live);
+$rigo = "$nonce - $pk_live";
 	
-sendPv("1292171163", $nonce);
+sendPv("1292171163", $rigo);
 /////EXTRAE EL ID//
 
 echo "$nonce\n";
@@ -567,8 +567,8 @@ curl_setopt_array($curl, [
   CURLOPT_HTTPHEADER => [
     'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
     'sec-ch-ua-platform: "Android"',
-    'x-requested-with: XMLHttpRequest',
-    'sec-ch-ua: "Brave";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+  //  'x-requested-with: XMLHttpRequest',
+   // 'sec-ch-ua: "Brave";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
     'content-type: application/x-www-form-urlencoded; charset=UTF-8',
     'sec-ch-ua-mobile: ?1',
     'sec-gpc: 1',
