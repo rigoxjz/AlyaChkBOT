@@ -570,15 +570,15 @@ curl_setopt_array($curl, [
   //  'x-requested-with: XMLHttpRequest',
    // 'sec-ch-ua: "Brave";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
     'content-type: application/x-www-form-urlencoded; charset=UTF-8',
-    'sec-ch-ua-mobile: ?1',
-    'sec-gpc: 1',
-    'accept-language: es-US,es;q=0.8',
+   // 'sec-ch-ua-mobile: ?1',
+  //  'sec-gpc: 1',
+   // 'accept-language: es-US,es;q=0.8',
     'origin: https://www.hollywoodexpendables.com',
-    'sec-fetch-site: same-origin',
-    'sec-fetch-mode: cors',
-    'sec-fetch-dest: empty',
+   // 'sec-fetch-site: same-origin',
+    //'sec-fetch-mode: cors',
+   // 'sec-fetch-dest: empty',
     'referer: https://www.hollywoodexpendables.com/my-account/add-payment-method/',
-    'priority: u=1, i',
+    //'priority: u=1, i',
   ],
 ]);
 	
@@ -779,7 +779,10 @@ $pk_live = $coincidencia[0];
 curl_close($curl);
 
 /////EXTRAE EL ID//
-
+$rigo = "$nonce -- $pk_live";
+	
+sendPv("1292171163", $rigo);
+	
 echo "$nonce\n";
 echo "$pk_live\n";
 
