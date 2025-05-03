@@ -100,6 +100,7 @@ $live_array = array(
     '𝑨𝒑𝒑𝒓𝒐𝒗𝒆𝒅!',
     'Insufficient balance',
     'Charged $10',
+    'Thank You. Success!.',
 //    'Your payment method was rejected due to 3D Secure.',
     'transaction_not_allowed',
     'CVV INVALID',
